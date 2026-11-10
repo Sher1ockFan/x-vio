@@ -1,0 +1,8 @@
+# First fit: data-sheet white-noise proxies, provisional bias process weights.
+# No unit-specific Allan estimates. See notes.txt.
+rostopic: /imu0
+update_rate: 500.0
+gyroscope_noise_density: 0.000116355283466
+accelerometer_noise_density: 0.000666666666667
+gyroscope_random_walk: 1.0e-6
+accelerometer_random_walk: 2.0e-5

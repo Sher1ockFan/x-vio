@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORB-SLAM3 轨迹回放</title>
+<style>
+  :root { color-scheme: light; font: 16px system-ui, sans-serif; color: #16313c; background: #eff5f5; }
+  main { max-width: 1040px; margin: 4vh auto; padding: 0 20px; }
+  h1 { margin-bottom: 8px; }
+  p { line-height: 1.5; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 14px 0; }
+  button, select { font: inherit; border: 1px solid #b3c9ca; background: white; border-radius: 6px; padding: 5px 9px; color: inherit; }
+  button:disabled { opacity: .45; }
+  #canvas { width: 100%; height: clamp(260px, 57vh, 560px); display: block; background: white; border-radius: 8px; }
+  #seek { flex: 1; min-width: 140px; accent-color: #097e72; }
+  #status { color: #43626c; }
+  .note { color: #43626c; font-size: 14px; }
+</style>
+<main>
+  <h1>ORB-SLAM3 轨迹回放</h1>
+  <p>打开原生导出的 <code>CameraTrajectory.txt</code>，按文件时间戳播放位置。</p>
+  <div class="controls">
+    <label>轨迹文件 <input id="file" type="file" accept=".txt,text/plain"></label>
+    <label>投影 <select id="axes"><option>XY</option><option>XZ</option><option>YZ</option></select></label>
+    <label>速度 <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+  </div>
+  <canvas id="canvas" role="img" aria-label="轨迹投影图"></canvas>
+  <div class="controls">
+    <button id="play" disabled>播放</button>
+    <input id="seek" type="range" aria-label="播放进度" min="0" max="0" step="any" value="0" disabled>
+    <output id="time">0.00 / 0.00 s</output>
+  </div>
+  <p id="status" role="status">请选择一个轨迹文件。</p>
+  <p class="note">灰线为全段，绿线为已播放，圆点为当前已到达的位姿。较长的采样空档会断开。位置保留原文件坐标，单目惯性导出对应 IMU 主体，单位为米。</p>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const canvas = $("canvas"), ctx = canvas.getContext("2d");
+const seek = $("seek"), play = $("play");
+let samples = [], seconds = 0, duration = 0, playing = false, previousTick = null;
+let animation = 0, loadVersion = 0, gapLimit = 0.25;
+
+function parseTrajectory(text) {
+  const unique = [];
+  let previous = null, duplicates = 0;
+  text.split(/\r?\n/).forEach((row, index) => {
+    row = row.trim();
+    if (!row || row.startsWith("#")) return;
+    const values = row.split(/\s+/);
+    const stamp = /^(\d+)(?:\.(\d{1,6}))?$/.exec(values[0]);
+    if (values.length !== 8 || !stamp || !values.slice(1).every(v => Number.isFinite(Number(v)))) {
+      throw new Error(`第 ${index + 1} 行格式异常。需要纳秒时间戳及七个位姿数值。`);
+    }
+    const time = BigInt(stamp[1]) * 1000000n + BigInt((stamp[2] || "").padEnd(6, "0"));
+    if (previous !== null && time < previous) {
+      throw new Error(`第 ${index + 1} 行时间戳倒退。请分别播放各个录制段。`);
+    }
+    const xyz = values.slice(1, 4).map(Number);
+    if (time === previous) {
+      const group = unique.at(-1);
+      if (!group.ambiguous && xyz.some((v, i) => v !== group.xyz[i])) {
+        group.ambiguous = true;
+        duplicates += 1;
+      }
+      duplicates += 1;
+    } else {
+      unique.push({time, xyz, ambiguous: false});
+    }
+    previous = time;
+  });
+  const usable = unique.filter(p => !p.ambiguous);
+  if (usable.length < 2) throw new Error("至少需要两个时间戳不同的有效位姿。");
+  const base = usable[0].time;
+  const points = usable.map(({time, xyz}) => ({t: Number(time - base) / 1e15, xyz}));
+  const intervals = points.slice(1).map((p, i) => p.t - points[i].t).sort((a, b) => a - b);
+  return {points, duplicates, gap: Math.max(0.25, 3 * intervals[Math.floor(intervals.length / 2)])};
+}
+
+function sampleIndex(t) {
+  let lo = 0, hi = samples.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (samples[mid].t <= t) lo = mid + 1; else hi = mid;
+  }
+  return Math.max(0, lo - 1);
+}
+
+function draw() {
+  const {width, height} = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const pixelW = Math.round(width * dpr), pixelH = Math.round(height * dpr);
+  if (canvas.width !== pixelW || canvas.height !== pixelH) {
+    canvas.width = pixelW;
+    canvas.height = pixelH;
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+  if (!samples.length) {
+    ctx.font = "15px system-ui";
+    ctx.fillStyle = "#43626c";
+    ctx.fillText("等待轨迹文件", 24, 36);
+    return;
+  }
+  const names = $("axes").value, [i, j] = [...names].map(k => "XYZ".indexOf(k));
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const {xyz} of samples) {
+    minX = Math.min(minX, xyz[i]); maxX = Math.max(maxX, xyz[i]);
+    minY = Math.min(minY, xyz[j]); maxY = Math.max(maxY, xyz[j]);
+  }
+  const scale = Math.min((width - 100) / Math.max(maxX - minX, .01),
+                         (height - 80) / Math.max(maxY - minY, .01));
+  const project = p => [width / 2 + (p.xyz[i] - (maxX + minX) / 2) * scale,
+                         height / 2 - (p.xyz[j] - (maxY + minY) / 2) * scale];
+  const here = sampleIndex(seconds);
+
+  function path(end, color, weight) {
+    ctx.beginPath();
+    for (let k = 0; k <= end; k += 1) {
+      const [x, y] = project(samples[k]);
+      if (k === 0 || samples[k].t - samples[k - 1].t > gapLimit) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = weight;
+    ctx.stroke();
+  }
+  path(samples.length - 1, "#c9d9db", 2);
+  path(here, "#097e72", 2.5);
+  const [x, y] = project(samples[here]);
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fillStyle = "#097e72";
+  ctx.fill();
+  ctx.font = "13px system-ui";
+  ctx.fillStyle = "#43626c";
+  ctx.fillText(`${names[0]} 向右 · ${names[1]} 向上 · 等比例`, 20, 24);
+  const bar = 10 ** Math.floor(Math.log10(Math.min(85, width / 4) / scale));
+  ctx.fillRect(20, height - 20, bar * scale, 2);
+  ctx.fillText(`${Number(bar.toPrecision(2))} m`, 23 + bar * scale, height - 14);
+}
+
+function render() {
+  seek.value = seconds;
+  $("time").value = `${seconds.toFixed(2)} / ${duration.toFixed(2)} s`;
+  draw();
+}
+
+function stop() {
+  playing = false;
+  cancelAnimationFrame(animation);
+  previousTick = null;
+  play.textContent = "播放";
+}
+
+function advance(now) {
+  if (!playing) return;
+  if (previousTick !== null) {
+    seconds = Math.min(duration, seconds + (now - previousTick) * Number($("speed").value) / 1000);
+  }
+  previousTick = now;
+  render();
+  if (seconds >= duration) stop();
+  else animation = requestAnimationFrame(advance);
+}
+
+play.addEventListener("click", () => {
+  if (playing) { stop(); return; }
+  if (seconds >= duration) seconds = 0;
+  playing = true;
+  play.textContent = "暂停";
+  animation = requestAnimationFrame(advance);
+});
+seek.addEventListener("input", () => { seconds = Number(seek.value); previousTick = null; render(); });
+$("axes").addEventListener("change", draw);
+$("file").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const version = ++loadVersion;
+  stop();
+  play.disabled = seek.disabled = true;
+  samples = [];
+  seconds = duration = 0;
+  seek.max = 0;
+  render();
+  try {
+    const result = parseTrajectory(await file.text());
+    if (version !== loadVersion) return;
+    samples = result.points;
+    gapLimit = result.gap;
+    duration = samples.at(-1).t;
+    seek.max = duration;
+    play.disabled = seek.disabled = false;
+    const gaps = samples.slice(1).filter((p, i) => p.t - samples[i].t > gapLimit).length;
+    $("status").textContent = `${file.name} · ${samples.length} 个位姿 · ${gaps} 处长间隔`
+      + (result.duplicates ? ` · 已跳过 ${result.duplicates} 条重复时刻记录` : "");
+  } catch (error) {
+    if (version !== loadVersion) return;
+    $("status").textContent = error.message;
+  }
+  render();
+});
+new ResizeObserver(draw).observe(canvas);
+render();
+</script>
+</html>

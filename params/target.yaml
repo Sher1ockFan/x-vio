@@ -1,0 +1,8 @@
+# Nominal specifications for the 800 x 800 mm physical board.
+# Outer black tag edge = 88 mm; clear white gap = 26.4 mm.
+# tagSpacing = 26.4 / 88. Verify the tag edge and gap on the board before fitting.
+target_type: aprilgrid
+tagCols: 6
+tagRows: 6
+tagSize: 0.088
+tagSpacing: 0.300
