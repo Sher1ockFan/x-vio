@@ -20,7 +20,7 @@ done
 python3 -c 'import numpy' || fail 'Install the Jetson python3-numpy package.'
 
 if [[ ${1:-} == --devices ]]; then
-    camera=/dev/video6
+    camera=/dev/gmsl/B
     serial=/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0
     [[ -c $camera && -r $camera && -w $camera ]] ||
         fail "Camera unavailable to $(id -un): $camera. Check the GMSL driver and video group."

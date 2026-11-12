@@ -1,4 +1,4 @@
-// External sensor-stream adapter for the unmodified ORB-SLAM3 public API.
+// External sensor-stream adapter for the mono_imu_vio single-camera inertial API.
 #include <System.h>
 #include <Map.h>
 #include <MapPoint.h>

@@ -93,15 +93,10 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Usage: %s\n", argv[0]);
         return 2;
     }
-#if defined(ORB_HUB_CAPTURE) && !defined(ORB_CAMERA_SEQUENCE)
+    /* Live and recording address the same physical camera on B. */
     const char *device = "/dev/gmsl/B";
     const char *card = "vi-output, pnd_gmsl_mc 10-003b";
     const char *bus = "platform:tegra-capture-vi:0";
-#else
-    const char *device = "/dev/video6";
-    const char *card = "vi-output, pnd_gmsl_mc 10-003c";
-    const char *bus = "platform:tegra-capture-vi:2";
-#endif
     int fd = open(device, O_RDWR | O_NONBLOCK | O_CLOEXEC);
     if (fd < 0) { perror(device); return 1; }
     enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -145,6 +140,15 @@ int main(int argc, char **argv) {
     uint64_t hz;
     __asm__ __volatile__("mrs %0, cntfrq_el0" : "=r"(hz));
     if (!gray || !hz || hz > UINT32_MAX) { fprintf(stderr, "No gray buffer or invalid counter frequency.\n"); return 1; }
+    FILE *timing_log = NULL;
+    const char *timing_env = getenv("VIO_TIMING");
+    if (timing_env && !strcmp(timing_env, "1")) {
+        timing_log = fopen("camera_timing.csv", "wx");
+        if (!timing_log) { perror("camera_timing.csv"); return 1; }
+        setvbuf(timing_log, NULL, _IOLBF, 0);
+        fprintf(timing_log, "sequence,driver_timestamp_ns,camera_raw_ns,dqbuf_raw_ns,gray_start_raw_ns,"
+                "gray_done_raw_ns,write_start_raw_ns,write_end_raw_ns,bytesused,flags\n");
+    }
     if (xioctl(fd, VIDIOC_STREAMON, &type)) { perror("VIDIOC_STREAMON"); return 1; }
 
     int64_t last = 0, first = 0;
@@ -161,16 +165,19 @@ int main(int argc, char **argv) {
             perror("VIDIOC_DQBUF"); break;
         }
         int64_t receipt = raw_ns();
-        int64_t event = (int64_t)b.timestamp.tv_sec * 1000000000LL + b.timestamp.tv_usec * 1000LL + clock_offset(hz);
+        int64_t driver_stamp = (int64_t)b.timestamp.tv_sec * 1000000000LL + b.timestamp.tv_usec * 1000LL;
+        int64_t event = driver_stamp + clock_offset(hz);
         int64_t lag = receipt - event;
         if (event <= last || lag < -5000000LL || lag > 250000000LL) {
             fprintf(stderr, "Unexpected camera clock/lag: event=%" PRId64 " lag_ms=%.2f. Recheck the driver clock domain.\n", event, (double)lag / 1e6);
             break;
         }
+        int64_t gray_start = timing_log ? raw_ns() : 0;
         if (b.index >= req.count || (b.flags & V4L2_BUF_FLAG_ERROR) ||
             extract_gray(gray, maps[b.index], b.bytesused)) {
             fprintf(stderr, "Invalid camera frame at sequence %u.\n", b.sequence); break;
         }
+        int64_t gray_done = timing_log ? raw_ns() : 0;
         struct v4l2_buffer q = {.type = type, .memory = V4L2_MEMORY_MMAP, .index = b.index};
         if (xioctl(fd, VIDIOC_QBUF, &q)) { perror("VIDIOC_QBUF"); break; }
         if (delivered) gaps += (uint32_t)(b.sequence - sequence - 1);
@@ -181,6 +188,7 @@ int main(int argc, char **argv) {
         if (delivered == 1 || !(delivered % 150))
             fprintf(stderr, "GMSL frames=%u seq_missing=%" PRIu64 " lag_ms=%.2f delivered_hz=%.1f\n", delivered, gaps,
                     (double)lag / 1e6, delivered > 1 ? (delivered - 1) * 1e9 / (event - first) : 0.0);
+        int64_t write_start = timing_log ? raw_ns() : 0;
         if (fwrite(&event, sizeof(event), 1, stdout) != 1 ||
 #ifdef ORB_CAMERA_SEQUENCE
             fwrite(&sequence, sizeof(sequence), 1, stdout) != 1 ||
@@ -188,9 +196,19 @@ int main(int argc, char **argv) {
             fwrite(gray, 1, GRAY_SIZE, stdout) != GRAY_SIZE || fflush(stdout)) {
             perror("camera output pipe"); break;
         }
+        if (timing_log) {
+            int64_t write_end = raw_ns();
+            if (fprintf(timing_log, "%u,%" PRId64 ",%" PRId64 ",%" PRId64 ",%" PRId64
+                        ",%" PRId64 ",%" PRId64 ",%" PRId64 ",%u,%u\n",
+                        sequence, driver_stamp, event, receipt, gray_start, gray_done,
+                        write_start, write_end, b.bytesused, b.flags) < 0) {
+                perror("write camera timing"); break;
+            }
+        }
     }
     xioctl(fd, VIDIOC_STREAMOFF, &type);
     close(fd);
     free(gray);
+    if (timing_log) fclose(timing_log);
     return 1;  /* Normal trial end is signalled by the parent closing the capture worker. */
 }

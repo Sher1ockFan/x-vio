@@ -2,7 +2,7 @@
 # Run in the existing Jammy ARM64 builder. All output is in a private volume path.
 set -euo pipefail
 root=${ORB_STOCK_BUILD_ROOT:-/build/orb-stock}
-src=$root/upstream
+src=$root/source
 cv=/build/orb-kit/opencv-4.8.0/usr/lib
 pango=/build/orb-kit/prefix
 jobs=${ORB_STOCK_JOBS:-2}
@@ -15,7 +15,7 @@ jobs=${ORB_STOCK_JOBS:-2}
     exit 1
 }
 cd "$src"
-sha256sum --quiet -c "$root/upstream.sha256"
+sha256sum --quiet -c "$root/source.sha256"
 export CCACHE_DIR=/ccache
 export LD_LIBRARY_PATH="$cv"
 
@@ -50,9 +50,8 @@ echo '[1/2] Building upstream DBoW2'
 cmake -S "$src/Thirdparty/DBoW2" -B "$root/dbow-build" "${args[@]}" -DCMAKE_CXX_FLAGS=-march=armv8-a
 cmake --build "$root/dbow-build" --target DBoW2 --parallel "$jobs"
 
-echo '[2/2] Building upstream ORB-SLAM3 and the EuRoC example'
+echo '[2/2] Building mono_imu_vio core and the EuRoC example'
 cmake -S "$src" -B "$root/orb-build" "${args[@]}" "-DPangolin_DIR=$pango/lib/cmake/Pangolin" \
-    -DCMAKE_DISABLE_FIND_PACKAGE_realsense2=ON \
     '-DCMAKE_CXX_FLAGS=-march=armv8-a -include unistd.h -include boost/serialization/library_version_type.hpp'
 if ! cmake --build "$root/orb-build" --target mono_inertial_euroc --parallel "$jobs" 2>&1 | tee "$root/compile.log"; then
     if (( jobs == 1 )) || ! grep -q 'Killed signal terminated program cc1plus' "$root/compile.log"; then
@@ -61,5 +60,5 @@ if ! cmake --build "$root/orb-build" --target mono_inertial_euroc --parallel "$j
     echo 'Compiler ran out of memory. Retrying unfinished targets with one job.'
     cmake --build "$root/orb-build" --target mono_inertial_euroc --parallel 1
 fi
-sha256sum --quiet -c "$root/upstream.sha256"
-echo 'UPSTREAM_FILES_UNCHANGED'
+sha256sum --quiet -c "$root/source.sha256"
+echo 'FORK_SOURCE_FILES_VERIFIED'

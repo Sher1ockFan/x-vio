@@ -1,21 +1,51 @@
 {
-  "package": "name_test",
-  "archive_sha256": "2f24cbae6421a6df9eb69a5dc421dd0d2abea06d5436c41e834bccb024fe3313",
-  "archive_bytes": 57742054,
-  "upstream_snapshot_files": 955,
-  "same_binaries_and_parameters_as_current_vio_nx": true,
-  "runtime_file_changes_vs_vio_nx": [
-    "./README.md",
-    "./performance.py"
-  ],
-  "checks": [
-    "official source checksum",
-    "ARM64 relocatable dependencies",
-    "runtime SHA256SUMS",
-    "name_test archive root",
-    "entry point help",
-    "silent report generation",
-    "startup error code and separate logs"
-  ],
-  "jetson_hardware_test_performed": false
+  "project": "mono_imu_vio",
+  "date": "2026-11-12",
+  "status": "SOFTWARE_CHECKS_PASS",
+  "modified_orb_slam3_core": true,
+  "only_supported_sensor": "IMU_MONOCULAR",
+  "base_commit": "4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4",
+  "archive": "mono_imu_vio.tar.gz",
+  "archive_sha256": "4c18916b4f65bd7a523f635d33157f3950a411797850494864c8a463a7e2b451",
+  "archive_bytes": 57767814,
+  "core_sha256": "7c932ebefc23d0b66ba118e6268625b880ad9e9480ee5091a3cc605e87fb44ff",
+  "source_manifest_sha256": "7b94be26af5e8bc5ff80ca2616d65c08e74fb9d14cdb0610e6c27da3cad157dc",
+  "target": "Linux aarch64 ARMv8-A; Ubuntu22.04; Jetson R36.5.0; OpenCV4.8.0 .so.408",
+  "checks": {
+    "source_contract_cases": 7,
+    "quiet_console_cases": 9,
+    "keyframe_policy_equivalence_cases": 100000,
+    "byte_exact_gray_frames": 64,
+    "invalid_gray_lengths": 8,
+    "camera_protocol_and_timing_cases": 8,
+    "invalid_mode_constructor_rejections": 14,
+    "live_simulation_processed_frames": 109,
+    "live_timing_fully_matched_frames": 109,
+    "replay_processed_frames": 60,
+    "exported_images": 59,
+    "native_viewer_windows": "PASS",
+    "arm64_relocatable_dynamic_links": "PASS",
+    "package_manifest_files_verified": 299,
+    "core_source_files": 264,
+    "shipped_core_source_files": 257,
+    "calibration_files_unchanged": "PASS",
+    "neon_extractor_unchanged_from_name_test": "PASS"
+  },
+  "preserved_projects": {
+    "name_test": {
+      "unchanged": true,
+      "owned_files_checked": 36
+    },
+    "vio_nx": {
+      "unchanged": true,
+      "owned_files_checked": 35
+    }
+  },
+  "hardware_performance_validated": false,
+  "hardware_accuracy_validated": false,
+  "limitations": [
+    "Synthetic live/replay inputs contain no motion and do not initialize an inertial map.",
+    "Actual Jetson grayscale latency, sensor frequencies, tracking robustness and accuracy require hardware runs.",
+    "The inherited +16881057 ns time shift was calibrated on C; B physical timing remains to be independently validated."
+  ]
 }

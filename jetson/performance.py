@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quiet, stdlib-only measurement report for a name_test live session.
+"""Quiet, stdlib-only measurement report for a mono_imu_vio live session.
 
 CLI: python3 performance.py SESSION
 API: write_report(session_dir) -> dict; analyze(session_dir) -> dict

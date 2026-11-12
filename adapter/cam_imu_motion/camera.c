@@ -1,7 +1,8 @@
-/* Build on the Jetson: cc -O2 -std=c11 -Wall -Wextra -pthread camera.c -o camera */
+/* Build on the Jetson: cc -O3 -std=c11 -Wall -Wextra -pthread camera.c -o camera */
 #define _GNU_SOURCE
 #include <stdint.h>
 #include <stddef.h>
+#include <arm_neon.h>
 #define WIDTH 1920u
 #define HEIGHT 1441u
 #define STRIDE 3840u
@@ -27,7 +28,15 @@ static int select_row(struct selection *s, unsigned row, int64_t ts_us) {
 /* Verified native format: row 0 is metadata; UYVY luma occupies byte 1 of each 2. */
 static int extract_gray(uint8_t *gray, const uint8_t *src, size_t used) {
     if (used != FULL_SIZE) return -1;
-    for (size_t i = 0; i < GRAY_SIZE; ++i) gray[i] = src[STRIDE + 1u + 2u * i];
+    const uint8_t *pixels = src + STRIDE; /* Skip the metadata row exactly once. */
+    const size_t vector_end = GRAY_SIZE - GRAY_SIZE % 16u;
+    size_t i = 0;
+    for (; i < vector_end; i += 16u) {
+        /* UYVY: val[0] contains alternating U/V; val[1] contains 16 original Y bytes. */
+        uint8x16x2_t pairs = vld2q_u8(pixels + 2u * i);
+        vst1q_u8(gray + i, pairs.val[1]);
+    }
+    for (; i < GRAY_SIZE; ++i) gray[i] = pixels[2u * i + 1u];
     return 0;
 }
 #ifndef CAMERA_PROBE_PIXEL_ONLY

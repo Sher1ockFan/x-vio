@@ -1,5 +1,6 @@
 /**
 * This file is part of ORB-SLAM3
+* Modified for mono_imu_vio on 2026-11-12: single-camera inertial specialization.
 *
 * Copyright (C) 2017-2021 Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
 * Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
@@ -43,7 +44,6 @@ namespace ORB_SLAM3 {
          */
         enum CameraType {
             PinHole = 0,
-            Rectified = 1,
             KannalaBrandt = 2
         };
 
@@ -67,14 +67,8 @@ namespace ORB_SLAM3 {
          */
         CameraType cameraType() {return cameraType_;}
         GeometricCamera* camera1() {return calibration1_;}
-        GeometricCamera* camera2() {return calibration2_;}
         cv::Mat camera1DistortionCoef() {return cv::Mat(vPinHoleDistorsion1_.size(),1,CV_32F,vPinHoleDistorsion1_.data());}
-        cv::Mat camera2DistortionCoef() {return cv::Mat(vPinHoleDistorsion2_.size(),1,CV_32F,vPinHoleDistorsion1_.data());}
 
-        Sophus::SE3f Tlr() {return Tlr_;}
-        float bf() {return bf_;}
-        float b() {return b_;}
-        float thDepth() {return thDepth_;}
 
         bool needToUndistort() {return bNeedToUndistort_;}
 
@@ -82,7 +76,6 @@ namespace ORB_SLAM3 {
         float fps() {return fps_;}
         bool rgb() {return bRGB_;}
         bool needToResize() {return bNeedToResize1_;}
-        bool needToRectify() {return bNeedToRectify_;}
 
         float noiseGyro() {return noiseGyro_;}
         float noiseAcc() {return noiseAcc_;}
@@ -92,7 +85,6 @@ namespace ORB_SLAM3 {
         Sophus::SE3f Tbc() {return Tbc_;}
         bool insertKFsWhenLost() {return insertKFsWhenLost_;}
 
-        float depthMapFactor() {return depthMapFactor_;}
 
         int nFeatures() {return nFeatures_;}
         int nLevels() {return nLevels_;}
@@ -117,10 +109,6 @@ namespace ORB_SLAM3 {
 
         float thFarPoints() {return thFarPoints_;}
 
-        cv::Mat M1l() {return M1l_;}
-        cv::Mat M2l() {return M2l_;}
-        cv::Mat M1r() {return M1r_;}
-        cv::Mat M2r() {return M2r_;}
 
     private:
         template<typename T>
@@ -145,44 +133,30 @@ namespace ORB_SLAM3 {
         }
 
         void readCamera1(cv::FileStorage& fSettings);
-        void readCamera2(cv::FileStorage& fSettings);
         void readImageInfo(cv::FileStorage& fSettings);
         void readIMU(cv::FileStorage& fSettings);
-        void readRGBD(cv::FileStorage& fSettings);
         void readORB(cv::FileStorage& fSettings);
         void readViewer(cv::FileStorage& fSettings);
         void readLoadAndSave(cv::FileStorage& fSettings);
         void readOtherParameters(cv::FileStorage& fSettings);
 
-        void precomputeRectificationMaps();
 
-        int sensor_;
         CameraType cameraType_;     //Camera type
 
         /*
          * Visual stuff
          */
-        GeometricCamera* calibration1_, *calibration2_;   //Camera calibration
-        GeometricCamera* originalCalib1_, *originalCalib2_;
-        std::vector<float> vPinHoleDistorsion1_, vPinHoleDistorsion2_;
+        GeometricCamera* calibration1_;   //Camera calibration
+        GeometricCamera* originalCalib1_;
+        std::vector<float> vPinHoleDistorsion1_;
 
         cv::Size originalImSize_, newImSize_;
         float fps_;
         bool bRGB_;
 
         bool bNeedToUndistort_;
-        bool bNeedToRectify_;
-        bool bNeedToResize1_, bNeedToResize2_;
+        bool bNeedToResize1_;
 
-        Sophus::SE3f Tlr_;
-        float thDepth_;
-        float bf_, b_;
-
-        /*
-         * Rectification stuff
-         */
-        cv::Mat M1l_, M2l_;
-        cv::Mat M1r_, M2r_;
 
         /*
          * Inertial stuff
@@ -193,10 +167,6 @@ namespace ORB_SLAM3 {
         Sophus::SE3f Tbc_;
         bool insertKFsWhenLost_;
 
-        /*
-         * RGBD stuff
-         */
-        float depthMapFactor_;
 
         /*
          * ORB stuff

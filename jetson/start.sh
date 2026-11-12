@@ -21,7 +21,7 @@ usage() {
 Usage:
   bash start.sh live [SECONDS]       B port, 1920x1440 capture and native viewer
                                     Omit SECONDS or use 0 to run until Ctrl+C
-  bash start.sh record NEW_TAKE      Record calibrated camera + IMU packets
+  bash start.sh record NEW_TAKE      Record B-port camera + IMU packets
   bash start.sh record-view NEW_TAKE Record with independent native preview
   bash start.sh replay TAKE          Replay a complete take in the native viewer
   bash start.sh recover TAKE         Verify a previously interrupted take

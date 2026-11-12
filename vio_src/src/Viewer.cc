@@ -1,3 +1,4 @@
+// Modified 2026-11-12 for mono_imu_vio: single-camera inertial specialization.
 /**
 * This file is part of ORB-SLAM3
 *
@@ -210,11 +211,6 @@ void Viewer::Run()
     bool bLocalizationMode = false;
     bool bStepByStep = false;
     bool bCameraView = true;
-
-    if(mpTracker->mSensor == mpSystem->MONOCULAR || mpTracker->mSensor == mpSystem->STEREO || mpTracker->mSensor == mpSystem->RGBD)
-    {
-        menuShowGraph = true;
-    }
 
     float trackedImageScale = mpTracker->GetImageScale();
 

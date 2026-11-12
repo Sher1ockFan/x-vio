@@ -1,25 +1,29 @@
-# name_test
+# mono_imu_vio
 
-相机/IMU 输入频率与延迟测量包。部署到 `~/Documents/name_test`，不覆盖现有 `vio_nx`。实时测试继续使用 B 口、原标定参数及两个原生窗口，`LIVE...` 后终端静默。
+相机/IMU 输入频率与延迟测量包。部署到 `~/Documents/mono_imu_vio`，不覆盖现有 `vio_nx` 或 `name_test`。实时测试继续使用 B 口、原标定参数及两个原生窗口，`LIVE...` 后终端静默。
 
-适用于 Jetson Orin NX 的原版单目惯性 ORB-SLAM3。Mac 端在 ARM64 Docker 中编译，Jetson 解压后在宿主机运行。核心使用上游提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4`。窗口是原生地图与当前图像。
+适用于 Jetson Orin NX 的仅支持单目＋IMU 的 ORB-SLAM3 修改版。Mac 端在 ARM64 Docker 中编译，Jetson 解压后在宿主机运行。核心精简自上游提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4`。窗口是原生地图与当前图像。
 
 原分辨率配置来自在 C 通道复核过的 `fit_05` 标定。相机采集 1920×1441 UYVY，跳过首行元数据后得到 1920×1440 灰度图，ORB 内部缩放到 960×720。IMU 为 500 Hz，实时采集在相机时间映射后应用一次 **+16,881,057 ns**，回放沿用录制时已经同步的时间戳。原分辨率配置在 `params/orb_trial.yaml` 和 `params/timing.json`。
 
+本版灰度提取使用 ARM NEON，每次从 UYVY 中提取 16 个原始 Y 值；相机采集程序使用 `-O3 -march=armv8-a` 编译。仍跳过首行元数据、输出 1920×1440 灰度图，再由 ORB 内部缩放到 960×720。相机像素、时间戳与标定参数不变；核心只保留单目惯性输入路径。
+
+优化前后应在 Jetson 上用相近场景和运行负载对比 `performance.txt` 中的灰度提取中位数/P95、采集帧率和图像到跟踪返回延迟。Docker 验证像素一致和程序可运行，不将 Mac 容器耗时当作 Jetson 提速结果。
+
 ## 安装与检查
 
-把 `name_test.tar.gz` 上传到 Jetson 用户家目录，在 Jetson 桌面终端执行。
+把 `mono_imu_vio.tar.gz` 上传到 Jetson 用户家目录，在 Jetson 桌面终端执行。
 
 ```bash
 mkdir -p "$HOME/Documents"
-tar -xzf "$HOME/name_test.tar.gz" -C "$HOME/Documents"
-kit="$HOME/Documents/name_test"
+tar -xzf "$HOME/mono_imu_vio.tar.gz" -C "$HOME/Documents"
+kit="$HOME/Documents/mono_imu_vio"
 bash "$kit/check.sh"
 ```
 
 看到 `ORB_HUB_CHECK_OK` 后可以启动。包内带词典和项目运行库。宿主机需保留 Ubuntu 22.04 ARM64、Jetson Linux R36.5.0、NVIDIA OpenCV 4.8 `.so.408` 运行库、图形运行库和 `python3-numpy`。原生图形窗口使用桌面 X11 会话。
 
-实时入口使用 `/dev/gmsl/B`。原分辨率录制入口使用标定时的 C 通道 `/dev/video6`。IMU 使用原 CP2102 `/dev/serial/by-id` 设备链接和 921600 波特率。账号需要能读写相机和读取串口。若缺少权限，用 `ls -lL /dev/gmsl/B /dev/video6 /dev/serial/by-id/*` 查看设备和用户组，确认后加入对应的 `video` 或 `dialout` 组，再重新登录。`--devices` 检查 C 通道录制入口和 IMU 的设备节点及权限。
+实时入口使用 `/dev/gmsl/B`。实时与录制入口统一使用同一个 B 通道。IMU 使用原 CP2102 `/dev/serial/by-id` 设备链接和 921600 波特率。账号需要能读写相机和读取串口。若缺少权限，用 `ls -lL /dev/gmsl/B /dev/serial/by-id/*` 查看设备和用户组，确认后加入对应的 `video` 或 `dialout` 组，再重新登录。`--devices` 检查 B 通道和 IMU 的设备节点及权限。
 
 ## 实时和录制
 
@@ -29,7 +33,7 @@ bash "$kit/check.sh"
 # B 口原分辨率实时查看。0 表示运行到按 Ctrl+C
 bash "$kit/start.sh" live 0
 
-# C 口录制原始图像和 IMU，任选其一
+# B 口录制原始图像和 IMU，任选其一
 take="$kit/runs/take_01"
 bash "$kit/start.sh" record "$take"
 # 或者另用一个新目录，同时开启两个原生预览窗口
@@ -46,10 +50,10 @@ bash "$kit/start.sh" record-view "$kit/runs/take_02"
 
 ## 输入频率与延迟测试
 
-实时入口自动开启计时，结束后静默生成 `session/performance.txt`（中文报告）和 `session/performance.json`（结构化数据）。这只增加适配层日志；官方 ORB-SLAM3 核心、标定参数、采集模式和选帧策略保持原样。
+实时入口自动开启计时，结束后静默生成 `session/performance.txt`（中文报告）和 `session/performance.json`（结构化数据）。测试日志保留在适配层；单目惯性的参数、采集格式和选帧策略保持原样。核心接口和源码已精简为单目＋IMU。
 
 ```bash
-kit="$HOME/Documents/name_test"
+kit="$HOME/Documents/mono_imu_vio"
 # 此次测量运行 60 秒；词典加载、约 10 秒 IMU 时钟拟合另计
 DISPLAY=:0 bash "$kit/start.sh" live 60
 # 也可使用 live 0，自己按一次 Ctrl+C 收尾
@@ -88,7 +92,7 @@ cat "$d/performance.txt"
 # 回放录制，显示两个原生窗口
 bash "$kit/start.sh" replay "$take"
 
-# 官方 EuRoC 示例离线求轨迹，路径见终端输出
+# 单目惯性 EuRoC 示例离线求轨迹，路径见终端输出
 bash "$kit/start.sh" trajectory "$take"
 ```
 
@@ -99,7 +103,7 @@ bash "$kit/start.sh" trajectory "$take"
 在第一个终端启动新录制。
 
 ```bash
-kit="$HOME/Documents/name_test"
+kit="$HOME/Documents/mono_imu_vio"
 take="$kit/runs/take_03"
 bash "$kit/start.sh" record "$take"
 ```
@@ -107,11 +111,11 @@ bash "$kit/start.sh" record "$take"
 看到录制目录的 `record.log` 出现 `Recorded` 后，先对着有纹理的场景做约 20 秒平移和转动。保持录制运行，在第二个终端执行下列命令，按提示记录固定姿态 A、B 和返回 A，每段静止 3 秒。
 
 ```bash
-kit="$HOME/Documents/name_test"
+kit="$HOME/Documents/mono_imu_vio"
 take="$kit/runs/take_03"
 bash "$kit/start.sh" mark "$take"
 ```
 
 标记完成后再录几秒，在第一个终端按 Ctrl+C 封存。用 `bash "$kit/start.sh" trajectory "$take"` 回放，成功检查时可查看 `accuracy.json` 里的 A→B 位移、返回 A 偏差和静止段抖动。返回偏差衡量重复性，绝对误差需要独立实测参考。
 
-`source/ORB_SLAM3` 是随包提供的选定上游源码，`source/adapter` 是项目采集和运行适配源码。启动使用包内已编译程序。
+`source/ORB_SLAM3` 是随包提供的精简修改版核心源码，`source/adapter` 是项目采集和运行适配源码。启动使用包内已编译程序。

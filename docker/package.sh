@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Create the relocatable Jetson package from verified upstream build outputs.
+# Create the relocatable Jetson package from verified mono_imu_vio fork build outputs.
 set -euo pipefail
 root=${ORB_STOCK_BUILD_ROOT:-/build/orb-stock}
 name=${ORB_STOCK_PACKAGE_NAME:-orb_stock}
 archive=${ORB_STOCK_ARCHIVE_NAME:-orb-stock-orin-nx.tar.gz}
 [[ $name =~ ^[A-Za-z0-9_-]+$ && $archive =~ ^[A-Za-z0-9_-]+\.tar\.gz$ ]]
-src=$root/upstream
+src=$root/source
 input=${ORB_STOCK_INPUT_ROOT:-$root/input}
 cv=/build/orb-kit/opencv-4.8.0/usr/lib
 pango=/build/orb-kit/prefix
 cd "$src"
-sha256sum --quiet -c "$root/upstream.sha256"
+sha256sum --quiet -c "$root/source.sha256"
 temp=$(mktemp -d "$root/package.XXXXXX")
 trap 'rm -rf "$temp"' EXIT
 pkg=$temp/$name
@@ -31,8 +31,8 @@ camera_flags=()
 if [[ ${ORB_STOCK_HUB_CAPTURE:-0} == 1 ]]; then
     camera_flags+=(-DORB_HUB_CAPTURE)
 fi
-gcc-11 -O2 -march=armv8-a "${camera_flags[@]}" "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_live"
-gcc-11 -O2 -march=armv8-a "${camera_flags[@]}" -DORB_CAMERA_SEQUENCE "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_umi"
+gcc-11 -O3 -march=armv8-a "${camera_flags[@]}" "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_live"
+gcc-11 -O3 -march=armv8-a "${camera_flags[@]}" -DORB_CAMERA_SEQUENCE "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_umi"
 
 install -m 755 "$input/start.sh" "$input/check.sh" "$pkg/"
 install -m 644 "$input/playback.py" "$input/live_console.py" "$input/performance.py" "$input/README.md" "$input/viewer.cc" "$pkg/"
@@ -47,13 +47,13 @@ tar -xzf "$src/Vocabulary/ORBvoc.txt.tar.gz" -C "$pkg/Vocabulary"
 test -s "$pkg/Vocabulary/ORBvoc.txt"
 {
     echo 'ORB-SLAM3 upstream commit: 4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4'
-    echo 'Official source archive SHA256: b69fe1809588a8610580db1d5e6b77c63b5e4b5b47abc16ed839e93fbc7e7ddf'
-    echo "Original upstream files verified after compile: $(wc -l < "$root/upstream.sha256")"
+    echo 'Modified fork: mono_imu_vio; only IMU_MONOCULAR is supported.'
+    echo "Fork source files verified after compile: $(wc -l < "$root/source.sha256")"
     echo 'Target: Ubuntu 22.04 ARM64, Jetson Linux R36.5.0, ARMv8-A'
     echo 'NVIDIA OpenCV: 4.8.0-1-g6371ee1 (.so.408)'
     echo "Compiler: GCC $(g++-11 -dumpfullversion)"
 } > "$pkg/BUILD_INFO.txt"
-cp "$root/upstream.sha256" "$pkg/upstream.sha256"
+cp "$root/source.sha256" "$pkg/source.sha256"
 if [[ -f "$input/extra.sh" ]]; then
     bash "$input/extra.sh" "$pkg" "$src" "$input"
 fi

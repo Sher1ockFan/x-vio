@@ -1,5 +1,6 @@
 /**
 * This file is part of ORB-SLAM3
+* Modified for mono_imu_vio on 2026-11-12: single-camera inertial specialization.
 *
 * Copyright (C) 2017-2021 Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
 * Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
@@ -69,8 +70,6 @@ public:
     bool ParseIMUParamFile(cv::FileStorage &fSettings);
 
     // Preprocess the input and call Track(). Extract features and performs stereo matching.
-    Sophus::SE3f GrabImageStereo(const cv::Mat &imRectLeft,const cv::Mat &imRectRight, const double &timestamp, string filename);
-    Sophus::SE3f GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const double &timestamp, string filename);
     Sophus::SE3f GrabImageMonocular(const cv::Mat &im, const double &timestamp, string filename);
 
     void GrabImuData(const IMU::Point &imuMeasurement);
@@ -131,8 +130,8 @@ public:
     eTrackingState mState;
     eTrackingState mLastProcessedState;
 
-    // Input sensor
-    int mSensor;
+    // Fixed input mode (System::IMU_MONOCULAR).
+    const int mSensor;
 
     // Current Frame
     Frame mCurrentFrame;
@@ -181,10 +180,8 @@ public:
     void TrackStats2File();
     void PrintTimeStats();
 
-    vector<double> vdRectStereo_ms;
     vector<double> vdResizeImage_ms;
     vector<double> vdORBExtract_ms;
-    vector<double> vdStereoMatch_ms;
     vector<double> vdIMUInteg_ms;
     vector<double> vdPosePred_ms;
     vector<double> vdLMTrack_ms;
@@ -194,11 +191,8 @@ public:
 
 protected:
 
-    // Main tracking function. It is independent of the input sensor.
+    // Main monocular-inertial tracking function.
     void Track();
-
-    // Map initialization for stereo and RGB-D
-    void StereoInitialization();
 
     // Map initialization for monocular
     void MonocularInitialization();
@@ -258,7 +252,7 @@ protected:
     LoopClosing* mpLoopClosing;
 
     //ORB
-    ORBextractor* mpORBextractorLeft, *mpORBextractorRight;
+    ORBextractor* mpORBextractorLeft;
     ORBextractor* mpIniORBextractor;
 
     //BoW
@@ -290,7 +284,8 @@ protected:
     cv::Mat mK;
     Eigen::Matrix3f mK_;
     cv::Mat mDistCoef;
-    float mbf;
+    // Shared Frame/KeyFrame layout has a baseline field; monocular input has none.
+    float mbf = 0.0f;
     float mImageScale;
 
     float mImuFreq;
@@ -304,13 +299,8 @@ protected:
     int mnFirstImuFrameId;
     int mnFramesToResetIMU;
 
-    // Threshold close/far points
-    // Points seen as close by the stereo/RGBD sensor are considered reliable
-    // and inserted from just one frame. Far points requiere a match in two keyframes.
-    float mThDepth;
-
-    // For RGB-D inputs only. For some datasets (e.g. TUM) the depthmap values are scaled.
-    float mDepthMapFactor;
+    // Shared Frame/KeyFrame compatibility field; no measured depth threshold in this mode.
+    float mThDepth = 0.0f;
 
     //Current matches in frame
     int mnMatchesInliers;
@@ -349,11 +339,10 @@ protected:
     double mTime_LocalMapTrack;
     double mTime_NewKF_Dec;
 
-    GeometricCamera* mpCamera, *mpCamera2;
+    GeometricCamera* mpCamera;
 
     int initID, lastID;
 
-    Sophus::SE3f mTlr;
 
     void newParameterLoader(Settings* settings);
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export a sealed stock take for the unmodified mono_inertial_euroc example."""
+"""Export a sealed take for the retained monocular-inertial EuRoC example."""
 import argparse
 import csv
 import hashlib

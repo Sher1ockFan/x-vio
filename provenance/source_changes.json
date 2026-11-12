@@ -1,0 +1,4240 @@
+{
+  "project": "mono_imu_vio",
+  "base_commit": "4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4",
+  "modified_fork": true,
+  "date": "2026-11-12",
+  "original_count": 955,
+  "current_count": 264,
+  "changes": [
+    {
+      "path": ".gitignore",
+      "action": "modified",
+      "before_sha256": "2735af1930b5c75b52a89cdf1d7fa5b5eb6a93e4c6152b7e981d30d076ff19d3",
+      "after_sha256": "5c5d1ba21adbc1f1331fa4e8e8d039c106422ffcccfd551af2766c2a6abcf79e"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "action": "modified",
+      "before_sha256": "4ec721c72dc3304d8e0090202d7ccf0201ecd34630ffc8fe45b597d59c7e09e3",
+      "after_sha256": "8b17c558d9ce11205ec779f7364058a2c8cb339b05c06c499017cb3193fb9d7f"
+    },
+    {
+      "path": "Examples/Calibration/python_scripts/process_imu.py",
+      "action": "removed",
+      "before_sha256": "6ab0b105d63572df8a88ecd6825bafdeeaac6d671522564204e7f160b1e4847e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Calibration/recorder_empty/april_6x6_80x80cm_larues.yaml",
+      "action": "removed",
+      "before_sha256": "c0b55905906ea8e4b34ce429e65204aa7caf3f66dc9e3b8cc7bc8d35f8e5c528",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Calibration/recorder_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "40ec4db86e602397c0e66df6eb35c554f54202721256ac28cc7c2987f183870e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Calibration/recorder_realsense_T265.cc",
+      "action": "removed",
+      "before_sha256": "93cf92b5b1bca0030bbd79c9396b24afd7ec81117820d14fbdd813b91c200955",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/MH01.txt",
+      "action": "removed",
+      "before_sha256": "226470999dc8ba758c838982fd7eb2bc9f3f2b489e85a38d0ecf8b9d40785a5b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/MH02.txt",
+      "action": "removed",
+      "before_sha256": "7add4feaa342c6b6874996058b6b5679d908eca25b7e063eae46fec49558cc8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/MH03.txt",
+      "action": "removed",
+      "before_sha256": "5defd7c9770344df34ebbd5805264341f8a4920c13a22e1b9ef8607168cad02e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/MH04.txt",
+      "action": "removed",
+      "before_sha256": "330c25e4532c1f27853d0eeee06968d5c4c00c16be1187fdcfd909cfe060360c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/MH05.txt",
+      "action": "removed",
+      "before_sha256": "e6498fb86f0b618abb07b256b1822957bb4bcf158d07cc82d3b43ca8166ec004",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V101.txt",
+      "action": "removed",
+      "before_sha256": "4cef78a5cf7c8ee52016a160de4b50184da2a216d615feb7ebbbb3bc99efa89e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V102.txt",
+      "action": "removed",
+      "before_sha256": "51804ce6362dc200fff3ed6a3aba1df769528badf1a877d19d5cac976a544c09",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V103.txt",
+      "action": "removed",
+      "before_sha256": "543835f7b7dd9d1287c9052955e030ade113c51dc97ec2c15d13a318521ad0d7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V201.txt",
+      "action": "removed",
+      "before_sha256": "d8df41e85c12761104043264a61054ad4bfa19087886e847f4e0412a19cd1633",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V202.txt",
+      "action": "removed",
+      "before_sha256": "7f1028007d030a38e5c7e2cee19ca773015b2fecbbbe80794f5c34e900b2ee8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_IMU/V203.txt",
+      "action": "removed",
+      "before_sha256": "55911f078feea76eb5bdeb97c9ebbebb679de39c4dd44c50e81064d5d8cf77f6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "5516796616ff6778bfb1fc40d9245bceba4f2105192cbed2848d3203cecbdde2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "6dd2a064aa9c8844a7004bb59c481137bbdb5245ba30de69bde734b393950e92",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "2a32cf68bde86da4eecc6e583c48ea0146738f8719dcc184a15143f22f04d052",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM-VI_far.yaml",
+      "action": "removed",
+      "before_sha256": "941990cd3ec2457625b7c88603ff88aaab9cb22ae6397aa09efdaba574fabfd0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "957c10fda123bda737e187f02de3edb2b4728b8095050c7b62d8c313d3d16023",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "70413087299403c3814f259bfb006e83496a62ddfd5f90801d298f967964eb1a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "0a47da0a5922368e594006594d63b630146180a35ba7c6471e8cc415cd69c5b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "539d9be14b5ac67e4b402d4a423f734691dfdc3d13f143308bfd3e73bedeeab3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "069b3af97a777ddefb264030c2ec0cd94742952f5d1a48a2fda9b022b338898e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "676367b40117abaf533b329f4ba7db27fb0d59f9b9b688ac202620d98898d4ee",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "9b26c3c11d769ae23c255da03a70339404146c0caa8dcfca08343f5000d26ad6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "238d6e83ec00643486b5bc5f6bde0f5535f9ce488225d715d3f86979533936c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "103805843475e6a4eb1023a3343e6f8de54cf641c9c89e1f760fbb1c93af4d9f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "8791682ddab9d6e0fad1acf84de275e98ad86a2e045e1f4b175cb7bfb6186770",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "f31ca741abd9a9b659ba2e389fe1c98b3f86341e6ff448e40d14c07ea4b65786",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "cf271e3ec27da33e0b8883ba92b18c9eb311909ad78c46bc7aadff119c3261f1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "c35393b97bc74b31dc5f7e879ae1be326fcfe891e642717061febdc61189d529",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "29a4df59050797a0a42eb00700d82a2e4c9413a92ce94bc6fec011b20247cab0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "dd07a4d6124017c0fa6a584bc885e37d6eef974e3f404285ca7d472e9643da9e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "3627305f7d73f67a7e1e126b33689c1b528fda66daff901573bb4079815ade74",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "336e42accf150b6ee065c7021adb7f3107dde5b178b3dd6277690bac31d8a078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "9b1555d93dc2ca628e2da7aae3d250bdde7a60f0636f6f4b89053873b3d13b1c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "8cd471ca2c1425260534228fbe0f3e27bd6711199dfce7c971447cdf184569e2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "e11f764c9c7f04b4a13f3f76a7f2964b133b31832697f59e06995d43c8c03f79",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "7f280b289400bd305acd14934236807a2877ea3ceace1fb3ae832bc73c4ca94b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "4249d4036b3c03c55b709f6f634d975d024999fb017ab3539cfa71580793a3be",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "127cb1621b69b12083eeeead349d2b52bd784d1ae764b15dc5e3c0f7414deaad",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "6a12c21b040bebb9df10148675d90c6148aa64675bc8492f5c233a22532741cc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "58e4f651a61cf2e6a65b3c48cae4905a77facd635e7b601d7a0c8b471ec584b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "22dfee935e0858e374b098cad2798b5b839bb0fbe696b3ed38ace860af6e3d69",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_IMU/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "f038002eee904745aecba7b9f69d26cad944b4b6bd3e3b8a22bc13ed534deaa4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/mono_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "cef5de2144720ff3e9558f659e370a8f66d97f58c37449f99cb3d68356891607",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/mono_inertial_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "ca06fd4033f6c9528c9e13c00d4c27bc9444df6f14210b594431aa06f4b43d61",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular-Inertial/mono_inertial_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "c64963e341ce85640b0af5c961385e9d22dc6ae60484310e1a92a60ab1f16eab",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "3c4dd4e8b908185e7735681be892d1954d08de66b332ae1cdf335a181373e990",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/KITTI00-02.yaml",
+      "action": "removed",
+      "before_sha256": "4d80888fa5d0834f74996bf21dfbf244b82188d264ea227cd7d42e8074733401",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/KITTI03.yaml",
+      "action": "removed",
+      "before_sha256": "e40c18ce7a361c951978213d36c9be654f64a296bacd09d98dc736ec58e066a7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/KITTI04-12.yaml",
+      "action": "removed",
+      "before_sha256": "676d64c094cc9332b95761c98fb02d97fc3490f8a0ad0bb0d1ddebfa87665ffb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "31892b6eaeb743bbb09d24756a2e3800677f7d2e037e0b8bfc3573beb5f37268",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "f09c33cd6bdf30bfe0ef967bfbaa402efa7e68b0e01c64d96481b10343e55004",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "1196a6c12e1927884bb1f03431165cdd312f984bf7421c20b42c30dfc3a9dc6b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM1.yaml",
+      "action": "removed",
+      "before_sha256": "04d529fedbee94609c61eddca43bedd0b59ebc2018b656a83e5b1829a2fc6952",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM2.yaml",
+      "action": "removed",
+      "before_sha256": "0a6e4a02a1e13d7538cf77736d0c70f489bdfb713f935c7d2f6bd954ec0b1223",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM3.yaml",
+      "action": "removed",
+      "before_sha256": "9968e13e2a70d7f6ae13e3d5d892c477131e711c1a6629cfacbdd58659dd9090",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_euroc.cc",
+      "action": "removed",
+      "before_sha256": "95ebdc59468e3d97f10d9c36f892ee785a473e7c608c75c28c9c6e4a2751a877",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_kitti.cc",
+      "action": "removed",
+      "before_sha256": "c382e0027a0d9d80883c43bd1c0e35e7f96b533204344d5f0ef1d6adefaf56c0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "a5a76f58771c8075d5b3e23d9458f68a2fb54487d9ea4d7d10de1a5e92198acf",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "c50811a5195b904e4379d9c1d8c73b07566e1812c743c8f2a47e360179d1a084",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_tum.cc",
+      "action": "removed",
+      "before_sha256": "970e306cdda76253b88de00adca9f7b51205b36eb34494876e3bd9477ae9d6c5",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Monocular/mono_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "1f369be4ec06214831c69c70e616d98a5f90a76afc3ccc6de1a560e52666ef60",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/REAMDME.md",
+      "action": "removed",
+      "before_sha256": "e38a8bc46d0b938d236d8a93e35b18bf70e8cbb00947f4f8bc679792036189c6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "ec2edf111bbe58f9b599f5596881aa26e82b23733d256bbfac8d2b62204985b5",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D-Inertial/rgbd_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "aad52bec6c07eca9f84dd07c4d1836add26095a94ef47a0ce3a1c2381bd7156f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "332e1f9ef17e7684b606f22415b956cf5e8a155bfa8f7b87e528906822b367a4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/TUM1.yaml",
+      "action": "removed",
+      "before_sha256": "6d0037d5d82a6cdf212f4552f69eacce77745ad9229f0f2846ba8d86dfde6e17",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/TUM2.yaml",
+      "action": "removed",
+      "before_sha256": "2ad25ed872d961babd9625cf6790033a3cbab841bd82beaaa398b4459dbbc672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/TUM3.yaml",
+      "action": "removed",
+      "before_sha256": "0993b2b0f1021e0c97ec3a28ff42048c5c0039316a67cae4fae0367c1672b429",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr1_desk.txt",
+      "action": "removed",
+      "before_sha256": "86dfcf237cf092cc7466ee2c67dfc0a3a507fe879a1bbe063b962d8a7442c536",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr1_desk2.txt",
+      "action": "removed",
+      "before_sha256": "c17785636389dcc917b5702ad73b6531d775d9b9ab1d9df145f76a96b2806297",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr1_room.txt",
+      "action": "removed",
+      "before_sha256": "a9581a02e40054338c3973d801227f722e1a20cad1e39c426b177d3f1e183e2b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr1_xyz.txt",
+      "action": "removed",
+      "before_sha256": "c2de8a268d1a4273b6764f774cc8c829b352eb1179b195078bf5180f23dce23a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr2_desk.txt",
+      "action": "removed",
+      "before_sha256": "6c6652a77eb20edb9e5c388e2d015c2eef8ad4199be5cfcd11f3b001d5e7d4ef",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr2_xyz.txt",
+      "action": "removed",
+      "before_sha256": "c0b17fa9b97b073ff3bb3293f9e74666af7ffb45ccee72ef20b01a494ee95d2d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr3_nstr_tex_near.txt",
+      "action": "removed",
+      "before_sha256": "4bc593833dfb145968fe426f7df21ab0e64dd36c9c27645f1e8b75e04b5f8384",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr3_office.txt",
+      "action": "removed",
+      "before_sha256": "2fa19916178b76aa3202604173dcee87200247035467aebf87ec78f1373a3798",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr3_office_val.txt",
+      "action": "removed",
+      "before_sha256": "a4811b6e53d73e0f917ffc18c44fde9d88ba980ef77fc6830838c7827eab6b13",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr3_str_tex_far.txt",
+      "action": "removed",
+      "before_sha256": "16fa0bbb46f9be79868df0bbd0f9d9784ccffbcfde0e4bf75d28418c0bffb76d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/associations/fr3_str_tex_near.txt",
+      "action": "removed",
+      "before_sha256": "6f21456a2ba589bdaf293e6f40cf3c322c5e1905f4d91a6ab30381602fba7779",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/rgbd_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "f022b04b8590b40aba4debe4279bb40692d92db0ecc8420f429706b7ef1d8bf7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/RGB-D/rgbd_tum.cc",
+      "action": "removed",
+      "before_sha256": "5f69d96ccde9efa1e496c70508c0fb7cc054a59ffb90b8967df8c122d3be27c7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "299add56d7b997d60d67e4257efe79177ef797cd5dc1ad0163c8e00313ed47d3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/MH01.txt",
+      "action": "removed",
+      "before_sha256": "226470999dc8ba758c838982fd7eb2bc9f3f2b489e85a38d0ecf8b9d40785a5b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/MH02.txt",
+      "action": "removed",
+      "before_sha256": "7add4feaa342c6b6874996058b6b5679d908eca25b7e063eae46fec49558cc8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/MH03.txt",
+      "action": "removed",
+      "before_sha256": "5defd7c9770344df34ebbd5805264341f8a4920c13a22e1b9ef8607168cad02e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/MH04.txt",
+      "action": "removed",
+      "before_sha256": "330c25e4532c1f27853d0eeee06968d5c4c00c16be1187fdcfd909cfe060360c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/MH05.txt",
+      "action": "removed",
+      "before_sha256": "e6498fb86f0b618abb07b256b1822957bb4bcf158d07cc82d3b43ca8166ec004",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V101.txt",
+      "action": "removed",
+      "before_sha256": "4cef78a5cf7c8ee52016a160de4b50184da2a216d615feb7ebbbb3bc99efa89e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V102.txt",
+      "action": "removed",
+      "before_sha256": "51804ce6362dc200fff3ed6a3aba1df769528badf1a877d19d5cac976a544c09",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V103.txt",
+      "action": "removed",
+      "before_sha256": "543835f7b7dd9d1287c9052955e030ade113c51dc97ec2c15d13a318521ad0d7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V201.txt",
+      "action": "removed",
+      "before_sha256": "d8df41e85c12761104043264a61054ad4bfa19087886e847f4e0412a19cd1633",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V202.txt",
+      "action": "removed",
+      "before_sha256": "7f1028007d030a38e5c7e2cee19ca773015b2fecbbbe80794f5c34e900b2ee8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_IMU/V203.txt",
+      "action": "removed",
+      "before_sha256": "55911f078feea76eb5bdeb97c9ebbebb679de39c4dd44c50e81064d5d8cf77f6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/EuRoC_TimeStamps/V203_2.txt",
+      "action": "removed",
+      "before_sha256": "ae11d939e10a8d0be3b5f90dae54b5eb2bc6faaf095fa113648e817a35305149",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "b8d3eb11da5c201ca3322d6b780716185017e2f445607618f1ad50f0aea1deb4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "520c0f62a9010a8f68aaa406345c26133e43005d153c66ebcb314d17ed3ccc6d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "c725dbfdbfaeae549e1c398b3efc2a4828cb588efc81925acb9a1589f552010a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM-VI_far.yaml",
+      "action": "removed",
+      "before_sha256": "23d9290f7c9dcf212980cd8ce425f429beff19a1189031be6407a740161499d1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "957c10fda123bda737e187f02de3edb2b4728b8095050c7b62d8c313d3d16023",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "70413087299403c3814f259bfb006e83496a62ddfd5f90801d298f967964eb1a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "0a47da0a5922368e594006594d63b630146180a35ba7c6471e8cc415cd69c5b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "539d9be14b5ac67e4b402d4a423f734691dfdc3d13f143308bfd3e73bedeeab3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "069b3af97a777ddefb264030c2ec0cd94742952f5d1a48a2fda9b022b338898e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "676367b40117abaf533b329f4ba7db27fb0d59f9b9b688ac202620d98898d4ee",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "9b26c3c11d769ae23c255da03a70339404146c0caa8dcfca08343f5000d26ad6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "238d6e83ec00643486b5bc5f6bde0f5535f9ce488225d715d3f86979533936c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "103805843475e6a4eb1023a3343e6f8de54cf641c9c89e1f760fbb1c93af4d9f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "8791682ddab9d6e0fad1acf84de275e98ad86a2e045e1f4b175cb7bfb6186770",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "f31ca741abd9a9b659ba2e389fe1c98b3f86341e6ff448e40d14c07ea4b65786",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "cf271e3ec27da33e0b8883ba92b18c9eb311909ad78c46bc7aadff119c3261f1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "c35393b97bc74b31dc5f7e879ae1be326fcfe891e642717061febdc61189d529",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "29a4df59050797a0a42eb00700d82a2e4c9413a92ce94bc6fec011b20247cab0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "dd07a4d6124017c0fa6a584bc885e37d6eef974e3f404285ca7d472e9643da9e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "3627305f7d73f67a7e1e126b33689c1b528fda66daff901573bb4079815ade74",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "336e42accf150b6ee065c7021adb7f3107dde5b178b3dd6277690bac31d8a078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "9b1555d93dc2ca628e2da7aae3d250bdde7a60f0636f6f4b89053873b3d13b1c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "8cd471ca2c1425260534228fbe0f3e27bd6711199dfce7c971447cdf184569e2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "e11f764c9c7f04b4a13f3f76a7f2964b133b31832697f59e06995d43c8c03f79",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "7f280b289400bd305acd14934236807a2877ea3ceace1fb3ae832bc73c4ca94b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "4249d4036b3c03c55b709f6f634d975d024999fb017ab3539cfa71580793a3be",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "127cb1621b69b12083eeeead349d2b52bd784d1ae764b15dc5e3c0f7414deaad",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "6a12c21b040bebb9df10148675d90c6148aa64675bc8492f5c233a22532741cc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "58e4f651a61cf2e6a65b3c48cae4905a77facd635e7b601d7a0c8b471ec584b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "22dfee935e0858e374b098cad2798b5b839bb0fbe696b3ed38ace860af6e3d69",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_IMU/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "f038002eee904745aecba7b9f69d26cad944b4b6bd3e3b8a22bc13ed534deaa4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/stereo_inertial_euroc.cc",
+      "action": "removed",
+      "before_sha256": "652979ce9058c9a8cd319710a0578174d2f8117ed186133243f356d291b00b69",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "b03a2c6ca6ad3d5d729a6afd22a2efad1e4f6500ed2fee7885b4e3fa607e66af",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/stereo_inertial_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "66ada3f3851800ca2b8a80a46e6b913253e4cdf52e9d21cde0e8346fedb816b6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo-Inertial/stereo_inertial_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "b99400d58c8ef8499732bd47cb141d529a5d818e257a5d2b3352059922558471",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "721602964ef5ffd5b5d594900ed6ee52069bafa32ea2482e5c7987fdad2ab442",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/KITTI00-02.yaml",
+      "action": "removed",
+      "before_sha256": "29d61b2de14d73522f3b1d70267fc40a94c4e37156e1a34a45a6be84ef27728e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/KITTI03.yaml",
+      "action": "removed",
+      "before_sha256": "5fca9cd8ab7e827034604e3a28ad675390d9ab591bcc9ec4031294897d15fa04",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/KITTI04-12.yaml",
+      "action": "removed",
+      "before_sha256": "4ebfec7b4cf385f02de3fa18fb344b2a79c8e6923e8675a5f7c25ce1cb72bf2b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "67f3b4ca7b78b18fa64cf840efcb4f87c51defe5df20ae90259186ebb0d58d58",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "69daf63ba482cb1b42c5289dbb3b53187253aef16bb001ac84681f00bbdca92c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "bd82d61bbd5c8d048c212640e092241418fe240e8c6417daa9e086d753f745b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/stereo_euroc.cc",
+      "action": "removed",
+      "before_sha256": "a48dfccd12eb29448e789225477063af269a4025f214db73d8dc92d4cd19876f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/stereo_kitti.cc",
+      "action": "removed",
+      "before_sha256": "dcf23fe67e0457d2b19c0d71b47fd53fa93401d3c1308ae491c02e061e3b9dc0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/stereo_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "8b82984314030f87aa80c0b1fb4abe9aadaa75abbd00075388a359d6fca7a363",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/stereo_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "8ca53fc9879e570455d74ce9424b13950e00c5df2f8b9febb173ee031bfdb261",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples/Stereo/stereo_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "42536f12d0fa9fa6b279b991569037f264db9eb154deefd97c9d75b2d5979373",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "968b1a92f1b250787c54ab8d94d975aa115ebca46aa52103d99c5d46d1993576",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/MH01.txt",
+      "action": "removed",
+      "before_sha256": "226470999dc8ba758c838982fd7eb2bc9f3f2b489e85a38d0ecf8b9d40785a5b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/MH02.txt",
+      "action": "removed",
+      "before_sha256": "7add4feaa342c6b6874996058b6b5679d908eca25b7e063eae46fec49558cc8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/MH03.txt",
+      "action": "removed",
+      "before_sha256": "5defd7c9770344df34ebbd5805264341f8a4920c13a22e1b9ef8607168cad02e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/MH04.txt",
+      "action": "removed",
+      "before_sha256": "330c25e4532c1f27853d0eeee06968d5c4c00c16be1187fdcfd909cfe060360c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/MH05.txt",
+      "action": "removed",
+      "before_sha256": "e6498fb86f0b618abb07b256b1822957bb4bcf158d07cc82d3b43ca8166ec004",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V101.txt",
+      "action": "removed",
+      "before_sha256": "4cef78a5cf7c8ee52016a160de4b50184da2a216d615feb7ebbbb3bc99efa89e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V102.txt",
+      "action": "removed",
+      "before_sha256": "51804ce6362dc200fff3ed6a3aba1df769528badf1a877d19d5cac976a544c09",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V103.txt",
+      "action": "removed",
+      "before_sha256": "543835f7b7dd9d1287c9052955e030ade113c51dc97ec2c15d13a318521ad0d7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V201.txt",
+      "action": "removed",
+      "before_sha256": "d8df41e85c12761104043264a61054ad4bfa19087886e847f4e0412a19cd1633",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V202.txt",
+      "action": "removed",
+      "before_sha256": "7f1028007d030a38e5c7e2cee19ca773015b2fecbbbe80794f5c34e900b2ee8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_IMU/V203.txt",
+      "action": "removed",
+      "before_sha256": "55911f078feea76eb5bdeb97c9ebbebb679de39c4dd44c50e81064d5d8cf77f6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH01.yaml",
+      "action": "removed",
+      "before_sha256": "581f37674c0e2db01365043d351aa0e4f93cda9a8a7d423fd63a9dcff97dae22",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH02.yaml",
+      "action": "removed",
+      "before_sha256": "e825b1351587b5643c2139a6bdecd2b1a9090980baf0b919b5c22b05540d6a7f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH03.yaml",
+      "action": "removed",
+      "before_sha256": "506e8e1b508e89445dfd4c1cc3f0892892e169f67b3258bbcbb36fa588beb20b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH04.yaml",
+      "action": "removed",
+      "before_sha256": "7e6c8126061892f96d4ac12fcbf8b1bc0f380f1533446d473b9d45174a577831",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH05.yaml",
+      "action": "removed",
+      "before_sha256": "0d764d54aa99230867132c31cd9521ac19ca6bf3eb2233248238da7afbadf363",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V101.yaml",
+      "action": "removed",
+      "before_sha256": "61486d0a9ed0fa1562f9ad75e1f789264c6bcd989fb61c39ac013066bee613c1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V102.yaml",
+      "action": "removed",
+      "before_sha256": "e601d88606f3ed7381b256f98575ca105f116c047b147b0b25cb32f49ade0e78",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V103.yaml",
+      "action": "removed",
+      "before_sha256": "f33b2025984923f398adefed0396c8b250d82abf9e6082edd00809be3decc672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V201.yaml",
+      "action": "removed",
+      "before_sha256": "dc680a5d15b6bd04d65740bb459b784725db6f915fdd502d7db1833afedd1253",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V202.yaml",
+      "action": "removed",
+      "before_sha256": "82955b2dda57d933d39a5cf2a0c02e3a63d89dacbe2a13067103234a1f4d3169",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V203.yaml",
+      "action": "removed",
+      "before_sha256": "80123839e4ee1c62afd46a06d660548bc16f57b320cf82f00fe003579b1130f8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "26a707d9a9f50802233e152b6d10bf3116a991cde35cdf5e2fab4dd76529eeec",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "fcff636086d526f2704ca419fdd0f5fcb68df51c92433e0e3f689ea297024659",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "0dbb9dfc19a876e2e6fda2ff52b35af9fd037121576f516af316e995019b2a32",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM-VI_far.yaml",
+      "action": "removed",
+      "before_sha256": "6199d285dbe037e4bbd35108685d4f7c7f247faba1c2da075bb75f1b9131c282",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "957c10fda123bda737e187f02de3edb2b4728b8095050c7b62d8c313d3d16023",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "70413087299403c3814f259bfb006e83496a62ddfd5f90801d298f967964eb1a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "0a47da0a5922368e594006594d63b630146180a35ba7c6471e8cc415cd69c5b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "539d9be14b5ac67e4b402d4a423f734691dfdc3d13f143308bfd3e73bedeeab3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "069b3af97a777ddefb264030c2ec0cd94742952f5d1a48a2fda9b022b338898e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "676367b40117abaf533b329f4ba7db27fb0d59f9b9b688ac202620d98898d4ee",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "9b26c3c11d769ae23c255da03a70339404146c0caa8dcfca08343f5000d26ad6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "238d6e83ec00643486b5bc5f6bde0f5535f9ce488225d715d3f86979533936c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "103805843475e6a4eb1023a3343e6f8de54cf641c9c89e1f760fbb1c93af4d9f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "8791682ddab9d6e0fad1acf84de275e98ad86a2e045e1f4b175cb7bfb6186770",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "f31ca741abd9a9b659ba2e389fe1c98b3f86341e6ff448e40d14c07ea4b65786",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "cf271e3ec27da33e0b8883ba92b18c9eb311909ad78c46bc7aadff119c3261f1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "c35393b97bc74b31dc5f7e879ae1be326fcfe891e642717061febdc61189d529",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "29a4df59050797a0a42eb00700d82a2e4c9413a92ce94bc6fec011b20247cab0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "dd07a4d6124017c0fa6a584bc885e37d6eef974e3f404285ca7d472e9643da9e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "3627305f7d73f67a7e1e126b33689c1b528fda66daff901573bb4079815ade74",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "336e42accf150b6ee065c7021adb7f3107dde5b178b3dd6277690bac31d8a078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "9b1555d93dc2ca628e2da7aae3d250bdde7a60f0636f6f4b89053873b3d13b1c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "8cd471ca2c1425260534228fbe0f3e27bd6711199dfce7c971447cdf184569e2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "e11f764c9c7f04b4a13f3f76a7f2964b133b31832697f59e06995d43c8c03f79",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "7f280b289400bd305acd14934236807a2877ea3ceace1fb3ae832bc73c4ca94b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "4249d4036b3c03c55b709f6f634d975d024999fb017ab3539cfa71580793a3be",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "127cb1621b69b12083eeeead349d2b52bd784d1ae764b15dc5e3c0f7414deaad",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "6a12c21b040bebb9df10148675d90c6148aa64675bc8492f5c233a22532741cc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "58e4f651a61cf2e6a65b3c48cae4905a77facd635e7b601d7a0c8b471ec584b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "22dfee935e0858e374b098cad2798b5b839bb0fbe696b3ed38ace860af6e3d69",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "f038002eee904745aecba7b9f69d26cad944b4b6bd3e3b8a22bc13ed534deaa4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/mono_inertial_euroc.cc",
+      "action": "removed",
+      "before_sha256": "97d9bc21b45f818a42547f19ba9fab8b6a9a3177e3a73ad3cdddaaf64a843890",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/mono_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "cef5de2144720ff3e9558f659e370a8f66d97f58c37449f99cb3d68356891607",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/mono_inertial_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "ca06fd4033f6c9528c9e13c00d4c27bc9444df6f14210b594431aa06f4b43d61",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular-Inertial/mono_inertial_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "c64963e341ce85640b0af5c961385e9d22dc6ae60484310e1a92a60ab1f16eab",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "ff82adaaaf37b33efd0aba3e43769b8d462f5ba34d148a4a746eb1c22a629c58",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/KITTI00-02.yaml",
+      "action": "removed",
+      "before_sha256": "d21c88a91e55e500967fa7cd8c198008650b745c846af9b0ca7238645cdbd5e3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/KITTI03.yaml",
+      "action": "removed",
+      "before_sha256": "e8db237e1b9a3dd71471c54ac2b88198dbb41ff312f27b0441f872df94d1b50e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/KITTI04-12.yaml",
+      "action": "removed",
+      "before_sha256": "3c94d9fd49c60c3cf164825d1c7441c162d29b209c3f105cb8a273c2468edf2a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_MH01.yaml",
+      "action": "removed",
+      "before_sha256": "4ca5448c8a63d6622ae795d370451f029bda1d26bb965b7b14fda253768919bb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_MH02.yaml",
+      "action": "removed",
+      "before_sha256": "de817b7b598c44b1cc0744b4436344bea2286444cb8b33d0a3cd94310e11c916",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_MH03.yaml",
+      "action": "removed",
+      "before_sha256": "f96d0649889e77a0446f05aff9eac852718e9d84fd57ec1cb95eb272ad117b3f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_MH04.yaml",
+      "action": "removed",
+      "before_sha256": "77fee782e0cf933c75ac5299cdd6e4662dafb3048722ea5d0e21b0618651737d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_MH05.yaml",
+      "action": "removed",
+      "before_sha256": "2ebb41eaf618718d3aa310ce4b823d18c85d9195b9bb7dcb35e9984fb7a7b7d2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V101.yaml",
+      "action": "removed",
+      "before_sha256": "3be761de151ebff7f60120f8df618ef6c0b0a4e863be774aaa53b342ac13107a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V102.yaml",
+      "action": "removed",
+      "before_sha256": "57ebd17e901650c4f8f207624849db4ba950d6edf88e6aa111d1a646b53c96bc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V103.yaml",
+      "action": "removed",
+      "before_sha256": "fcbc41f9ca394ee40e24fabc33fa66bc2f95d553fb9be7128b043f30ae69c031",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V201.yaml",
+      "action": "removed",
+      "before_sha256": "e6e336538a8ef9ce6be565fe35758130001fe1cd4ffdee633397d22b1a7344fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V202.yaml",
+      "action": "removed",
+      "before_sha256": "0f50ed7f6fba350343e74f7ebe9ab9a6bf86f24fea2f32ab84ee8d8e1566295b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/MultiSession/EuRoC_V203.yaml",
+      "action": "removed",
+      "before_sha256": "1ca91fd52f358d7e060c291ff43ce94d8a1175708ceeb6453041069d0651b7d6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "17fd6320b9f9a50f3541aed0cc25be19addda0bb19f21f1e14026fd1810ad849",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "b0317a9f2089ddb0c2c0f697ed45d7b655f30111f04fbf1192572e6709ed30d9",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "dfce967e4ab8e0960ae0ad166c887730e4ead421fd74c2612f0a3263d36e4d65",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM1.yaml",
+      "action": "removed",
+      "before_sha256": "f9372bbbe147e59a5b489f43bb58aa5b2a84be63f5898698e0427ebe7b192857",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM2.yaml",
+      "action": "removed",
+      "before_sha256": "84cb64f6a029d3251193c83f3f43e79fe0dd3e2f2c71072b320e3cecc53cfe43",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM3.yaml",
+      "action": "removed",
+      "before_sha256": "ff08c8c7cf732fde9fb587ac1c77880eeae4952faaa7ec7fd6709c39ad4d1856",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_euroc.cc",
+      "action": "removed",
+      "before_sha256": "95ebdc59468e3d97f10d9c36f892ee785a473e7c608c75c28c9c6e4a2751a877",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_kitti.cc",
+      "action": "removed",
+      "before_sha256": "c382e0027a0d9d80883c43bd1c0e35e7f96b533204344d5f0ef1d6adefaf56c0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "a5a76f58771c8075d5b3e23d9458f68a2fb54487d9ea4d7d10de1a5e92198acf",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "c50811a5195b904e4379d9c1d8c73b07566e1812c743c8f2a47e360179d1a084",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_tum.cc",
+      "action": "removed",
+      "before_sha256": "970e306cdda76253b88de00adca9f7b51205b36eb34494876e3bd9477ae9d6c5",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Monocular/mono_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "1f369be4ec06214831c69c70e616d98a5f90a76afc3ccc6de1a560e52666ef60",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/REAMDME.md",
+      "action": "removed",
+      "before_sha256": "edbaf797978825a76a2c773eb56106a24413eecba014115124ef40f2168c2364",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "3f6d6eb20c25a708bb71a2dd3c586fbe861f2d57147fcf077fe6d0e705b7207f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D-Inertial/rgbd_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "aad52bec6c07eca9f84dd07c4d1836add26095a94ef47a0ce3a1c2381bd7156f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "5d7cd33d40089a47619c7eb0608e89ba01955d1c39014fa54613b83eaa50af0b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/TUM1.yaml",
+      "action": "removed",
+      "before_sha256": "8d6d1f9f4f48d458d15e2dd92b630435d1b050f7b39c5eefe675d1a41f6770dd",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/TUM2.yaml",
+      "action": "removed",
+      "before_sha256": "f9b7f847d93fba67d5fbc7241d6ac73f82e563ff808f51f40c38e3a044c3afca",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/TUM3.yaml",
+      "action": "removed",
+      "before_sha256": "27df207f2b87a567b56e34fc348bee74a74d145624eda294c4172e8ce1a2569a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr1_desk.txt",
+      "action": "removed",
+      "before_sha256": "86dfcf237cf092cc7466ee2c67dfc0a3a507fe879a1bbe063b962d8a7442c536",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr1_desk2.txt",
+      "action": "removed",
+      "before_sha256": "c17785636389dcc917b5702ad73b6531d775d9b9ab1d9df145f76a96b2806297",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr1_room.txt",
+      "action": "removed",
+      "before_sha256": "a9581a02e40054338c3973d801227f722e1a20cad1e39c426b177d3f1e183e2b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr1_xyz.txt",
+      "action": "removed",
+      "before_sha256": "c2de8a268d1a4273b6764f774cc8c829b352eb1179b195078bf5180f23dce23a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr2_desk.txt",
+      "action": "removed",
+      "before_sha256": "6c6652a77eb20edb9e5c388e2d015c2eef8ad4199be5cfcd11f3b001d5e7d4ef",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr2_xyz.txt",
+      "action": "removed",
+      "before_sha256": "c0b17fa9b97b073ff3bb3293f9e74666af7ffb45ccee72ef20b01a494ee95d2d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr3_nstr_tex_near.txt",
+      "action": "removed",
+      "before_sha256": "4bc593833dfb145968fe426f7df21ab0e64dd36c9c27645f1e8b75e04b5f8384",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr3_office.txt",
+      "action": "removed",
+      "before_sha256": "2fa19916178b76aa3202604173dcee87200247035467aebf87ec78f1373a3798",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr3_office_val.txt",
+      "action": "removed",
+      "before_sha256": "a4811b6e53d73e0f917ffc18c44fde9d88ba980ef77fc6830838c7827eab6b13",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr3_str_tex_far.txt",
+      "action": "removed",
+      "before_sha256": "16fa0bbb46f9be79868df0bbd0f9d9784ccffbcfde0e4bf75d28418c0bffb76d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/associations/fr3_str_tex_near.txt",
+      "action": "removed",
+      "before_sha256": "6f21456a2ba589bdaf293e6f40cf3c322c5e1905f4d91a6ab30381602fba7779",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/rgbd_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "f022b04b8590b40aba4debe4279bb40692d92db0ecc8420f429706b7ef1d8bf7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/RGB-D/rgbd_tum.cc",
+      "action": "removed",
+      "before_sha256": "5f69d96ccde9efa1e496c70508c0fb7cc054a59ffb90b8967df8c122d3be27c7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/Asus.yaml",
+      "action": "removed",
+      "before_sha256": "f735da6cb687751d101f8290a5ca14456dae600b6c1f001e3eee5093488a5762",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/CMakeLists.txt",
+      "action": "removed",
+      "before_sha256": "c666bab908264b6001a539729b98ce18f12c44fc7e872bb30844b5c4f62cfdc6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/manifest.xml",
+      "action": "removed",
+      "before_sha256": "4667af2253419cdc404e24b38c5d317bf3bcfeef1e21416617f463e5728f682d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/AR/ViewerAR.cc",
+      "action": "removed",
+      "before_sha256": "cb01adfefd76e301f19d98fe89883dd36316e9ce6f841955109fb8fd2600e420",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/AR/ViewerAR.h",
+      "action": "removed",
+      "before_sha256": "1b839f57d4264da5b9e8ac551003c7c75c23092d411f26d3517ab721eee56a1c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/AR/ros_mono_ar.cc",
+      "action": "removed",
+      "before_sha256": "23f1a2906c1c33d15da82d96eca23d6cb7e1550ad8ba410f5e35a5c2cf0f68aa",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/ros_mono.cc",
+      "action": "removed",
+      "before_sha256": "2cef2e9dcf5dc4c1ab4e4f157ab8403b9763bf1d117e6529dcd12d5728f35e21",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/ros_mono_inertial.cc",
+      "action": "removed",
+      "before_sha256": "b63b351cb5a569a23a452d72c16d443ad5027afe6f582d6b5ef73c286e3ef34b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/ros_rgbd.cc",
+      "action": "removed",
+      "before_sha256": "b7a00524f13bb6160b44c413d464f9645e1d34d40fcffb83a9fafc84e60f3ba1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/ros_stereo.cc",
+      "action": "removed",
+      "before_sha256": "a1d639d4d6e2800e6a0428a180eca67e60da09f8ccb58b635099b2cf951c9abc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/ROS/ORB_SLAM3/src/ros_stereo_inertial.cc",
+      "action": "removed",
+      "before_sha256": "999ccefd596003bf370255d00386b6919ece7fe659d12f36db5e404d24133297",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "1aaf1d1722634a4ef179e15445bc98583f647f2d8c8de6cde4fc99227852c6ad",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/MH01.txt",
+      "action": "removed",
+      "before_sha256": "226470999dc8ba758c838982fd7eb2bc9f3f2b489e85a38d0ecf8b9d40785a5b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/MH02.txt",
+      "action": "removed",
+      "before_sha256": "7add4feaa342c6b6874996058b6b5679d908eca25b7e063eae46fec49558cc8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/MH03.txt",
+      "action": "removed",
+      "before_sha256": "5defd7c9770344df34ebbd5805264341f8a4920c13a22e1b9ef8607168cad02e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/MH04.txt",
+      "action": "removed",
+      "before_sha256": "330c25e4532c1f27853d0eeee06968d5c4c00c16be1187fdcfd909cfe060360c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/MH05.txt",
+      "action": "removed",
+      "before_sha256": "e6498fb86f0b618abb07b256b1822957bb4bcf158d07cc82d3b43ca8166ec004",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V101.txt",
+      "action": "removed",
+      "before_sha256": "4cef78a5cf7c8ee52016a160de4b50184da2a216d615feb7ebbbb3bc99efa89e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V102.txt",
+      "action": "removed",
+      "before_sha256": "51804ce6362dc200fff3ed6a3aba1df769528badf1a877d19d5cac976a544c09",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V103.txt",
+      "action": "removed",
+      "before_sha256": "543835f7b7dd9d1287c9052955e030ade113c51dc97ec2c15d13a318521ad0d7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V201.txt",
+      "action": "removed",
+      "before_sha256": "d8df41e85c12761104043264a61054ad4bfa19087886e847f4e0412a19cd1633",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V202.txt",
+      "action": "removed",
+      "before_sha256": "7f1028007d030a38e5c7e2cee19ca773015b2fecbbbe80794f5c34e900b2ee8e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_IMU/V203.txt",
+      "action": "removed",
+      "before_sha256": "55911f078feea76eb5bdeb97c9ebbebb679de39c4dd44c50e81064d5d8cf77f6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V203_2.txt",
+      "action": "removed",
+      "before_sha256": "ae11d939e10a8d0be3b5f90dae54b5eb2bc6faaf095fa113648e817a35305149",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH01.yaml",
+      "action": "removed",
+      "before_sha256": "d62cc0edbd519b0b3c99b7c21729b520cd7c8782a69e790d18cc59765adc960c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH02.yaml",
+      "action": "removed",
+      "before_sha256": "5c709a18d54f8e7dc5b70ae08667ca7b0fe49bb0ea2c4f7169399b090db9e77f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH03.yaml",
+      "action": "removed",
+      "before_sha256": "a415fc263b591b5ef2e6bba4cce641e051dde9edb5a8b814bf00c64002d29e8a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH04.yaml",
+      "action": "removed",
+      "before_sha256": "c269059574d291acd7e51957ebe6c5e4bd114f3bba8c6280fac8ef9b6cab87d3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH05.yaml",
+      "action": "removed",
+      "before_sha256": "5114e076eec3cc3ccb8853dfb0cb98aaf218484e625e71fa590000489485e1f0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V101.yaml",
+      "action": "removed",
+      "before_sha256": "a7bcade8476e0362f449a75bf07084919f8eb1c9b2789277b017185deb7a4065",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V102.yaml",
+      "action": "removed",
+      "before_sha256": "006f7170000cde22268d8ce3d9768514596c5147309433e41d8691f6f0aeb58b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V103.yaml",
+      "action": "removed",
+      "before_sha256": "185c75faeee84d86964dcbc29393f48c23036cdb23de0a0b8b7ca46c112a6447",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V201.yaml",
+      "action": "removed",
+      "before_sha256": "745be5ea28d9a88b8a4abd20c07f0dce808bea560ce30bf9600b303d6b7e352b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V202.yaml",
+      "action": "removed",
+      "before_sha256": "4eb156c1ce34ff6420bb96e2abfc2a2aad045a699821c7b5867981c5e20d4462",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V203.yaml",
+      "action": "removed",
+      "before_sha256": "a7858f4eba74058b9d78144ec031c633c42e03dacdf384275c8b0d51afb26c1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "145c71831281cb08b5cd4797399edbe84d4217c35772144628b3149710111299",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "98803d64d27c8e41d7ba38a15d0c26fff215654cc074a2d83688c8a266a80c72",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "04a8114c8c7551e6e7d5c0ac2d8dee44c4528f9c2187c62f375f7b1d1728e4c9",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM-VI_far.yaml",
+      "action": "removed",
+      "before_sha256": "664adbd4606ec74db44562dbd206abd316fe00dc3c063a46019f60bb78f663e1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "957c10fda123bda737e187f02de3edb2b4728b8095050c7b62d8c313d3d16023",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "eb7360aa2827f00937e271e1c50bf1b4fcc9b6718cc9b5763b93c92bdc0233a1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "70413087299403c3814f259bfb006e83496a62ddfd5f90801d298f967964eb1a",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "0a47da0a5922368e594006594d63b630146180a35ba7c6471e8cc415cd69c5b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "539d9be14b5ac67e4b402d4a423f734691dfdc3d13f143308bfd3e73bedeeab3",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "069b3af97a777ddefb264030c2ec0cd94742952f5d1a48a2fda9b022b338898e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "676367b40117abaf533b329f4ba7db27fb0d59f9b9b688ac202620d98898d4ee",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "9b26c3c11d769ae23c255da03a70339404146c0caa8dcfca08343f5000d26ad6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "238d6e83ec00643486b5bc5f6bde0f5535f9ce488225d715d3f86979533936c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "103805843475e6a4eb1023a3343e6f8de54cf641c9c89e1f760fbb1c93af4d9f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "8791682ddab9d6e0fad1acf84de275e98ad86a2e045e1f4b175cb7bfb6186770",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "f31ca741abd9a9b659ba2e389fe1c98b3f86341e6ff448e40d14c07ea4b65786",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "cf271e3ec27da33e0b8883ba92b18c9eb311909ad78c46bc7aadff119c3261f1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "c35393b97bc74b31dc5f7e879ae1be326fcfe891e642717061febdc61189d529",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "29a4df59050797a0a42eb00700d82a2e4c9413a92ce94bc6fec011b20247cab0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "dd07a4d6124017c0fa6a584bc885e37d6eef974e3f404285ca7d472e9643da9e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "3627305f7d73f67a7e1e126b33689c1b528fda66daff901573bb4079815ade74",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "336e42accf150b6ee065c7021adb7f3107dde5b178b3dd6277690bac31d8a078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "9b1555d93dc2ca628e2da7aae3d250bdde7a60f0636f6f4b89053873b3d13b1c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "8cd471ca2c1425260534228fbe0f3e27bd6711199dfce7c971447cdf184569e2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "e11f764c9c7f04b4a13f3f76a7f2964b133b31832697f59e06995d43c8c03f79",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "7f280b289400bd305acd14934236807a2877ea3ceace1fb3ae832bc73c4ca94b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "4249d4036b3c03c55b709f6f634d975d024999fb017ab3539cfa71580793a3be",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "127cb1621b69b12083eeeead349d2b52bd784d1ae764b15dc5e3c0f7414deaad",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "6a12c21b040bebb9df10148675d90c6148aa64675bc8492f5c233a22532741cc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "58e4f651a61cf2e6a65b3c48cae4905a77facd635e7b601d7a0c8b471ec584b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "22dfee935e0858e374b098cad2798b5b839bb0fbe696b3ed38ace860af6e3d69",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "f038002eee904745aecba7b9f69d26cad944b4b6bd3e3b8a22bc13ed534deaa4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/stereo_inertial_euroc.cc",
+      "action": "removed",
+      "before_sha256": "76de0474a7bab70120964af6181e3cc8619495493e04155ba734fb788f056b24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/stereo_inertial_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "b03a2c6ca6ad3d5d729a6afd22a2efad1e4f6500ed2fee7885b4e3fa607e66af",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/stereo_inertial_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "66ada3f3851800ca2b8a80a46e6b913253e4cdf52e9d21cde0e8346fedb816b6",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo-Inertial/stereo_inertial_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "b99400d58c8ef8499732bd47cb141d529a5d818e257a5d2b3352059922558471",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC.yaml",
+      "action": "removed",
+      "before_sha256": "e793829fdd39cc45cf33d6002e79064a0253d8a36b8492b5e7b76d86aa20c297",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/MH01.txt",
+      "action": "removed",
+      "before_sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/MH02.txt",
+      "action": "removed",
+      "before_sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/MH03.txt",
+      "action": "removed",
+      "before_sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/MH04.txt",
+      "action": "removed",
+      "before_sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/MH05.txt",
+      "action": "removed",
+      "before_sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V101.txt",
+      "action": "removed",
+      "before_sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V102.txt",
+      "action": "removed",
+      "before_sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V103.txt",
+      "action": "removed",
+      "before_sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V201.txt",
+      "action": "removed",
+      "before_sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V202.txt",
+      "action": "removed",
+      "before_sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/EuRoC_TimeStamps/V203.txt",
+      "action": "removed",
+      "before_sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/KITTI00-02.yaml",
+      "action": "removed",
+      "before_sha256": "2b59b68fc07cf73b182cf8592b20dc63fd82c0395f80b20ffba516f59b1051e0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/KITTI03.yaml",
+      "action": "removed",
+      "before_sha256": "9486605aef4ca9230d58d10049767a2cba9219ec8d77fa62b181e4eeac14be93",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/KITTI04-12.yaml",
+      "action": "removed",
+      "before_sha256": "15ecaac1a16e3d6c310c5753f83b6521a06d5ad252651b526170e15cac701656",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_MH01.yaml",
+      "action": "removed",
+      "before_sha256": "a0618c729ebc46a28b198cc6a36e3fdf00848fd5fb275c043a2d4db2684da532",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_MH02.yaml",
+      "action": "removed",
+      "before_sha256": "b93e7ae3cb0f5c91f8aa42b97733f7d400bdbed37c8bc60ee7414ae8058d2d12",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_MH03.yaml",
+      "action": "removed",
+      "before_sha256": "e5c99007be12aa095bf16cdc3b8752774591d8a4e359d3b6bef31ade2422f512",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_MH04.yaml",
+      "action": "removed",
+      "before_sha256": "50f749b86179a795a8bc2780cccd14899e0aff86f4198266d96b5f61e7226748",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_MH05.yaml",
+      "action": "removed",
+      "before_sha256": "ba0f4101c3499f3e0da582b8b9ee30c4e2e5afdc446d73554a4d8a86eb38a16f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V101.yaml",
+      "action": "removed",
+      "before_sha256": "d2bffe07c7b8e71e44f0dac34064f22af8b85709101cc1c855d1c2db5385b20e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V102.yaml",
+      "action": "removed",
+      "before_sha256": "4fa37457715946219f431af397b47fbbf03fd50d02dceba1cc4c3a6f9427b296",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V103.yaml",
+      "action": "removed",
+      "before_sha256": "4fbf411076092293886f3ba778b52759c9bcbe654224bcd395263c069bc99d46",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V201.yaml",
+      "action": "removed",
+      "before_sha256": "e5b5c21413434330c5e64dde0adb5a0f4bfcb016bac5fb51753dbc8b285f23b8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V202.yaml",
+      "action": "removed",
+      "before_sha256": "29e8be37a85ab9c2a4787c8d127545b46a8b37821bfa0fb9139110b55b00d529",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/MultiSession/EuRoC_V203.yaml",
+      "action": "removed",
+      "before_sha256": "6ef28b4ceddc72660b0731382b33f2cbb909afd1cb7903362d87ada7a7407261",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/RealSense_D435i.yaml",
+      "action": "removed",
+      "before_sha256": "aea24e4abb2aa2569528144522bfc24465e3672d15c6362e084822fff5af7673",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/RealSense_T265.yaml",
+      "action": "removed",
+      "before_sha256": "385b78af5ce166e81f3a4f66ee9891c9335201d1f83ebc7e8b41910ea50f6621",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM-VI.yaml",
+      "action": "removed",
+      "before_sha256": "9f78c2e909bbeb2557a70b1d1339bbe022e8fd07ba590c21a4f73bd85fd5a571",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "action": "removed",
+      "before_sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "action": "removed",
+      "before_sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "action": "removed",
+      "before_sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "action": "removed",
+      "before_sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "action": "removed",
+      "before_sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "action": "removed",
+      "before_sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "action": "removed",
+      "before_sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "action": "removed",
+      "before_sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "action": "removed",
+      "before_sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "action": "removed",
+      "before_sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "action": "removed",
+      "before_sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "action": "removed",
+      "before_sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "action": "removed",
+      "before_sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "action": "removed",
+      "before_sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "action": "removed",
+      "before_sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "action": "removed",
+      "before_sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "action": "removed",
+      "before_sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "action": "removed",
+      "before_sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "action": "removed",
+      "before_sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "action": "removed",
+      "before_sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room1_512.txt",
+      "action": "removed",
+      "before_sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room2_512.txt",
+      "action": "removed",
+      "before_sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room3_512.txt",
+      "action": "removed",
+      "before_sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room4_512.txt",
+      "action": "removed",
+      "before_sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room5_512.txt",
+      "action": "removed",
+      "before_sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-room6_512.txt",
+      "action": "removed",
+      "before_sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-slides1_512.txt",
+      "action": "removed",
+      "before_sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-slides2_512.txt",
+      "action": "removed",
+      "before_sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/TUM_TimeStamps/dataset-slides3_512.txt",
+      "action": "removed",
+      "before_sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/stereo_euroc.cc",
+      "action": "removed",
+      "before_sha256": "9cb5c5ebd9e037f941867d4bec92f1fbcdf57828e8daf3bb3b7cb8da04dce47f",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/stereo_kitti.cc",
+      "action": "removed",
+      "before_sha256": "dcf23fe67e0457d2b19c0d71b47fd53fa93401d3c1308ae491c02e061e3b9dc0",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/stereo_realsense_D435i.cc",
+      "action": "removed",
+      "before_sha256": "8b82984314030f87aa80c0b1fb4abe9aadaa75abbd00075388a359d6fca7a363",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/stereo_realsense_t265.cc",
+      "action": "removed",
+      "before_sha256": "8ca53fc9879e570455d74ce9424b13950e00c5df2f8b9febb173ee031bfdb261",
+      "after_sha256": null
+    },
+    {
+      "path": "Examples_old/Stereo/stereo_tum_vi.cc",
+      "action": "removed",
+      "before_sha256": "a2d131e0a313ea2df4faf043998a581eef08db27184f2f465c691a1127fa8a81",
+      "after_sha256": null
+    },
+    {
+      "path": "README.md",
+      "action": "modified",
+      "before_sha256": "b6dc671f967dd52e7e6ebcd6f4072692c93b0ab570aa9a9bcb6e4917cd4707f4",
+      "after_sha256": "783c8c0750a4a4ac6172427001cce21c33632c79f4f8f973c5ccb819db91c49f"
+    },
+    {
+      "path": "build_ros.sh",
+      "action": "removed",
+      "before_sha256": "355ecead524b18cb89887bc0dfd6432be1ed561d321cee94625aeede46036707",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_imu/MH_GT.txt",
+      "action": "removed",
+      "before_sha256": "eb930e7fc42e9548f5681933758fb6fbff2a95d0c34877c490874f352e2a7914",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_imu/V1_GT.txt",
+      "action": "removed",
+      "before_sha256": "9195e7d56a0b44c59b7eb2d4e852d07a6c61c1880991aff04683508d81d4c584",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_imu/V2_GT.txt",
+      "action": "removed",
+      "before_sha256": "35e5e7018098738f3ddb5a7633c607b25f1db5c769e3877443dca66fa9b06efb",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH01_GT.txt",
+      "action": "removed",
+      "before_sha256": "eb97d201b09340ce9a04307129111ef12911a0fb5c61164cb9587a1c8109646c",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH02_GT.txt",
+      "action": "removed",
+      "before_sha256": "db3c79f8e220346202b65ba2d302e2f9274d7b65e0428811eab25c50cac86f2f",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH03_GT.txt",
+      "action": "removed",
+      "before_sha256": "448cceac5f6289f6113714e400f65f596e204432f69fa9f57156612aa65a89c9",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH04_GT.txt",
+      "action": "removed",
+      "before_sha256": "0ab05c44e5d84c820531ab4bfc06ec893acb42fb6f4a58a619d266d960fd1570",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH05_GT.txt",
+      "action": "removed",
+      "before_sha256": "0e16769c8d15b114e133585e7406d5a7236d92375d3dec74570ed2b820dd7d05",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/MH_GT.txt",
+      "action": "removed",
+      "before_sha256": "9c347989c8edbf7d3896b6a0d51c1e8775d8f4374fb872932132e78517e1fd15",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V101_GT.txt",
+      "action": "removed",
+      "before_sha256": "f77ab629c0987db3577cf650c2fa2ac425d71dcb1d1d4b72afab0084da4edb03",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V102_GT.txt",
+      "action": "removed",
+      "before_sha256": "5f638f1cb8a78a04396b16951478eb3970fe6d7b9f3a0bd671767c7fc91caa89",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V103_GT.txt",
+      "action": "removed",
+      "before_sha256": "c589e3428381b6f4aef0bc7636ca1be825da61bbbc1043bfb680f1bc7db60ade",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V1_GT.txt",
+      "action": "removed",
+      "before_sha256": "aeb8d06c93582e7653b56f69c9366957ff904f129e5e712012ba290ab0a08408",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V201_GT.txt",
+      "action": "removed",
+      "before_sha256": "6991dcd2c0a00646a648e84ae200b0e0b4a41f08ce934734083699cc3d6b8dc7",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V202_GT.txt",
+      "action": "removed",
+      "before_sha256": "30da70e23d2195b3298910f122615f79ddb6bebfba81c2d5d0ea90c5eb6eaa3b",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V203_GT.txt",
+      "action": "removed",
+      "before_sha256": "cd1a477379804db14d0b7c7b181b2bdaf49851ae8e7673c593c3260032c2ebe1",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/Ground_truth/EuRoC_left_cam/V2_GT.txt",
+      "action": "removed",
+      "before_sha256": "9ccb93cf6db53cf32241d0aba3ed922c6bd4f3c3a728ae3053cc113f822b9b6a",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/associate.py",
+      "action": "removed",
+      "before_sha256": "e1aad66a1fcbbd8586f59e6e0791d3acb550a614979867415aea61ff51c73b16",
+      "after_sha256": null
+    },
+    {
+      "path": "evaluation/evaluate_ate_scale.py",
+      "action": "removed",
+      "before_sha256": "31a1a4f5de7d88f4c24b1f791cc291af71d1a8ab973a0fcf4102b7f262e85e65",
+      "after_sha256": null
+    },
+    {
+      "path": "include/Frame.h",
+      "action": "modified",
+      "before_sha256": "368bf57e62193ab9931688401d3c1363b7eef727e0569058c8744e2f218e4215",
+      "after_sha256": "02e0fd09fbe3a672305b89af2e9114e2ad76e20a58b17d6f27e4ef7a3226d45e"
+    },
+    {
+      "path": "include/LoopClosing.h",
+      "action": "modified",
+      "before_sha256": "10e5900cea38d06a1a63a33ea59900346f9a28ce4f56867ced3a7c18de3b7854",
+      "after_sha256": "148b5be971980ca6bad17677a2b06fbba37f6b907a29ece475258c912c5366d6"
+    },
+    {
+      "path": "include/Settings.h",
+      "action": "modified",
+      "before_sha256": "1a04bc0eafe5019b0559f33aa0193ef35f921b82afc34fd9a5c61ba1364227bb",
+      "after_sha256": "caf01f5a7f3e34a9a0748c8ebd1e3b4239321b24f7800c8b8f3eebc0f69da135"
+    },
+    {
+      "path": "include/System.h",
+      "action": "modified",
+      "before_sha256": "1e353f2c511ffa85ee26ec48c7a6e733754bf5ecef47c9f7f83f70be3db7f310",
+      "after_sha256": "428dc7251bd3c384b619279a1f708c898d673d84209ce5cdb4cde5d4afc635a8"
+    },
+    {
+      "path": "include/Tracking.h",
+      "action": "modified",
+      "before_sha256": "9b20af086b2365edd60721fdab10683e69808717e5cabac21274faabf7989ec3",
+      "after_sha256": "69a0d7f6eb41768667cd2104b0a525958f458716f4f6b69ed89354ec622a4090"
+    },
+    {
+      "path": "src/Frame.cc",
+      "action": "modified",
+      "before_sha256": "67e0c446d9da80db11aceee4ff2664487cfe1f2502bc50d843ff7471917eb42e",
+      "after_sha256": "ed330dae999d6f071a60c2d6eed3d2f8372f3a678593125150fe88bc92c15a08"
+    },
+    {
+      "path": "src/LoopClosing.cc",
+      "action": "modified",
+      "before_sha256": "00646de5da317e268534ffe556786e51e71e46d52ab142c17bab0b42e7287785",
+      "after_sha256": "7262b9b85d24b426e08f33d4d64215da34c918dd7da2661acfc32cec93f0c657"
+    },
+    {
+      "path": "src/Settings.cc",
+      "action": "modified",
+      "before_sha256": "bfa34355c01cf497ba5edbc3631fe403fb084e961386b832a62ed12a1fea261e",
+      "after_sha256": "f4bd8b351f07f4bd44af49f33ec05e11ec30da05f5a5b02eb6f0b243fca6a01e"
+    },
+    {
+      "path": "src/System.cc",
+      "action": "modified",
+      "before_sha256": "935dd45007a75d6750bb8c3b5c41f4edb91b7ef0b0944f655d4348955bbd168a",
+      "after_sha256": "4746547c89c00c39740b8e28382f2756fa5eb622016b2f77521344298cbd7e26"
+    },
+    {
+      "path": "src/Tracking.cc",
+      "action": "modified",
+      "before_sha256": "3a3654bcc675f859cce1f2fb28ab32a129e8d734d0ac3d55417ff8b47a013264",
+      "after_sha256": "67f66cbce46b3768e51751ce85c90682f51a816c306f7078a6091a187cd1c7f8"
+    },
+    {
+      "path": "src/Viewer.cc",
+      "action": "modified",
+      "before_sha256": "a6a15d3055654dc44db5209f2ae0cff4daa670508a42ab9dc623c46b197e2388",
+      "after_sha256": "7ce9a6223298675bde11966c289007a3a993bc45653522a1a311b61021664aa1"
+    }
+  ]
+}

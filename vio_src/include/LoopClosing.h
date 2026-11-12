@@ -1,3 +1,4 @@
+// Modified 2026-11-12 for mono_imu_vio: single-camera inertial specialization.
 /**
 * This file is part of ORB-SLAM3
 *
@@ -139,7 +140,6 @@ protected:
 
     void CorrectLoop();
 
-    void MergeLocal();
     void MergeLocal2();
 
     void CheckObservations(set<KeyFrame*> &spKFsMap1, set<KeyFrame*> &spKFsMap2);
