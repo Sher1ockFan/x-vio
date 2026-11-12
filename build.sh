@@ -20,7 +20,7 @@ mkdir -p "$scratch/input/"{orb_replay,cam_imu_motion,params}
 cp "$manifest" "$scratch/input/upstream.sha256"
 cp "$builder/"{compile.sh,package.sh,extra.sh,runtime.py} "$scratch/input/"
 cp "$adapter/viewer.cc" "$scratch/input/"
-cp "$jetson/"{start.sh,check.sh,README.md,playback.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html} "$scratch/input/"
+cp "$jetson/"{start.sh,check.sh,README.md,playback.py,live_console.py,performance.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html} "$scratch/input/"
 cp "$adapter/orb_replay/"{live.py,umi.py,umi_quality.py,camera_live.c} "$scratch/input/orb_replay/"
 cp "$adapter/cam_imu_motion/"{camera.c,imu.py,timing_core.py} "$scratch/input/cam_imu_motion/"
 cp "$params/"{camera,cam_imu,imu,target,orb_trial}.yaml "$params/timing.json" "$scratch/input/params/"
@@ -54,13 +54,13 @@ COPYFILE_DISABLE=1 tar --no-xattrs -cf - -C "$scratch/input" . |
         fi
         cp "$input/upstream.sha256" "$root/upstream.sha256"
         export ORB_STOCK_BUILD_ROOT="$root" ORB_STOCK_INPUT_ROOT="$input"
-        export ORB_STOCK_PACKAGE_NAME=orb-slam3_hub ORB_STOCK_ARCHIVE_NAME=orb-slam3_hub.tar.gz
+        export ORB_STOCK_PACKAGE_NAME=name_test ORB_STOCK_ARCHIVE_NAME=name_test.tar.gz
         export ORB_STOCK_HUB_CAPTURE=1
         bash "$input/compile.sh"
         bash "$input/package.sh"
-        sha256sum "$root/orb-slam3_hub.tar.gz"
+        sha256sum "$root/name_test.tar.gz"
     '
 mkdir -p "$here/dist"
-"$docker" cp "$container:/build/orb-hub/orb-slam3_hub.tar.gz" "$scratch/orb-slam3_hub.tar.gz"
-mv -- "$scratch/orb-slam3_hub.tar.gz" "$here/dist/orb-slam3_hub.tar.gz"
-printf 'ORB_HUB_BUILD_OK %s\n' "$here/dist/orb-slam3_hub.tar.gz"
+"$docker" cp "$container:/build/orb-hub/name_test.tar.gz" "$scratch/name_test.tar.gz"
+mv -- "$scratch/name_test.tar.gz" "$here/dist/name_test.tar.gz"
+printf 'ORB_HUB_BUILD_OK %s\n' "$here/dist/name_test.tar.gz"

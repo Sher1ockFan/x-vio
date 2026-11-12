@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# The live supervisor owns terminal output and forwards stop signals to this worker.
+if [[ ${1:-} == --live-worker ]]; then
+    shift
+elif [[ ${1:-} == live ]]; then
+    root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" 2>/dev/null && pwd -P) || {
+        printf '%s\n' VIO_E_STARTUP >&2
+        exit 1
+    }
+    if ! command -v python3 >/dev/null 2>&1 || [[ ! -r "$root/live_console.py" ]]; then
+        printf '%s\n' VIO_E_STARTUP >&2
+        exit 1
+    fi
+    exec python3 -u "$root/live_console.py" "$@"
+fi
+
 usage() {
     cat <<'EOF'
 Usage:

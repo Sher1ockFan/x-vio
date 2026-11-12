@@ -1,0 +1,21 @@
+{
+  "package": "name_test",
+  "archive_sha256": "2f24cbae6421a6df9eb69a5dc421dd0d2abea06d5436c41e834bccb024fe3313",
+  "archive_bytes": 57742054,
+  "upstream_snapshot_files": 955,
+  "same_binaries_and_parameters_as_current_vio_nx": true,
+  "runtime_file_changes_vs_vio_nx": [
+    "./README.md",
+    "./performance.py"
+  ],
+  "checks": [
+    "official source checksum",
+    "ARM64 relocatable dependencies",
+    "runtime SHA256SUMS",
+    "name_test archive root",
+    "entry point help",
+    "silent report generation",
+    "startup error code and separate logs"
+  ],
+  "jetson_hardware_test_performed": false
+}

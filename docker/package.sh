@@ -35,7 +35,7 @@ gcc-11 -O2 -march=armv8-a "${camera_flags[@]}" "$input/orb_replay/camera_live.c"
 gcc-11 -O2 -march=armv8-a "${camera_flags[@]}" -DORB_CAMERA_SEQUENCE "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_umi"
 
 install -m 755 "$input/start.sh" "$input/check.sh" "$pkg/"
-install -m 644 "$input/playback.py" "$input/README.md" "$input/viewer.cc" "$pkg/"
+install -m 644 "$input/playback.py" "$input/live_console.py" "$input/performance.py" "$input/README.md" "$input/viewer.cc" "$pkg/"
 install -m 644 "$input/orb_replay/"{live.py,umi.py,umi_quality.py} "$pkg/tools/orb_replay/"
 install -m 644 "$input/cam_imu_motion/"{imu.py,timing_core.py} "$pkg/tools/cam_imu_motion/"
 install -m 644 "$input/params/"{orb_trial.yaml,timing.json} "$pkg/params/"

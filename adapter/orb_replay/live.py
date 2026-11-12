@@ -2,6 +2,7 @@
 """Live Jetson GMSL + FORSENSE IMU tracking on a shared RAW clock."""
 import argparse
 import collections
+import csv
 import contextlib
 import fcntl
 import json
@@ -144,9 +145,44 @@ class Packets:
             yield self.tick, values
 
 
+class TimingLogs:
+    """Per-thread CSV streams; timestamps share the host CLOCK_MONOTONIC_RAW basis."""
+    def __init__(self, out):
+        self.files = []
+        self.writers = {}
+        try:
+            for name, fields in {
+                "imu_timing": "read_index,samples,device_first_us,device_last_us,receipt_raw_ns",
+                "camera_read": "camera_raw_ns,read_done_raw_ns",
+                "input_timing": "camera_ns,selected_raw_ns,imu_ready_raw_ns,send_start_raw_ns,send_end_raw_ns,"
+                                "imu_count,imu_first_ns,imu_last_ns,frames_superseded",
+            }.items():
+                stream = (out / (name + ".csv")).open("x", newline="", buffering=1)
+                self.files.append(stream)
+                writer = csv.writer(stream)
+                writer.writerow(fields.split(","))
+                self.writers[name] = writer
+        except BaseException:
+            self.close()
+            raise
+
+    def write(self, name, values):
+        self.writers[name].writerow(values)
+
+    def close(self):
+        for stream in self.files:
+            stream.close()
+
+
+def timing_raw_ns():
+    return time.clock_gettime_ns(time.CLOCK_MONOTONIC_RAW)
+
+
 class Streams:
     def __init__(self):
         self.condition = threading.Condition()
+        self.timing = None
+        self.packet_timing = None
         self.stop = threading.Event()
         self.error = None
         self.imu = collections.deque()
@@ -298,6 +334,7 @@ def read_imu(s):
     parser = Packets()
     warm = []
     clock = None
+    read_index = 0
     with serial_port() as fd:
         last_packet = time.monotonic()
         # Drain stale input after applying host termios before locking to a CRC-valid frame.
@@ -318,7 +355,13 @@ def read_imu(s):
             if receipt < discard_before:
                 continue
             batch = []
+            first_tick = last_tick = None
+            read_samples = 0
             for tick, values in parser.feed(data):
+                if first_tick is None:
+                    first_tick = tick
+                last_tick = tick
+                read_samples += 1
                 last_packet = time.monotonic()
                 s.stats["imu_read"] += 1
                 if clock is None:
@@ -333,6 +376,9 @@ def read_imu(s):
                     warm.clear()
                 stamp = clock.stamp(tick, receipt)
                 batch.append((stamp, values))
+            if s.timing and read_samples:
+                s.timing.write("imu_timing", (read_index, read_samples, first_tick, last_tick, receipt))
+                read_index += 1
             if batch:
                 with s.condition:
                     s.model = model
@@ -357,6 +403,8 @@ def read_camera(s, pipe):
         pixels = pipe.read(PIXELS)
         if len(pixels) != PIXELS:
             raise EOFError("Incomplete grayscale frame from camera helper.")
+        if s.timing:
+            s.timing.write("camera_read", (stamp, timing_raw_ns()))
         with s.condition:
             s.remember_camera(stamp, pixels)
             s.condition.notify_all()
@@ -372,11 +420,13 @@ def take_packet(s, shift, previous):
         else:
             stamp, pixels = s.latest
             s.latest = None
+        selected_raw_ns = timing_raw_ns() if s.timing else 0
         s.camera_shift_ns = shift
         stamp += shift  # The camera helper maps the driver clock only; this is the sole Kalibr shift.
         s.pending_camera_ns = stamp
         s.mark("waiting_imu")
         s.wait(lambda: s.imu and s.imu[-1][0] > stamp, 2, "IMU does not cover camera timestamp.")
+        imu_ready_raw_ns = timing_raw_ns() if s.timing else 0
         samples = []
         while s.imu and s.imu[0][0] <= stamp:
             samples.append(s.imu.popleft())
@@ -392,6 +442,8 @@ def take_packet(s, shift, previous):
         s.first_sent = True
         s.pending_camera_ns = None
         s.last_selected_ns = stamp
+        if s.timing:
+            s.packet_timing = (selected_raw_ns, imu_ready_raw_ns)
     return stamp, samples, pixels
 
 
@@ -403,6 +455,7 @@ def packet_header(stamp, samples):
 
 def send_packet(s, fd, stamp, samples, pixels):
     encoded = packet_header(stamp, samples)
+    send_start_raw_ns = timing_raw_ns() if s.timing else 0
     start = time.monotonic()
     end = start + 8
     s.transfer = {"camera_ns": stamp, "imu_count": len(samples),
@@ -423,11 +476,16 @@ def send_packet(s, fd, stamp, samples, pixels):
                     view = view[n:]
                 except BlockingIOError:
                     continue
+    send_end_raw_ns = timing_raw_ns() if s.timing else 0
     s.stats["frames_sent"] += 1
     s.stats["imu_sent"] += len(samples)
     s.last_sent_ns = stamp
     s.stats["max_packet_write_s"] = max(s.stats.get("max_packet_write_s", 0.0), time.monotonic() - start)
     s.transfer = None
+    if s.timing:
+        s.timing.write("input_timing", (stamp, *s.packet_timing, send_start_raw_ns, send_end_raw_ns,
+                                       len(samples), samples[0][0] if samples else 0,
+                                       samples[-1][0] if samples else 0, s.stats["frames_superseded"]))
 
 
 def wait_ready(child, log_path):
@@ -493,6 +551,9 @@ def run(args, out, shift):
 
     original_handlers = {sig: signal.signal(sig, request_stop) for sig in (signal.SIGTERM, signal.SIGINT)}
     try:
+        if os.environ.get("VIO_TIMING") == "1":
+            feeds.timing = TimingLogs(out)
+            report["performance_logging"] = True
         with (out / "orb.log").open("xb") as orb_log, (out / "camera.log").open("xb") as cam_log:
             binary = "orb_live_viewer" if args.viewer else "orb_live_runner"
             orb = subprocess.Popen([args.bindir / binary, args.vocabulary, args.yaml],
@@ -581,6 +642,8 @@ def run(args, out, shift):
         terminate(orb)
         for t in threads:
             t.join(timeout=3)
+        if feeds.timing and all(not t.is_alive() for t in threads):
+            feeds.timing.close()
         if cam is not None and cam.stdout:
             cam.stdout.close()
         if orb is not None:
