@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import platform
 import select
+import signal
 import struct
 import subprocess
 import sys
@@ -27,6 +28,7 @@ import types
 ARCHIVE = Path(os.environ.get('MONO_IMU_ARCHIVE', 'mono_imu_vio.tar.gz'))
 CV_LIB = '/build/orb-kit/opencv-4.8.0/usr/lib'
 SECONDS = 4
+HEADLESS = os.environ.get("MONO_IMU_HEADLESS") == "1"
 
 
 def raw_ns():
@@ -157,6 +159,7 @@ def main():
     pkg = tmp / 'mono_imu_vio'
     subprocess.run(['sha256sum', '--quiet', '-c', 'SHA256SUMS'], cwd=pkg, check=True)
     assert (pkg / 'bin/orb_live_viewer').readlink() == Path('stock_viewer')
+    assert (pkg / 'bin/orb_live_runner').readlink() == Path('stock_viewer')
     core_hash = digest(pkg / 'lib/libORB_SLAM3.so')
     sys.path.insert(0, str(pkg / 'tools/orb_replay'))
     import live
@@ -232,6 +235,7 @@ def main():
     bindir = tmp / 'fixture-bin'
     bindir.mkdir()
     (bindir / 'orb_live_viewer').symlink_to(pkg / 'bin/stock_viewer')
+    (bindir / 'orb_live_runner').symlink_to(pkg / 'bin/stock_viewer')
     camera = bindir / 'camera_live'
     camera.write_text(CAMERA_FIXTURE)
     camera.chmod(0o755)
@@ -239,7 +243,7 @@ def main():
         'test_scope': 'integration smoke with simulated sensors, not hardware performance',
         'real_components': ['packaged live.run', 'read_imu', 'AHRS parser and CRC',
                             '0.5 s stale drain', '10 s clock fit and RollingClock',
-                            'native stock_viewer and unmodified ORB core',
+                            'native stock_viewer and packaged mono-IMU ORB core',
                             'native tracking_timing.csv', 'packaged performance.py'],
         'simulated_components': {
             'serial': 'pipe carrying CRC-valid stationary AHRS at nominal 500 Hz; device tick advances against CLOCK_MONOTONIC_RAW',
@@ -255,39 +259,63 @@ def main():
                       LD_LIBRARY_PATH=str(pkg / 'lib') + ':' + CV_LIB,
                       HOME=str(tmp / 'home'), PYTHONDONTWRITEBYTECODE='1')
     os.environ.pop('ORB_VOCABULARY', None)
-    read_fd, write_fd = os.pipe()
-    xvfb_log = (tmp / 'xvfb.log').open('wb')
-    server = subprocess.Popen(['Xvfb', '-displayfd', str(write_fd), '-screen', '0',
-                               '1280x1024x24', '-nolisten', 'tcp'], pass_fds=(write_fd,),
-                              stdout=xvfb_log, stderr=xvfb_log)
-    os.close(write_fd)
+    read_fd = None
+    xvfb_log = None
+    server = None
     observer = None
     observer_stop = threading.Event()
     observer_errors, seen = [], set()
+    stop_thread = None
+    stop_errors = []
     try:
-        assert select.select([read_fd], [], [], 10)[0], (tmp / 'xvfb.log').read_text()
-        display = b':' + os.read(read_fd, 40).strip()
-        os.environ['DISPLAY'] = display.decode()
-        lib = x11_api()
+        if HEADLESS:
+            os.environ.pop('DISPLAY', None)
+            os.environ.pop('WAYLAND_DISPLAY', None)
+        else:
+            read_fd, write_fd = os.pipe()
+            xvfb_log = (tmp / 'xvfb.log').open('wb')
+            server = subprocess.Popen(['Xvfb', '-displayfd', str(write_fd), '-screen', '0',
+                                       '1280x1024x24', '-nolisten', 'tcp'], pass_fds=(write_fd,),
+                                      stdout=xvfb_log, stderr=xvfb_log)
+            os.close(write_fd)
+            assert select.select([read_fd], [], [], 10)[0], (tmp / 'xvfb.log').read_text()
+            display = b':' + os.read(read_fd, 40).strip()
+            os.environ['DISPLAY'] = display.decode()
+            lib = x11_api()
 
-        def observe():
-            handle = lib.XOpenDisplay(display)
-            if not handle:
-                observer_errors.append('Cannot open Xvfb display')
-                return
-            try:
-                root = lib.XDefaultRootWindow(handle)
+            def observe():
+                handle = lib.XOpenDisplay(display)
+                if not handle:
+                    observer_errors.append('Cannot open Xvfb display')
+                    return
+                try:
+                    root = lib.XDefaultRootWindow(handle)
+                    while not observer_stop.wait(.03):
+                        seen.update(windows(lib, handle, root))
+                except Exception as exc:
+                    observer_errors.append(repr(exc))
+                finally:
+                    lib.XCloseDisplay(handle)
+
+            observer = threading.Thread(target=observe, name='real-x11-window-observer')
+            observer.start()
+        if HEADLESS:
+            # Exercise the continuous mode and its real SIGINT sealing path.
+            def stop_after_frames():
+                deadline = time.monotonic() + 120
                 while not observer_stop.wait(.03):
-                    seen.update(windows(lib, handle, root))
-            except Exception as exc:
-                observer_errors.append(repr(exc))
-            finally:
-                lib.XCloseDisplay(handle)
-
-        observer = threading.Thread(target=observe, name='real-x11-window-observer')
-        observer.start()
+                    path = session / 'input_timing.csv'
+                    if path.exists() and len(path.read_text().splitlines()) > 1:
+                        if not observer_stop.wait(SECONDS):
+                            os.kill(os.getpid(), signal.SIGINT)
+                        return
+                    if time.monotonic() > deadline:
+                        stop_errors.append('No complete input frame before signal-test deadline')
+                        return
+            stop_thread = threading.Thread(target=stop_after_frames, name='headless-sigint-fixture', daemon=True)
+            stop_thread.start()
         args = types.SimpleNamespace(bindir=bindir, vocabulary=pkg / 'Vocabulary/ORBvoc.txt',
-                                     yaml=pkg / 'params/orb_trial.yaml', viewer=True, seconds=SECONDS)
+                                     yaml=pkg / 'params/orb_trial.yaml', viewer=not HEADLESS, seconds=0 if HEADLESS else SECONDS)
         started = time.monotonic()
         try:
             live.run(args, session, live.camera_shift(pkg / 'params/timing.json'))
@@ -302,20 +330,34 @@ def main():
         observer_stop.set()
         if observer is not None:
             observer.join(timeout=3)
-        server.terminate()
-        server.wait(timeout=10)
-        os.close(read_fd)
-        xvfb_log.close()
+        if stop_thread is not None:
+            stop_thread.join(timeout=3)
+        if server is not None:
+            server.terminate()
+            server.wait(timeout=10)
+        if read_fd is not None:
+            os.close(read_fd)
+        if xvfb_log is not None:
+            xvfb_log.close()
         live.serial_port = original_serial_port
 
     assert live.read_imu is original_read_imu, 'Real read_imu must not be replaced'
     assert not fixture_stats['writer_errors'], fixture_stats
     assert not observer_errors, observer_errors
-    assert {'ORB-SLAM3: Map Viewer', 'ORB-SLAM3: Current Frame'} <= seen, seen
+    if HEADLESS:
+        assert not seen and server is None and 'DISPLAY' not in os.environ
+        assert 'Starting the Viewer' not in (session / 'orb.log').read_text()
+        assert not stop_errors, stop_errors
+    else:
+        assert {'ORB-SLAM3: Map Viewer', 'ORB-SLAM3: Current Frame'} <= seen, seen
     assert digest(pkg / 'lib/libORB_SLAM3.so') == core_hash
     subprocess.run(['sha256sum', '--quiet', '-c', 'SHA256SUMS'], cwd=pkg, check=True)
     report = json.loads((session / 'live.json').read_text())
     assert report['status'] == 'STREAM_COMPLETED', report
+    assert report['viewer'] is (not HEADLESS)
+    if HEADLESS:
+        assert report['duration_mode'] == 'until_stopped' and report['duration_requested_s'] == 0
+        assert report['stop_signal'] == signal.SIGINT, report
     assert report['orb_exit_code'] == 0 and report['performance_logging'] is True
     assert report['input_image_size'] == [1920, 1440]
     assert report['imu_clock_fit'] is not None
@@ -326,6 +368,35 @@ def main():
     camera_rows, imu_rows = data['camera_timing'], data['imu_timing']
     reads, inputs, tracking = data['camera_read'], data['input_timing'], data['tracking_timing']
     n = len(tracking)
+    with (session / 'state_diagnostics.csv').open(newline='') as stream:
+        diagnostics_reader = csv.DictReader(stream)
+        assert len(diagnostics_reader.fieldnames) == 62, diagnostics_reader.fieldnames
+        diagnostics = list(diagnostics_reader)
+    with (session / 'poses.csv').open(newline='') as stream:
+        pose_rows = list(csv.DictReader(stream))
+    assert len(diagnostics) == len(tracking) == len(pose_rows)
+    with (session / 'recovery_timing.csv').open(newline='') as stream:
+        recovery_reader = csv.DictReader(stream)
+        assert recovery_reader.fieldnames == ['frame_idx','camera_ns','map_id','recovery_id','phase','recovery_method','recovery_search_ms','recovery_global_attempted','recovery_window_resets'],recovery_reader.fieldnames
+        recovery_rows = list(recovery_reader)
+    assert len(recovery_rows) == len(tracking)
+    for row, tracked in zip(recovery_rows, tracking):
+        assert int(row['frame_idx']) == tracked['frame_idx'] and int(row['camera_ns']) == tracked['camera_ns']
+        assert math.isfinite(float(row['recovery_search_ms'])) and float(row['recovery_search_ms']) >= 0
+        assert row['recovery_global_attempted'] in ('0','1')
+        assert int(row['recovery_window_resets']) >= 0
+    print('RECOVERY_TIMING_CONTRACT_PASS rows='+str(len(recovery_rows)),flush=True)
+    for index, (state_row, pose_row, timing_row) in enumerate(zip(diagnostics, pose_rows, tracking)):
+        assert None not in state_row and all(value is not None for value in state_row.values())
+        assert int(state_row['frame_idx']) == index
+        assert int(state_row['camera_ns']) == timing_row['camera_ns']
+        assert state_row['valid'] == pose_row['valid']
+        assert state_row['hard_fault'] in ('0', '1')
+        if state_row['hard_fault'] == '1':
+            assert state_row['valid'] == '0'
+        if state_row['dynamics_available'] == '0':
+            assert math.isnan(float(state_row['velocity_w_x_mps']))
+    print('PER_FRAME_DIAGNOSTICS_CONTRACT_PASS columns=62 rows='+str(len(diagnostics)), flush=True)
     assert n >= 10, n
     assert n == len(inputs) == report['streams']['frames_sent'], (n, len(inputs), report)
     assert len(reads) == report['streams']['frames_read']
@@ -389,7 +460,8 @@ def main():
         assert ready['latency_ms']['track_call_ms']['median'] is None
         assert '没有已初始化成功跟踪帧' in text_report
     summary = {
-        'result': 'SIMULATED_SENSOR_BRIDGE_TIMING_SMOKE_OK',
+        'result': 'SIMULATED_SENSOR_HEADLESS_TIMING_SMOKE_OK' if HEADLESS else 'SIMULATED_SENSOR_BRIDGE_TIMING_SMOKE_OK',
+        'headless': HEADLESS, 'stop_signal_test': HEADLESS,
         'artifact_directory': str(tmp), 'session': str(session),
         'csv_rows': {name: len(rows) for name, rows in data.items()},
         'native_x11_windows': sorted(seen), 'full_matches': n,

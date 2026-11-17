@@ -81,6 +81,12 @@ public:
 
     void RequestFinish();
 
+    // Nonblocking recovery barrier: isPaused becomes true only at a safe
+    // Run boundary, after the current correction and all GBA writes finish.
+    void RequestPause();
+    bool isPaused();
+    void ReleasePause();
+
     bool isFinished();
 
     Viewer* mpViewer;
@@ -152,9 +158,13 @@ protected:
 
     bool CheckFinish();
     void SetFinish();
+    void StopAndJoinGBA();
     bool mbFinishRequested;
     bool mbFinished;
     std::mutex mMutexFinish;
+    bool mbPauseRequested = false;
+    bool mbPaused = false;
+    std::mutex mMutexPause;
 
     Atlas* mpAtlas;
     Tracking* mpTracker;
@@ -223,7 +233,7 @@ protected:
     bool mbFixScale;
 
 
-    bool mnFullBAIdx;
+    unsigned long mnFullBAIdx;
 
 
 

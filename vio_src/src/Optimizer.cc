@@ -2446,6 +2446,10 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
         lFixedKeyFrames.push_back(vpOptimizableKFs.back());
         vpOptimizableKFs.pop_back();
     }
+    // The temporal boundary's pose still anchors the local world frame. Only a
+    // root fitted during relocalization gets soft (optimizable) dynamics.
+    KeyFrame* temporalBoundary=lFixedKeyFrames.front();
+    KeyFrame* softDynamicsBoundary=nullptr;
 
     // Optimizable visual KFs
     const int maxCovKF = 0;
@@ -2573,18 +2577,37 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
 
         if(pKFi->bImu) // This should be done only for keyframe just before temporal window
         {
+            Eigen::Vector3d priorVelocity,priorGyro,priorAcc;
+            Eigen::Matrix<double,9,9> priorInformation;
+            const bool softDynamics=pKFi==temporalBoundary && !pKFi->mPrevKF &&
+                pKFi->GetRecoveryDynamicsPrior(priorVelocity,priorGyro,priorAcc,priorInformation);
             VertexVelocity* VV = new VertexVelocity(pKFi);
             VV->setId(maxKFid+3*(pKFi->mnId)+1);
-            VV->setFixed(true);
+            VV->setFixed(!softDynamics);
             optimizer.addVertex(VV);
             VertexGyroBias* VG = new VertexGyroBias(pKFi);
             VG->setId(maxKFid+3*(pKFi->mnId)+2);
-            VG->setFixed(true);
+            VG->setFixed(!softDynamics);
             optimizer.addVertex(VG);
             VertexAccBias* VA = new VertexAccBias(pKFi);
             VA->setId(maxKFid+3*(pKFi->mnId)+3);
-            VA->setFixed(true);
+            VA->setFixed(!softDynamics);
             optimizer.addVertex(VA);
+            if(softDynamics)
+            {
+                // Existing 15D prior edge supports a 9D dynamics prior by
+                // assigning zero information to its fixed pose block. It
+                // copies the constraint values, so no borrowed lifetime.
+                Matrix15d info=Matrix15d::Zero();
+                info.block<9,9>(6,6)=priorInformation;
+                ConstraintPoseImu constraint(pKFi->GetImuRotation().cast<double>(),
+                    pKFi->GetImuPosition().cast<double>(),priorVelocity,priorGyro,priorAcc,info);
+                EdgePriorPoseImu* prior=new EdgePriorPoseImu(&constraint);
+                prior->setVertex(0,VP);prior->setVertex(1,VV);
+                prior->setVertex(2,VG);prior->setVertex(3,VA);
+                optimizer.addEdge(prior);
+                softDynamicsBoundary=pKFi;
+            }
         }
     }
 
@@ -2888,13 +2911,41 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
 
 
     // TODO: Some convergence problems have been detected here
-    if((2*err < err_end || isnan(err) || isnan(err_end)) && !bLarge) //bGN)
+    if(!std::isfinite(err) || !std::isfinite(err_end) || (2*err < err_end && !bLarge))
     {
         cout << "FAIL LOCAL-INERTIAL BA!!!!" << endl;
         return;
     }
 
 
+
+    // Never publish a nonfinite backend solution, including in the large-BA
+    // path where the upstream relative-cost check is deliberately relaxed.
+    for(auto keyframe:vpOptimizableKFs)
+    {
+        const auto pose=static_cast<VertexPose*>(optimizer.vertex(keyframe->mnId));
+        if(!pose->estimate().Rwb.allFinite() || !pose->estimate().twb.allFinite())
+        { cout << "LOCAL_BA_REJECT nonfinite pose" << endl; return; }
+        if(keyframe->bImu)
+        {
+            const auto velocity=static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*keyframe->mnId+1));
+            const auto gyro=static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*keyframe->mnId+2));
+            const auto accel=static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*keyframe->mnId+3));
+            if(!velocity->estimate().allFinite() || !gyro->estimate().allFinite() || !accel->estimate().allFinite())
+            { cout << "LOCAL_BA_REJECT nonfinite dynamics" << endl; return; }
+        }
+    }
+    if(softDynamicsBoundary)
+    {
+        const auto id=softDynamicsBoundary->mnId;
+        if(!static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*id+1))->estimate().allFinite() ||
+           !static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*id+2))->estimate().allFinite() ||
+           !static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*id+3))->estimate().allFinite())
+        { cout << "LOCAL_BA_REJECT nonfinite recovered-root dynamics" << endl; return; }
+    }
+    for(auto point:lLocalMapPoints)
+        if(!static_cast<g2o::VertexSBAPointXYZ*>(optimizer.vertex(point->mnId+iniMPid+1))->estimate().allFinite())
+        { cout << "LOCAL_BA_REJECT nonfinite map point" << endl; return; }
 
     if(!vToErase.empty())
     {
@@ -2933,6 +2984,27 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
             pKFi->SetNewBias(IMU::Bias(b[3],b[4],b[5],b[0],b[1],b[2]));
 
         }
+    }
+
+    // Pose-fixed recovered root dynamics were optimized as well. The stored
+    // recovery prior remains the original uncertain measurement, not a newly
+    // overconfident posterior repeatedly fed back as an independent prior.
+    if(softDynamicsBoundary)
+    {
+        KeyFrame* boundary=softDynamicsBoundary;
+        auto VV=static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*boundary->mnId+1));
+        auto VG=static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*boundary->mnId+2));
+        auto VA=static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*boundary->mnId+3));
+        const auto beforeVelocity=boundary->GetVelocity();
+        const auto beforeBias=boundary->GetImuBias();
+        boundary->SetVelocity(VV->estimate().cast<float>());
+        const auto bg=VG->estimate(),ba=VA->estimate();
+        boundary->SetNewBias(IMU::Bias(ba.x(),ba.y(),ba.z(),bg.x(),bg.y(),bg.z()));
+        cout << "RECOVERY_ROOT_BA kf=" << boundary->mnId
+             << " velocity_delta=" << (VV->estimate()-beforeVelocity.cast<double>()).norm()
+             << " gyro_delta=" << (bg-Eigen::Vector3d(beforeBias.bwx,beforeBias.bwy,beforeBias.bwz)).norm()
+             << " accel_delta=" << (ba-Eigen::Vector3d(beforeBias.bax,beforeBias.bay,beforeBias.baz)).norm()
+             << " cost_before=" << err << " cost_after=" << err_end << endl;
     }
 
     // Local visual KeyFrame

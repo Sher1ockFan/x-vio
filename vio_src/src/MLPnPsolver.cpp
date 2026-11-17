@@ -52,6 +52,11 @@
 
 
 namespace ORB_SLAM3 {
+    // All owned storage is value/container storage. Map points/camera are borrowed.
+    // The upstream declaration had no definition because its callers leaked the
+    // solver; bounded map recovery uses stack ownership and requires destruction.
+    MLPnPsolver::~MLPnPsolver() = default;
+
     MLPnPsolver::MLPnPsolver(const Frame &F, const vector<MapPoint *> &vpMapPointMatches):
             mnInliersi(0), mnIterations(0), mnBestInliers(0), N(0), mpCamera(F.mpCamera){
         mvpMapPointMatches = vpMapPointMatches;

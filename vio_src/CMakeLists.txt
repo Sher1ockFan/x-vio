@@ -73,6 +73,8 @@ src/KeyFrameDatabase.cc
 src/Sim3Solver.cc
 src/Viewer.cc
 src/ImuTypes.cc
+src/ImuRecovery.cc
+src/TrackingHealth.cc
 src/G2oTypes.cc
 src/CameraModels/Pinhole.cpp
 src/CameraModels/KannalaBrandt8.cpp
@@ -101,6 +103,8 @@ include/KeyFrameDatabase.h
 include/Sim3Solver.h
 include/Viewer.h
 include/ImuTypes.h
+include/ImuRecovery.h
+include/MapReuseStatus.h
 include/G2oTypes.h
 include/CameraModels/GeometricCamera.h
 include/CameraModels/Pinhole.h

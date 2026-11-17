@@ -26,12 +26,13 @@
 
 #include<mutex>
 #include<chrono>
+#include<stdexcept>
 
 namespace ORB_SLAM3
 {
 
 LocalMapping::LocalMapping(System* pSys, Atlas *pAtlas, const float bMonocular, bool bInertial, const string &_strSeqName):
-    mpSystem(pSys), mbMonocular(bMonocular), mbInertial(bInertial), mbResetRequested(false), mbResetRequestedActiveMap(false), mbFinishRequested(false), mbFinished(true), mpAtlas(pAtlas), bInitializing(false),
+    mpSystem(pSys), mbMonocular(bMonocular), mbInertial(bInertial), mbResetRequested(false), mbResetRequestedActiveMap(false), mbFinishRequested(false), mbFinished(false), mpAtlas(pAtlas), bInitializing(false),
     mbAbortBA(false), mbStopped(false), mbStopRequested(false), mbNotStop(false), mbAcceptKeyFrames(true),
     mIdxInit(0), mScale(1.0), mInitSect(0), mbNotBA1(true), mbNotBA2(true), mIdxIteration(0), infoInertial(Eigen::MatrixXd::Zero(9,9))
 {
@@ -63,8 +64,6 @@ void LocalMapping::SetTracker(Tracking *pTracker)
 
 void LocalMapping::Run()
 {
-    mbFinished = false;
-
     while(1)
     {
         // Tracking will see that Local Mapping is busy
@@ -128,6 +127,15 @@ void LocalMapping::Run()
 
                     if(mbInertial && mpCurrentKeyFrame->GetMap()->isImuInitialized())
                     {
+                        // A recovered session starts a new temporal chain. Never
+                        // form an IMU edge to an old-session keyframe or run BA
+                        // until two fresh integrated edges exist.
+                        const bool freshChain = mpCurrentKeyFrame->mPrevKF &&
+                            mpCurrentKeyFrame->mPrevKF->mPrevKF &&
+                            mpCurrentKeyFrame->mpImuPreintegrated &&
+                            mpCurrentKeyFrame->mPrevKF->mpImuPreintegrated;
+                        if(freshChain)
+                        {
                         float dist = (mpCurrentKeyFrame->mPrevKF->GetCameraCenter() - mpCurrentKeyFrame->GetCameraCenter()).norm() +
                                 (mpCurrentKeyFrame->mPrevKF->mPrevKF->GetCameraCenter() - mpCurrentKeyFrame->mPrevKF->GetCameraCenter()).norm();
 
@@ -148,6 +156,7 @@ void LocalMapping::Run()
                         bool bLarge = ((mpTracker->GetMatchesInliers()>75)&&mbMonocular)||((mpTracker->GetMatchesInliers()>100)&&!mbMonocular);
                         Optimizer::LocalInertialBA(mpCurrentKeyFrame, &mbAbortBA, mpCurrentKeyFrame->GetMap(),num_FixedKF_BA,num_OptKF_BA,num_MPs_BA,num_edges_BA, bLarge, !mpCurrentKeyFrame->GetMap()->GetIniertialBA2());
                         b_doneLBA = true;
+                        }
                     }
                     else
                     {
@@ -822,6 +831,17 @@ void LocalMapping::SearchInNeighbors()
     mpCurrentKeyFrame->UpdateConnections();
 }
 
+void LocalMapping::StartRecoveredChain()
+{
+    unique_lock<mutex> lock(mMutexStop);
+    if(!mbStopped)
+        throw std::runtime_error("MAP_E_RECOVERY: local mapping is not stopped");
+    // Mature metric map: no initialization or short-window scale refinement.
+    mTinit = 100.f;
+    mlpRecentAddedMapPoints.clear();
+    mbBadImu = false;
+}
+
 void LocalMapping::RequestStop()
 {
     unique_lock<mutex> lock(mMutexStop);
@@ -1017,7 +1037,7 @@ void LocalMapping::KeyFrameCulling()
                 if(pKF->mnId>(mpCurrentKeyFrame->mnId-2))
                     continue;
 
-                if(pKF->mPrevKF && pKF->mNextKF)
+                if(pKF->mPrevKF && pKF->mNextKF && pKF->mpImuPreintegrated && pKF->mNextKF->mpImuPreintegrated)
                 {
                     const float t = pKF->mNextKF->mTimeStamp-pKF->mPrevKF->mTimeStamp;
 
@@ -1158,9 +1178,10 @@ bool LocalMapping::CheckFinish()
 
 void LocalMapping::SetFinish()
 {
-    unique_lock<mutex> lock(mMutexFinish);
-    mbFinished = true;    
-    unique_lock<mutex> lock2(mMutexStop);
+    // Match Release's lock order; shutdown must not race into an inversion.
+    unique_lock<mutex> lock(mMutexStop);
+    unique_lock<mutex> lock2(mMutexFinish);
+    mbFinished = true;
     mbStopped = true;
 }
 

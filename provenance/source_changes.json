@@ -2,9 +2,15 @@
   "project": "mono_imu_vio",
   "base_commit": "4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4",
   "modified_fork": true,
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "original_count": 955,
-  "current_count": 264,
+  "current_count": 270,
+  "action_counts": {
+    "added": 6,
+    "modified": 24,
+    "removed": 691
+  },
+  "patch_scope": "core_changes.patch contains modified and added UTF-8 source files; all removed paths are recorded in changes below.",
   "changes": [
     {
       "path": ".gitignore",
@@ -16,7 +22,7 @@
       "path": "CMakeLists.txt",
       "action": "modified",
       "before_sha256": "4ec721c72dc3304d8e0090202d7ccf0201ecd34630ffc8fe45b597d59c7e09e3",
-      "after_sha256": "8b17c558d9ce11205ec779f7364058a2c8cb339b05c06c499017cb3193fb9d7f"
+      "after_sha256": "7549069993ba8fde800825bfe9837d4ac4444f78fea6335664e43254b656af0b"
     },
     {
       "path": "Examples/Calibration/python_scripts/process_imu.py",
@@ -4048,7 +4054,7 @@
       "path": "README.md",
       "action": "modified",
       "before_sha256": "b6dc671f967dd52e7e6ebcd6f4072692c93b0ab570aa9a9bcb6e4917cd4707f4",
-      "after_sha256": "783c8c0750a4a4ac6172427001cce21c33632c79f4f8f973c5ccb819db91c49f"
+      "after_sha256": "f8bd3c98c962e760f2a3665c86cf54ab753fb6ee3addd8a9e1a0ed2fabdc1c10"
     },
     {
       "path": "build_ros.sh",
@@ -4171,16 +4177,58 @@
       "after_sha256": null
     },
     {
+      "path": "include/Atlas.h",
+      "action": "modified",
+      "before_sha256": "16a90abe764df6931f67bda5ad834c0f5286b6ebac271d45a3642ce05855991a",
+      "after_sha256": "fd6952123b515736cd61d84ff1ccd09b19a9b712e64ed613093d9991609822e3"
+    },
+    {
+      "path": "include/AtlasPersistence.h",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "cf501e51f48f631c357a961518dfc550df6c3a51b105e19117643ac033d9a1cc"
+    },
+    {
       "path": "include/Frame.h",
       "action": "modified",
       "before_sha256": "368bf57e62193ab9931688401d3c1363b7eef727e0569058c8744e2f218e4215",
       "after_sha256": "02e0fd09fbe3a672305b89af2e9114e2ad76e20a58b17d6f27e4ef7a3226d45e"
     },
     {
+      "path": "include/ImuRecovery.h",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "d033aa0a35852050876f684ede74a8afe0c8b8d9b40aeec5a81baff0cda0cfd9"
+    },
+    {
+      "path": "include/KeyFrame.h",
+      "action": "modified",
+      "before_sha256": "bef849a9d9bc8167968dd68018146ea0d8f464e5da4d6726d92a0cba4f9d29e9",
+      "after_sha256": "bec057df8027e9686968edc8822fea0f36e8df4018c95bcb9b041a0944c35d8c"
+    },
+    {
+      "path": "include/KeyFrameDatabase.h",
+      "action": "modified",
+      "before_sha256": "4b9179d323f59b0bddf818abbd11264a185ebf9eb410cdf9186573ff1be67650",
+      "after_sha256": "ef533f66e3feebe78c368f9c0a6c83c86f7d8cb2d54ddfcc8a4aee22ee1bfeaf"
+    },
+    {
+      "path": "include/LocalMapping.h",
+      "action": "modified",
+      "before_sha256": "c786993960d52b74a064c2e487f0e450f989b954b17585febb5e6f8d95e1915b",
+      "after_sha256": "b48934953c0fee510e36063ca84a48504270053b0d3eba8a003425234393d778"
+    },
+    {
       "path": "include/LoopClosing.h",
       "action": "modified",
       "before_sha256": "10e5900cea38d06a1a63a33ea59900346f9a28ce4f56867ced3a7c18de3b7854",
-      "after_sha256": "148b5be971980ca6bad17677a2b06fbba37f6b907a29ece475258c912c5366d6"
+      "after_sha256": "7742012ea6c1e0eb6109f89f018de1416a4dcba2dfc08f8da2d7b6b79eea6c82"
+    },
+    {
+      "path": "include/MapReuseStatus.h",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "53a34de9b80e3a572cbca019e6040fcf5b63df0324eac8a95496ebbdf31a31ca"
     },
     {
       "path": "include/Settings.h",
@@ -4192,25 +4240,73 @@
       "path": "include/System.h",
       "action": "modified",
       "before_sha256": "1e353f2c511ffa85ee26ec48c7a6e733754bf5ecef47c9f7f83f70be3db7f310",
-      "after_sha256": "428dc7251bd3c384b619279a1f708c898d673d84209ce5cdb4cde5d4afc635a8"
+      "after_sha256": "6ae00d26b7d83f4d4097f3a66caa77cb11d8a71393323617cffd564c7347031d"
     },
     {
       "path": "include/Tracking.h",
       "action": "modified",
       "before_sha256": "9b20af086b2365edd60721fdab10683e69808717e5cabac21274faabf7989ec3",
-      "after_sha256": "69a0d7f6eb41768667cd2104b0a525958f458716f4f6b69ed89354ec622a4090"
+      "after_sha256": "4d25567d08fb6c911a693a2a22654cf3935847a14396dd8bd55767cb6310c619"
+    },
+    {
+      "path": "include/TrackingHealth.h",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "175a2423fda53124c3a5a2640d78ce3995a68f4130887d5c5c2821f78dc77f7d"
+    },
+    {
+      "path": "src/Atlas.cc",
+      "action": "modified",
+      "before_sha256": "1f73d474364e72305c88f235e23a3873f97a07b9e512b460009e32e58371d5ea",
+      "after_sha256": "a0a2cc9225582ca9aac3d57aa6ac97bae3cf0b8ad411c09afc26ce3d095e4c59"
     },
     {
       "path": "src/Frame.cc",
       "action": "modified",
       "before_sha256": "67e0c446d9da80db11aceee4ff2664487cfe1f2502bc50d843ff7471917eb42e",
-      "after_sha256": "ed330dae999d6f071a60c2d6eed3d2f8372f3a678593125150fe88bc92c15a08"
+      "after_sha256": "bd2fb0db483062a4406b949ae2192c53e07f4547cb516bdb77658f74c8fbac41"
+    },
+    {
+      "path": "src/ImuRecovery.cc",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "e26f64a367c8b84bd7b91c5f37f50805b3559b1e4c8e2f30a77ce795e48886a6"
+    },
+    {
+      "path": "src/KeyFrame.cc",
+      "action": "modified",
+      "before_sha256": "cbf89046b758e56bb3327f72cbf920e936ead85805d11a70f2ecd1eb55c5df17",
+      "after_sha256": "21ac21d78cbccf77626eaf7bcff5f4316f20f26e3217c2614cf7c46ca4989326"
+    },
+    {
+      "path": "src/KeyFrameDatabase.cc",
+      "action": "modified",
+      "before_sha256": "5350a6b1774333f1f318cff950b62c39fc718474ad86ef209bce3f578856b5f2",
+      "after_sha256": "67f17b2f49f22cb567a492f7b18f42d3453e97158f6dbd4a3d604a6f6dd37589"
+    },
+    {
+      "path": "src/LocalMapping.cc",
+      "action": "modified",
+      "before_sha256": "6da465cd5b88b6278188935f7b9264d493dd88d3487a75bccf4614bd40c8a30e",
+      "after_sha256": "e9289a7b7d6f96338dba7d058c41382f6bd492ac54888b592c8c0b8051d75296"
     },
     {
       "path": "src/LoopClosing.cc",
       "action": "modified",
       "before_sha256": "00646de5da317e268534ffe556786e51e71e46d52ab142c17bab0b42e7287785",
-      "after_sha256": "7262b9b85d24b426e08f33d4d64215da34c918dd7da2661acfc32cec93f0c657"
+      "after_sha256": "78400665fdfcf6c542cc19cca9e69c9d1e68d9ff994282dc1a98f631fcb024e3"
+    },
+    {
+      "path": "src/MLPnPsolver.cpp",
+      "action": "modified",
+      "before_sha256": "43fb4bbd7169d24f3118c83cd1a79f083476ac439926ffca068568d15cc7bdcf",
+      "after_sha256": "041edf25db4e76505ca5a4d0cb598704a5b782331f4e3f54ba9160962072ab14"
+    },
+    {
+      "path": "src/Optimizer.cc",
+      "action": "modified",
+      "before_sha256": "a1ab6e9eb182ed518902ea4fb4db2bd1afb87353f5c790f6989ff60569516261",
+      "after_sha256": "d30d850c6aa928a4689c582b104296148285f4181f4e1ab090e229767d8d5de9"
     },
     {
       "path": "src/Settings.cc",
@@ -4222,19 +4318,25 @@
       "path": "src/System.cc",
       "action": "modified",
       "before_sha256": "935dd45007a75d6750bb8c3b5c41f4edb91b7ef0b0944f655d4348955bbd168a",
-      "after_sha256": "4746547c89c00c39740b8e28382f2756fa5eb622016b2f77521344298cbd7e26"
+      "after_sha256": "91a2a43dfb0d3a0552170f9c770380b2d11f2b82937ff5cdde7f75e0a62ffee5"
     },
     {
       "path": "src/Tracking.cc",
       "action": "modified",
       "before_sha256": "3a3654bcc675f859cce1f2fb28ab32a129e8d734d0ac3d55417ff8b47a013264",
-      "after_sha256": "67f66cbce46b3768e51751ce85c90682f51a816c306f7078a6091a187cd1c7f8"
+      "after_sha256": "a61eed9f95db291299901cb4efc2a3582f7bd4cebe05c3d9a20e4a8cf0e66ce1"
+    },
+    {
+      "path": "src/TrackingHealth.cc",
+      "action": "added",
+      "before_sha256": null,
+      "after_sha256": "5d1ea98d1e0db8c767a7b1ec6c04de12e542e3670564349aff4afd41d342fb5e"
     },
     {
       "path": "src/Viewer.cc",
       "action": "modified",
       "before_sha256": "a6a15d3055654dc44db5209f2ae0cff4daa670508a42ab9dc623c46b197e2388",
-      "after_sha256": "7ce9a6223298675bde11966c289007a3a993bc45653522a1a311b61021664aa1"
+      "after_sha256": "898184df5751ee86a8a670d185c3cdaa792af02c426549ecb984c28b9df58cd7"
     }
   ]
 }

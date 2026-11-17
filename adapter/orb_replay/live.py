@@ -10,6 +10,7 @@ import math
 import os
 from pathlib import Path
 import platform
+import re
 import select
 import signal
 import stat
@@ -491,16 +492,37 @@ def send_packet(s, fd, stamp, samples, pixels):
 def wait_ready(child, log_path):
     print("Loading ORB vocabulary; progress in", log_path, flush=True)
     deadline = time.monotonic() + 180
-    tail = b""
+    pending = b""
+    discarding_line = False
+    map_announced = False
     with log_path.open("rb") as stream:
         while time.monotonic() < deadline:
             if child.poll() is not None:
                 raise RuntimeError(f"ORB exited during initialization ({child.returncode}); inspect orb.log.")
             chunk = stream.read(65536)
-            tail = tail + chunk
-            if b"ORB_LIVE_READY\n" in tail:
-                return
-            tail = tail[-64:]
+            records = (pending + chunk).split(b"\n")
+            pending = records.pop()
+            for record in records:
+                if discarding_line:
+                    discarding_line = False
+                    continue
+                if len(record) > 4096:
+                    continue
+                record = record.rstrip(b"\r")
+                loaded = re.fullmatch(
+                    rb"MAP_REFERENCE_LOADED id=(\d+) keyframes=(\d+); current velocity/bias still require recovery",
+                    record,
+                )
+                if loaded and not map_announced:
+                    map_announced = True
+                    print("Map load: SUCCESS id=" + loaded[1].decode() +
+                          " keyframes=" + loaded[2].decode() +
+                          "; 旧地图加载成功，当前位姿与 IMU 状态仍待恢复。", flush=True)
+                if record == b"ORB_LIVE_READY":
+                    return
+            if len(pending) > 4096:
+                pending = b""
+                discarding_line = True
             if not chunk:
                 time.sleep(.15)
     raise TimeoutError("ORB startup took more than 180 s; inspect orb.log.")
@@ -556,7 +578,10 @@ def run(args, out, shift):
             report["performance_logging"] = True
         with (out / "orb.log").open("xb") as orb_log, (out / "camera.log").open("xb") as cam_log:
             binary = "orb_live_viewer" if args.viewer else "orb_live_runner"
-            orb = subprocess.Popen([args.bindir / binary, args.vocabulary, args.yaml],
+            native_command = [args.bindir / binary, args.vocabulary, args.yaml]
+            if not args.viewer:
+                native_command.append("--headless")
+            orb = subprocess.Popen(native_command,
                                    stdin=subprocess.PIPE, stdout=orb_log, stderr=subprocess.STDOUT,
                                    cwd=out, start_new_session=True)
             feeds.mark("loading_orb")
@@ -672,13 +697,13 @@ def main():
     for name in ("bindir", "vocabulary", "yaml", "timing", "out"):
         ap.add_argument(name, type=lambda p: Path(p).expanduser().resolve())
     ap.add_argument("--seconds", type=int, help="tracked seconds after startup; 0 runs until Ctrl+C "
-                                               "(default: 0 with --viewer, 60 otherwise)")
+                                               "(default: 0 in both viewer and headless modes)")
     ap.add_argument("--viewer", action="store_true", help="show the native ORB map and current frame windows")
     args = ap.parse_args()
     if sys.platform != "linux" or platform.machine() != "aarch64":
         ap.error("Run this command on the Jetson Linux aarch64 host.")
     if args.seconds is None:
-        args.seconds = 0 if args.viewer else 60
+        args.seconds = 0
     if args.seconds < 0:
         ap.error("--seconds must be 0 (until Ctrl+C) or a positive integer.")
     if args.viewer and not os.environ.get("DISPLAY"):

@@ -56,6 +56,8 @@ public:
 
     // Thread Synch
     void RequestStop();
+    // Call only after isStopped(), while loop closing is paused too.
+    void StartRecoveredChain();
     void RequestReset();
     void RequestResetActiveMap(Map* pMap);
     bool Stop();

@@ -16,7 +16,7 @@ cp "$manifest" "$scratch/input/source.sha256"
 cp "$here/provenance/"* "$scratch/input/provenance/"
 cp "$here/docker/"{compile.sh,package.sh,extra.sh,runtime.py} "$scratch/input/"
 cp "$here/adapter/viewer.cc" "$scratch/input/"
-cp "$here/jetson/"{start.sh,check.sh,README.md,playback.py,live_console.py,performance.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html} "$scratch/input/"
+cp "$here/jetson/"{start.sh,check.sh,README.md,playback.py,live_console.py,map_session.py,performance.py,status.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html} "$scratch/input/"
 cp "$here/adapter/orb_replay/"{live.py,umi.py,umi_quality.py,camera_live.c} "$scratch/input/orb_replay/"
 cp "$here/adapter/cam_imu_motion/"{camera.c,imu.py,timing_core.py} "$scratch/input/cam_imu_motion/"
 cp "$here/params/"{camera,cam_imu,imu,target,orb_trial}.yaml "$here/params/timing.json" "$scratch/input/params/"
@@ -40,7 +40,7 @@ COPYFILE_DISABLE=1 tar --no-xattrs -cf - -C "$scratch/input" . |
         # dropped from the previous manifest. The original cache is untouched.
         python3 - "$input" "$root" <<'\''PY'\''
 from pathlib import Path
-import hashlib, shutil, sys
+import hashlib, os, shutil, sys
 incoming, root = map(Path, sys.argv[1:])
 def entries(path):
     return {line[66:]: line[:64] for line in path.read_text().splitlines()} if path.exists() else {}
@@ -53,7 +53,12 @@ for rel, digest in new.items():
     src, dst = incoming / "source" / rel, root / "source" / rel
     if not dst.is_file() or hashlib.sha256(dst.read_bytes()).hexdigest() != digest:
         dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dst)
+        # A staging edit can predate an object produced by an earlier concurrent
+        # build. Preserve permissions, not that mtime: changed bytes must make
+        # Ninja rebuild even when the previous object is newer than the edit.
+        shutil.copyfile(src, dst)
+        shutil.copymode(src, dst)
+        os.utime(dst, None)
 PY
         (cd "$root/source"; sha256sum --quiet -c "$input/source.sha256")
         cp "$input/source.sha256" "$root/source.sha256"

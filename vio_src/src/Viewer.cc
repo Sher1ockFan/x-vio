@@ -28,7 +28,7 @@ namespace ORB_SLAM3
 
 Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath, Settings* settings):
     both(false), mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
-    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false)
+    mbFinishRequested(false), mbFinished(false), mbStopped(true), mbStopRequested(false)
 {
     if(settings){
         newParameterLoader(settings);
@@ -162,8 +162,8 @@ bool Viewer::ParseViewerParamFile(cv::FileStorage &fSettings)
 
 void Viewer::Run()
 {
-    mbFinished = false;
-    mbStopped = false;
+    // mbFinished starts false; completion is published under mMutexFinish.
+    Release();
 
     pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768);
 
@@ -355,13 +355,11 @@ void Viewer::Run()
             if(bLocalizationMode)
                 mpSystem->DeactivateLocalizationMode();
 
-            // Stop all threads
-            mpSystem->Shutdown();
-
-            // Save camera trajectory
-            mpSystem->SaveTrajectoryEuRoC("CameraTrajectory.txt");
-            mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
+            // The input thread owns shutdown/serialization. Writing an Atlas
+            // here races adapters that exit as soon as isShutDown becomes true.
+            mpSystem->RequestShutdown();
             menuStop = false;
+            break;
         }
 
         if(Stop())

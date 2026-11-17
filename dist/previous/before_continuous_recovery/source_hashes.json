@@ -1,0 +1,29 @@
+{
+  "overwritten": {
+    "ORB_SLAM3/include/MapReuseStatus.h": "17acda385d635fa1037f35f47adf2f2bbfadd2ccf4323939336769b7ae395763",
+    "ORB_SLAM3/include/Tracking.h": "66c97c34c9c0ddd8d7856efd8638bcb1ac3e93764e3285164f69cc2b5a565790",
+    "ORB_SLAM3/src/Tracking.cc": "fa9e5bab660b7c04d2bdab1e26a956f01173ec2e8ad7c102c471d0a3cc042c5d",
+    "README.md": "0b6d04b8335ea3c7007d21d1fb82655ed4fb01b40c09db3d0d77514cc513c93f",
+    "adapter/orb_replay/live.py": "1458c88026991c6d2f2d9c1429e4fd96cf1b055b14f4b151b5a2ac99cda93258",
+    "adapter/viewer.cc": "2d0899a0681db5ab574bddb830031d20cf8d4536093d811672bcbdc22ff0280d",
+    "build.sh": "a0f3285445d1151f6c944125cf4406f5c0c7565e76691861991c31162d5a4db4",
+    "docker/package.sh": "6e00f63fd8e68b259f77836f4036eac921acd6b65eac69ffd13d8edc23ed5ce7",
+    "jetson/README.md": "9605e0f7b8ac5fee92be8ac158212c8495fbc95990f6d12ec922bc915753fb07",
+    "jetson/check.sh": "49d53f08bc158653af18f2e080fbe216f38349fef554e7df8af96f3944ef377e",
+    "jetson/live_console.py": "34582d5588f316d916260b964a0dbd5926d8aecede30a6f642a90caa347e196a",
+    "jetson/start.sh": "86229caafdd57be4de1d7254e480e97c6969949d8103a5a75780b44db49a868b",
+    "provenance/README.md": "be192e021b63bc07c3967cd79a08f667779632664e6adcc83129bc2a62fe8e9b",
+    "provenance/core_changes.patch": "511152b1dffd8f2c284ac14119aa4213c759c6e74490188100ccd654bfb89ef7",
+    "provenance/source_changes.json": "f36541c42b6e8b316a1c49ee9802ffeefa32f359e84f96038b140e1212c67063",
+    "source.sha256": "72d5636505ba386d3c64a79eaf039a799ca60d6bf08e2ced9e70e4b45cbc2509",
+    "tests/README.md": "7199e899ec60b1ce9db3c430a392abaacf9f8dc01da3f0762f8db5f2d08c5902",
+    "tests/atlas_persistence_test.cc": "57a9099a3dbb87947a5e4e701d715272699d8a08aa99b39a0413b41b56a0b375",
+    "tests/bridge_timing_test.py": "07bd9e77296c19665c936ce8d93e8d3c9dd18a475b2bd2dd07b22d315445523d",
+    "tests/check_live_console.py": "a95ae5ff52df164e167b1cfd9a4531bd8006912176c3bbf9ecf825b410c66384",
+    "tests/native_atlas_test.py": "833e6db587604d99d3fc9d76639ed829a830951b6900ec4cc8014567820d7fa5"
+  },
+  "new_paths": [
+    "jetson/status.py",
+    "tests/check_status.py"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "status": "PACKAGE_AUDIT_PASS",
+  "manifest_files_verified": 308,
+  "core_source_files": 270,
+  "shipped_core_source_files": 263,
+  "calibration_files_unchanged": true,
+  "elf_aarch64": [
+    "bin/camera_umi",
+    "bin/stock_viewer",
+    "bin/mono_inertial_euroc",
+    "bin/camera_live",
+    "lib/libpangolin.so",
+    "lib/libg2o.so",
+    "lib/libDBoW2.so",
+    "lib/libORB_SLAM3.so"
+  ],
+  "runtime_symlinks": {
+    "bin/orb_live_viewer": "stock_viewer",
+    "bin/orb_live_runner": "stock_viewer"
+  },
+  "packaged_scripts_docs_sources_match": true,
+  "atlas_format": "MONO_IMU_ATLAS_2",
+  "preserved_csv_schemas": {
+    "poses.csv": 16,
+    "recovery_events.csv": 10,
+    "state_diagnostics.csv": 62,
+    "tracking_timing.csv": 10
+  },
+  "recovery_timing_columns": 9,
+  "core_sha256": "9626c765009846bac161bc210531ea55426fcb21c148b033aa59dae932428479",
+  "source_manifest_sha256": "ef9292aabc7537e79d7f8f1cc4a52418a5a2fb78d16fd4e3ee123014f54b5590",
+  "archive_sha256": "8b85d97fa9fc11a80787856dd02138a37875811aea00d5961fe940c1f172ea29",
+  "archive_bytes": 58024460,
+  "changed_files": [
+    "ORB_SLAM3/include/TrackingHealth.h",
+    "ORB_SLAM3/src/TrackingHealth.cc",
+    "README.md",
+    "jetson/README.md",
+    "provenance/README.md",
+    "provenance/core_changes.patch",
+    "provenance/source_changes.json",
+    "source.sha256",
+    "tests/README.md",
+    "tests/check_reprojection_gate.py",
+    "tests/reprojection_fixture.json",
+    "tests/tracking_health_test.cc"
+  ]
+}

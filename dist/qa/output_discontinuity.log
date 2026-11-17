@@ -1,0 +1,590 @@
+NATIVE_ATLAS_QA_DIRECTORY /tmp/mono-imu-atlas-67hlt179
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:74: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                          ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<3, Eigen::Matrix<double, 3, 1> >’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_sba.h:40:35:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<6, g2o::SE3Quat>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:59:33:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<6, g2o::SE3Quat, g2o::VertexSE3Expmap, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:83:24:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:114:35:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:146:41:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<7, g2o::Sim3>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:48:35:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<7, g2o::Sim3, g2o::VertexSim3Expmap, g2o::VertexSim3Expmap>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:99:27:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSim3Expmap>’:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:130:36:   required from here
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-67hlt179/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-recovery-tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+/tmp/mono-recovery-tests/atlas_persistence_test.cc: In function ‘std::string Md5(const string&)’:
+/tmp/mono-recovery-tests/atlas_persistence_test.cc:31:28: warning: ‘int MD5_Init(MD5_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   31 |     MD5_CTX state; MD5_Init(&state); char bytes[65536];
+      |                    ~~~~~~~~^~~~~~~~
+In file included from /tmp/mono-recovery-tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:49:27: note: declared here
+   49 | OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
+      |                           ^~~~~~~~
+/tmp/mono-recovery-tests/atlas_persistence_test.cc:32:68: warning: ‘int MD5_Update(MD5_CTX*, const void*, size_t)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   32 |     while(in.read(bytes,sizeof(bytes)) || in.gcount()>0) MD5_Update(&state,bytes,in.gcount());
+      |                                                          ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /tmp/mono-recovery-tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:50:27: note: declared here
+   50 | OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
+      |                           ^~~~~~~~~~
+/tmp/mono-recovery-tests/atlas_persistence_test.cc:33:40: warning: ‘int MD5_Final(unsigned char*, MD5_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   33 |     unsigned char digest[16]; MD5_Final(digest,&state);
+      |                               ~~~~~~~~~^~~~~~~~~~~~~~~
+In file included from /tmp/mono-recovery-tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:51:27: note: declared here
+   51 | OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
+      |                           ^~~~~~~~~
+/tmp/mono-recovery-tests/atlas_persistence_test.cc: In function ‘void CrashTrace(int)’:
+/tmp/mono-recovery-tests/atlas_persistence_test.cc:133:10: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  133 |     write(STDERR_FILENO,message,sizeof(message)-1);
+      |     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ATLAS_ATOMIC_FAILURE_PRESERVES_OLD_PASS
+Creation of new map with id: 0
+Creation of new map with last KF id: 0
+First KF:0; Map init KF:0
+Creation of new map with id: 1
+Stored map with ID: 0
+Creation of new map with last KF id: 12
+ATLAS_FIXTURE_ROUNDTRIP_PASS points=1100
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-67hlt179/mapjump.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-67hlt179/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.8041570711888833e-06 gyro_delta=1.1880849359021178e-06 accel_delta=1.0580687745818988e-05 cost_before=0.036374770104885101 cost_after=1.9595456706156256e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.7347512939929895e-10 gyro_delta=4.0118715651129442e-08 accel_delta=1.852930268360332e-08 cost_before=3.1694007702753879e-06 cost_after=2.5206188638549065e-06
+Fail to track local map!
+OUTPUT_DISCONTINUITY_REJECTED internal=2.9100133360770997e-06 output=9.0000030214432787 reason=health: published pose discontinuity across backend map update
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.2388397455989247e-05 gyro_delta=8.3133128546941769e-07 accel_delta=1.4529123957325433e-05 cost_before=0.018192321062088013 cost_after=6.7548303377407137e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=3.2863620926290682e-07 gyro_delta=4.2771586609845102e-08 accel_delta=9.4172063722355574e-06 cost_before=5.5235403124243021e-05 cost_after=7.4743065852089785e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=4.8878092883257361e-07 gyro_delta=2.6799632544507031e-08 accel_delta=1.7854394083899571e-06 cost_before=7.1451555413659662e-05 cost_after=7.7117092587286606e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.0053113460647507e-07 gyro_delta=9.1023602029172593e-09 accel_delta=2.0316153294179686e-06 cost_before=9.0216999524272978e-05 cost_after=7.7091108323656954e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=2.7799316238225114e-07 gyro_delta=1.0096781366831613e-08 accel_delta=9.1344502341729011e-07 cost_before=0.00010501349606784061 cost_after=7.7983659139135852e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=3.7124028353208604e-07 gyro_delta=1.8268529452029382e-09 accel_delta=6.4393373165241914e-07 cost_before=0.00011627178901107982 cost_after=7.0788169068691786e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.9076918367629959e-07 gyro_delta=4.027089844047346e-09 accel_delta=6.9421458841636057e-07 cost_before=0.00013408408267423511 cost_after=7.3655205596878659e-06
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-67hlt179/mapjump.osa
+WHOLE_MAP_OUTPUT_DISCONTINUITY_GUARD_PASS
+SYSTEM_PERSISTENCE_PASS mapjump
+NATIVE_ATLAS_FOCUSED_PASS mapjump

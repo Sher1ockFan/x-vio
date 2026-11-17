@@ -28,6 +28,8 @@
 #include <boost/serialization/string.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <stdexcept>
+#include <chrono>
+#include "AtlasPersistence.h"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -92,6 +94,24 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         }
     }
 
+    node = fsSettings["MapReuse.Enabled"];
+    mMapReuseEnabled = !node.empty() && int(node) != 0;
+    mCalibrationFingerprint = AtlasPersistence::CalibrationFingerprint(fsSettings);
+    node = fsSettings["MapReuse.LoadPath"];
+    if (!node.empty() && !std::string(node).empty()) {
+        mStrLoadAtlasFromFile = std::string(node);
+        AtlasPersistence::ValidateExactPath(mStrLoadAtlasFromFile);
+        mExactAtlasLoadPath = true;
+    }
+    node = fsSettings["MapReuse.SavePath"];
+    if (!node.empty() && !std::string(node).empty()) {
+        mStrSaveAtlasToFile = std::string(node);
+        AtlasPersistence::ValidateExactPath(mStrSaveAtlasToFile);
+        mExactAtlasSavePath = true;
+    }
+    if ((mExactAtlasLoadPath || mExactAtlasSavePath) && !mMapReuseEnabled)
+        throw std::runtime_error("MAP_E_CONFIG: MapReuse.Enabled must be 1 when persistence paths are supplied");
+
     node = fsSettings["loopClosing"];
     bool activeLC = true;
     if(!node.empty())
@@ -114,7 +134,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         {
             cerr << "Wrong path to vocabulary. " << endl;
             cerr << "Falied to open at: " << strVocFile << endl;
-            exit(-1);
+            throw std::runtime_error("MAP_E_VOCABULARY: cannot load ORB vocabulary");
         }
         cout << "Vocabulary loaded!" << endl << endl;
 
@@ -136,7 +156,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         {
             cerr << "Wrong path to vocabulary. " << endl;
             cerr << "Falied to open at: " << strVocFile << endl;
-            exit(-1);
+            throw std::runtime_error("MAP_E_LOAD: cannot load atlas or vocabulary");
         }
         cout << "Vocabulary loaded!" << endl << endl;
 
@@ -153,7 +173,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
         if(!isRead)
         {
             cout << "Error to load the file, please try with other session file or vocabulary file" << endl;
-            exit(-1);
+            throw std::runtime_error("MAP_E_LOAD: cannot load atlas or vocabulary");
         }
         //mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
 
@@ -162,7 +182,19 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
         loadedAtlas = true;
 
-        mpAtlas->CreateNewMap();
+        if (mMapReuseEnabled) {
+            Map* reference = nullptr;
+            for (Map* candidate : mpAtlas->GetAllMaps())
+                if (Atlas::IsMatureMap(candidate) && (!reference ||
+                    candidate->KeyFramesInMap() > reference->KeyFramesInMap())) reference = candidate;
+            if (!reference) throw std::runtime_error("MAP_E_LOAD: atlas contains no mature inertial map");
+            mpAtlas->ChangeMap(reference);
+            cout << "MAP_REFERENCE_LOADED id=" << reference->GetId()
+                 << " keyframes=" << reference->KeyFramesInMap()
+                 << "; current velocity/bias still require recovery" << endl;
+        } else {
+            mpAtlas->CreateNewMap();
+        }
 
         //clock_t timeElapsed = clock() - start;
         //unsigned msElapsed = timeElapsed / (CLOCKS_PER_SEC / 1000);
@@ -234,11 +266,20 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
 Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 {
+    unique_lock<std::timed_mutex> trackingLock(mMutexTrack);
 
     {
         unique_lock<mutex> lock(mMutexReset);
-        if(mbShutDown)
+        if(mbShutDown || mbShutdownRequested)
+        {
+            unique_lock<mutex> stateLock(mMutexState);
+            mTrackingState = Tracking::NO_IMAGES_YET;
+            mMapReuseStatus.visual_ready = false;
+            mMapReuseStatus.inertial_ready = false;
+            mMapReuseStatus.phase = "STOPPING";
+            mMapReuseStatus.reason = "shutdown requested";
             return Sophus::SE3f();
+        }
     }
 
 
@@ -297,6 +338,7 @@ Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, 
 
     unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
+    mMapReuseStatus = mpTracker->GetMapReuseStatus();
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
@@ -345,54 +387,55 @@ void System::Shutdown()
 {
     {
         unique_lock<mutex> lock(mMutexReset);
+        if (mbShutDown) return;
         mbShutDown = true;
     }
-
+    // No frame may mutate the Atlas while workers stop or it is serialized.
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+    unique_lock<std::timed_mutex> trackingLock(mMutexTrack, std::defer_lock);
+    if (!trackingLock.try_lock_until(deadline)) {
+        WriteMapSaveStatus("ERROR", "MAP_E_SHUTDOWN: tracking did not stop within 30 seconds");
+        throw std::runtime_error("MAP_E_SHUTDOWN: tracking did not stop within 30 seconds; atlas not saved");
+    }
     cout << "Shutdown" << endl;
-
+    mpLocalMapper->RequestStop();
+    mpLocalMapper->InterruptBA();
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
-    /*if(mpViewer)
-    {
+    const bool fromViewer = mpViewer && mptViewer->get_id() == std::this_thread::get_id();
+    if (mpViewer) {
         mpViewer->RequestFinish();
-        while(!mpViewer->isFinished())
-            usleep(5000);
-    }*/
-
-    // Wait until all thread have effectively stopped
-    /*while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
-    {
-        if(!mpLocalMapper->isFinished())
-            cout << "mpLocalMapper is not finished" << endl;*/
-        /*if(!mpLoopCloser->isFinished())
-            cout << "mpLoopCloser is not finished" << endl;
-        if(mpLoopCloser->isRunningGBA()){
-            cout << "mpLoopCloser is running GBA" << endl;
-            cout << "break anyway..." << endl;
-            break;
-        }*/
-        /*usleep(5000);
-    }*/
-
-    if(!mStrSaveAtlasToFile.empty())
-    {
-        Verbose::PrintMess("Atlas saving to file " + mStrSaveAtlasToFile, Verbose::VERBOSITY_NORMAL);
-        SaveAtlas(FileType::BINARY_FILE);
+        mpViewer->Release();
     }
-
-    /*if(mpViewer)
-        pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/
-
+    // LoopClosing::isFinished now means its GBA worker has also been joined.
+    // A timeout is a failed shutdown, never permission to serialize live data.
+    while (!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() ||
+           (mpViewer && !fromViewer && !mpViewer->isFinished())) {
+        if (std::chrono::steady_clock::now() >= deadline) {
+            WriteMapSaveStatus("ERROR", "MAP_E_SHUTDOWN: workers did not stop within 30 seconds");
+            throw std::runtime_error("MAP_E_SHUTDOWN: workers did not stop within 30 seconds; atlas not saved");
+        }
+        usleep(5000);
+    }
+    if (mptLocalMapping->joinable()) mptLocalMapping->join();
+    if (mptLoopClosing->joinable()) mptLoopClosing->join();
+    // When called by the Viewer's Stop button, that same thread is already
+    // quiescent inside Shutdown. Joining oneself would deadlock.
+    if (mpViewer && !fromViewer && mptViewer->joinable()) mptViewer->join();
+    if (!mStrSaveAtlasToFile.empty()) SaveAtlas(FileType::BINARY_FILE);
 #ifdef REGISTER_TIMES
     mpTracker->PrintTimeStats();
 #endif
-
-
 }
 
 bool System::isShutDown() {
     unique_lock<mutex> lock(mMutexReset);
-    return mbShutDown;
+    return mbShutDown || mbShutdownRequested;
+}
+
+void System::RequestShutdown() {
+    unique_lock<mutex> lock(mMutexReset);
+    mbShutdownRequested = true;
 }
 
 void System::SaveTrajectoryTUM(const string &filename)
@@ -875,6 +918,12 @@ int System::GetTrackingState()
     return mTrackingState;
 }
 
+MapReuseStatus System::GetMapReuseStatus()
+{
+    unique_lock<mutex> lock(mMutexState);
+    return mMapReuseStatus;
+}
+
 vector<MapPoint*> System::GetTrackedMapPoints()
 {
     unique_lock<mutex> lock(mMutexState);
@@ -946,109 +995,117 @@ void System::InsertTrackTime(double& time)
 }
 #endif
 
-void System::SaveAtlas(int type){
-    if(!mStrSaveAtlasToFile.empty())
-    {
-        //clock_t start = clock();
+namespace {
+const char kAtlasMagic[] = "MONO_IMU_ATLAS_2\n";
+std::string AtlasPath(const std::string& configured, bool exact) {
+    if (exact || (configured.size() >= 4 && configured.substr(configured.size()-4) == ".osa")) return configured;
+    return configured + ".osa";
+}
+template<class Archive>
+void DecodeAtlas(Archive& archive, bool guarded, const string& expectedVocabulary,
+                 const string& expectedCalibration, Atlas*& atlas) {
+    string name, vocabularyChecksum, calibration;
+    archive >> name >> vocabularyChecksum;
+    // Validate metadata before decoding objects (which updates global IDs).
+    if (vocabularyChecksum != expectedVocabulary)
+        throw std::runtime_error("MAP_E_LOAD: vocabulary checksum mismatch");
+    if (guarded) {
+        archive >> calibration;
+        if (calibration != expectedCalibration)
+            throw std::runtime_error("MAP_E_LOAD: camera/IMU calibration or extractor settings differ");
+    }
+    archive >> atlas;
+}
+}
 
-        // Save the current session
-        mpAtlas->PreSave();
+void System::WriteMapSaveStatus(const string& status, const string& reason, Map* selected)
+{
+    if (mStrSaveAtlasToFile.empty()) return;
+    const string path = AtlasPath(mStrSaveAtlasToFile, mExactAtlasSavePath);
+    const string report = AtlasPersistence::Parent(path) + "/map_save.json";
+    AtlasPersistence::WriteAtomically(report, [&](std::ostream& out) {
+        out << "{\n  \"status\": " << AtlasPersistence::JsonString(status)
+            << ",\n  \"reason\": " << AtlasPersistence::JsonString(reason)
+            << ",\n  \"path\": " << AtlasPersistence::JsonString(path)
+            << ",\n  \"calibration_sha256\": " << AtlasPersistence::JsonString(mCalibrationFingerprint)
+            << ",\n  \"selected_map_id\": " << (selected ? static_cast<long>(selected->GetId()) : -1)
+            << ",\n  \"keyframes\": " << (selected ? selected->KeyFramesInMap() : 0)
+            << ",\n  \"map_points\": " << (selected ? selected->MapPointsInMap() : 0) << "\n}\n";
+    });
+}
 
-        string pathSaveFileName = "./";
-        pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
-        pathSaveFileName = pathSaveFileName.append(".osa");
-
-        string strVocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath,TEXT_FILE);
-        std::size_t found = mStrVocabularyFilePath.find_last_of("/\\");
-        string strVocabularyName = mStrVocabularyFilePath.substr(found+1);
-
-        if(type == TEXT_FILE) // File text
-        {
-            cout << "Starting to write the save text file " << endl;
-            std::remove(pathSaveFileName.c_str());
-            std::ofstream ofs(pathSaveFileName, std::ios::binary);
-            boost::archive::text_oarchive oa(ofs);
-
-            oa << strVocabularyName;
-            oa << strVocabularyChecksum;
-            oa << mpAtlas;
-            cout << "End to write the save text file" << endl;
-        }
-        else if(type == BINARY_FILE) // File binary
-        {
-            cout << "Starting to write the save binary file" << endl;
-            std::remove(pathSaveFileName.c_str());
-            std::ofstream ofs(pathSaveFileName, std::ios::binary);
-            boost::archive::binary_oarchive oa(ofs);
-            oa << strVocabularyName;
-            oa << strVocabularyChecksum;
-            oa << mpAtlas;
-            cout << "End to write save binary file" << endl;
-        }
+void System::SaveAtlas(int type)
+{
+    if (mStrSaveAtlasToFile.empty()) return;
+    Map* reference = nullptr;
+    for (Map* candidate : mpAtlas->GetAllMaps())
+        if (Atlas::IsMatureMap(candidate) && (!reference ||
+            candidate->KeyFramesInMap() > reference->KeyFramesInMap())) reference = candidate;
+    if (mMapReuseEnabled && !reference) {
+        WriteMapSaveStatus("SKIPPED", "No mature inertial map: require initialized IMU, BA2, >=12 keyframes and >=50 points");
+        cout << "MAP_SAVE_SKIPPED: no mature map; existing reference is unchanged" << endl;
+        return;
+    }
+    const string path = AtlasPath(mStrSaveAtlasToFile, mExactAtlasSavePath);
+    try {
+        mpAtlas->PreSave(mMapReuseEnabled);
+        const string vocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath, BINARY_FILE);
+        if (vocabularyChecksum.empty()) throw std::runtime_error("MAP_E_SAVE: vocabulary checksum unavailable");
+        const string vocabularyName = mStrVocabularyFilePath.substr(mStrVocabularyFilePath.find_last_of("/\\")+1);
+        AtlasPersistence::WriteAtomically(path, [&](std::ostream& out) {
+            if (mExactAtlasSavePath) out.write(kAtlasMagic, sizeof(kAtlasMagic)-1);
+            if (type == TEXT_FILE) {
+                boost::archive::text_oarchive archive(out);
+                archive << vocabularyName << vocabularyChecksum;
+                if (mExactAtlasSavePath) archive << mCalibrationFingerprint;
+                archive << mpAtlas;
+            } else {
+                boost::archive::binary_oarchive archive(out);
+                archive << vocabularyName << vocabularyChecksum;
+                if (mExactAtlasSavePath) archive << mCalibrationFingerprint;
+                archive << mpAtlas;
+            }
+        });
+        WriteMapSaveStatus("SAVED", "Workers stopped; mature Atlas written atomically", reference);
+        cout << "MAP_SAVED " << path << endl;
+    } catch (const std::exception& e) {
+        try { WriteMapSaveStatus("ERROR", e.what(), reference); } catch (...) {}
+        throw std::runtime_error(string("MAP_E_SAVE: ") + e.what());
     }
 }
 
 bool System::LoadAtlas(int type)
 {
-    string strFileVoc, strVocChecksum;
-    bool isRead = false;
-
-    string pathLoadFileName = "./";
-    pathLoadFileName = pathLoadFileName.append(mStrLoadAtlasFromFile);
-    pathLoadFileName = pathLoadFileName.append(".osa");
-
-    if(type == TEXT_FILE) // File text
-    {
-        cout << "Starting to read the save text file " << endl;
-        std::ifstream ifs(pathLoadFileName, std::ios::binary);
-        if(!ifs.good())
-        {
-            cout << "Load file not found" << endl;
-            return false;
-        }
-        boost::archive::text_iarchive ia(ifs);
-        ia >> strFileVoc;
-        ia >> strVocChecksum;
-        ia >> mpAtlas;
-        cout << "End to load the save text file " << endl;
-        isRead = true;
+    const string path = AtlasPath(mStrLoadAtlasFromFile, mExactAtlasLoadPath);
+    std::ifstream in(path, std::ios::binary);
+    if (!in) throw std::runtime_error("MAP_E_LOAD: cannot open " + path);
+    char header[sizeof(kAtlasMagic)-1] = {};
+    in.read(header, sizeof(header));
+    const bool guarded = in.gcount() == sizeof(header) && memcmp(header, kAtlasMagic, sizeof(header)) == 0;
+    if(in.gcount()==sizeof(header) && memcmp(header,"MONO_IMU_ATLAS_1\n",sizeof(header))==0)
+        throw std::runtime_error("MAP_E_LOAD: Atlas v1 lacks recovered-root uncertainty; use a new v2 reference map");
+    if (!guarded) {
+        if (mExactAtlasLoadPath) throw std::runtime_error("MAP_E_LOAD: incompatible Atlas; this build requires mono_imu_vio Atlas v2 (recovery dynamics priors). Build a new reference map");
+        in.clear(); in.seekg(0);
     }
-    else if(type == BINARY_FILE) // File binary
-    {
-        cout << "Starting to read the save binary file"  << endl;
-        std::ifstream ifs(pathLoadFileName, std::ios::binary);
-        if(!ifs.good())
-        {
-            cout << "Load file not found" << endl;
-            return false;
+    const string expectedVocabulary = CalculateCheckSum(mStrVocabularyFilePath, BINARY_FILE);
+    if (expectedVocabulary.empty()) throw std::runtime_error("MAP_E_LOAD: vocabulary checksum unavailable");
+    try {
+        if (type == TEXT_FILE) {
+            boost::archive::text_iarchive archive(in);
+            DecodeAtlas(archive, guarded, expectedVocabulary, mCalibrationFingerprint, mpAtlas);
+        } else {
+            boost::archive::binary_iarchive archive(in);
+            DecodeAtlas(archive, guarded, expectedVocabulary, mCalibrationFingerprint, mpAtlas);
         }
-        boost::archive::binary_iarchive ia(ifs);
-        ia >> strFileVoc;
-        ia >> strVocChecksum;
-        ia >> mpAtlas;
-        cout << "End to load the save binary file" << endl;
-        isRead = true;
-    }
-
-    if(isRead)
-    {
-        //Check if the vocabulary is the same
-        string strInputVocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath,TEXT_FILE);
-
-        if(strInputVocabularyChecksum.compare(strVocChecksum) != 0)
-        {
-            cout << "The vocabulary load isn't the same which the load session was created " << endl;
-            cout << "-Vocabulary name: " << strFileVoc << endl;
-            return false; // Both are differents
-        }
-
+        if (!mpAtlas) throw std::runtime_error("Atlas pointer is null");
         mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
         mpAtlas->SetORBVocabulary(mpVocabulary);
         mpAtlas->PostLoad();
-
         return true;
+    } catch (const std::exception& e) {
+        throw std::runtime_error(string("MAP_E_LOAD: ") + e.what());
     }
-    return false;
 }
 
 string System::CalculateCheckSum(string filename, int type)
@@ -1072,10 +1129,9 @@ string System::CalculateCheckSum(string filename, int type)
     char buffer[1024];
 
     MD5_Init (&md5Context);
-    while ( int count = f.readsome(buffer, sizeof(buffer)))
-    {
-        MD5_Update(&md5Context, buffer, count);
-    }
+    while (f.read(buffer, sizeof(buffer)) || f.gcount() > 0)
+        MD5_Update(&md5Context, buffer, static_cast<size_t>(f.gcount()));
+    if (f.bad()) return "";
 
     f.close();
 

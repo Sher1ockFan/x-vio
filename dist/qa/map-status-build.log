@@ -1,0 +1,524 @@
+[1/2] Building upstream DBoW2
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build/mono-imu-vio/work/dbow-build
+ninja: no work to do.
+[2/2] Building mono_imu_vio core and the EuRoC example
+CMake Deprecation Warning at CMakeLists.txt:2 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+Build type: Release
+-- Using flag -std=c++11.
+OPENCV VERSION:
+4.8.0
+CMake Deprecation Warning at Thirdparty/g2o/CMakeLists.txt:1 (CMAKE_MINIMUM_REQUIRED):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- BUILD TYPE:Release
+-- Compiling on Unix
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build/mono-imu-vio/work/orb-build
+ninja: no work to do.
+FORK_SOURCE_FILES_VERIFIED
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:74: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                          ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<3, Eigen::Matrix<double, 3, 1> >’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_sba.h:40:35:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<6, g2o::SE3Quat>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:59:33:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<6, g2o::SE3Quat, g2o::VertexSE3Expmap, g2o::VertexSE3Expmap>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:83:24:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:114:35:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:146:41:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<7, g2o::Sim3>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:48:35:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<7, g2o::Sim3, g2o::VertexSim3Expmap, g2o::VertexSim3Expmap>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:99:27:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSim3Expmap>’:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:130:36:   required from here
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-imu-vio/work/source/include/Converter.h:26,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:34,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/build/mono-imu-vio/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-imu-vio/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-imu-vio/work/source/include/Frame.h:29,
+                 from /build/mono-imu-vio/work/source/include/KeyFrame.h:28,
+                 from /build/mono-imu-vio/work/source/include/MapPoint.h:23,
+                 from /build/mono-imu-vio/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-imu-vio/work/source/include/Viewer.h:23,
+                 from /build/mono-imu-vio/work/source/include/Tracking.h:27,
+                 from /build/mono-imu-vio/work/source/include/System.h:32,
+                 from /build/mono-imu-vio/work/input.6Q4tDH/viewer.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+RELOCATABLE_ARM64_LINKS_OK
+9c304d890f046cbcaf7fdcfccd9daef9ad649f3d4834d23b2cf254d0945707f8  /build/mono-imu-vio/work/mono_imu_vio.tar.gz
+MONO_IMU_BUILD_OK /private/tmp/mono-mapstatus-qellwrp4/mono_imu_vio/dist/mono_imu_vio.tar.gz

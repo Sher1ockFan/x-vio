@@ -4,13 +4,17 @@ set -euo pipefail
 # The live supervisor owns terminal output and forwards stop signals to this worker.
 if [[ ${1:-} == --live-worker ]]; then
     shift
-elif [[ ${1:-} == live ]]; then
+elif [[ ${1:-} == live || ${1:-} == live-headless ]]; then
     root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" 2>/dev/null && pwd -P) || {
-        printf '%s\n' VIO_E_STARTUP >&2
+        printf '%s\n' 'VIO_E_PATH: Cannot locate the directory containing start.sh.' >&2
         exit 1
     }
-    if ! command -v python3 >/dev/null 2>&1 || [[ ! -r "$root/live_console.py" ]]; then
-        printf '%s\n' VIO_E_STARTUP >&2
+    if ! command -v python3 >/dev/null 2>&1; then
+        printf '%s\n' 'VIO_E_DEPENDENCY: python3 is not installed or is not on PATH.' >&2
+        exit 1
+    fi
+    if [[ ! -r "$root/live_console.py" ]]; then
+        printf 'VIO_E_PATH: Missing or unreadable startup helper: %s/live_console.py\n' "$root" >&2
         exit 1
     fi
     exec python3 -u "$root/live_console.py" "$@"
@@ -21,26 +25,42 @@ usage() {
 Usage:
   bash start.sh live [SECONDS]       B port, 1920x1440 capture and native viewer
                                     Omit SECONDS or use 0 to run until Ctrl+C
+  bash start.sh live-headless [SECONDS] Same sensors/maps/timing without GUI or DISPLAY
+  bash start.sh status [OPTIONS]     Read-only session state; use --help for options
   bash start.sh record NEW_TAKE      Record B-port camera + IMU packets
   bash start.sh record-view NEW_TAKE Record with independent native preview
   bash start.sh replay TAKE          Replay a complete take in the native viewer
   bash start.sh recover TAKE         Verify a previously interrupted take
   bash start.sh mark TAKE            Mark A/B/A holds while recording
   bash start.sh trajectory TAKE      Export native trajectory and check marked holds
+
+Live maps: VIO_MAP_MODE=auto|new|off (default auto).
+           VIO_MAP_FILE defaults to PACKAGE/maps/workspace_v2.osa.
+           Existing reference maps are never overwritten automatically.
+           Record/replay are fresh sessions and do not use the live reference.
 EOF
 }
 fail() { printf '%s\n' "$*" >&2; exit 1; }
+fail_code() { local code=$1; shift; fail "$code: $*"; }
 mode=${1:-}
 case "$mode" in
     -h|--help|'') usage; exit 0 ;;
-    live) [[ $# -le 2 && ${2:-0} =~ ^[0-9]+$ ]] || { usage >&2; exit 2; } ;;
+    live|live-headless) [[ $# -le 2 && ${2:-0} =~ ^[0-9]+$ ]] || {
+        printf '%s\n' 'VIO_E_ARGUMENT: Usage: bash start.sh live|live-headless [SECONDS]; use a nonnegative integer, omit it or use 0 to run until Ctrl+C.' >&2
+        exit 2
+    } ;;
+    status)
+        root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+        shift
+        exec python3 "$root/status.py" --root "$root" "$@"
+        ;;
     record|record-view|replay|recover|mark|trajectory)
         [[ $# -eq 2 && -n $2 ]] || { usage >&2; exit 2; }
         ;;
     *) usage >&2; exit 2 ;;
 esac
 
-[[ $(uname -sm) == 'Linux aarch64' ]] || fail 'Run this command on the Jetson Linux ARM64 host.'
+[[ $(uname -sm) == 'Linux aarch64' ]] || fail_code VIO_E_PLATFORM 'Run this command on the Jetson Linux ARM64 host.'
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 tools="$root/tools/orb_replay"
 bin="$root/bin"
@@ -51,22 +71,44 @@ export LD_LIBRARY_PATH="$root/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 case "$mode" in
     live|replay|record-view)
-        [[ -n ${DISPLAY:-} ]] || fail 'Run from the Jetson graphical desktop with DISPLAY set.'
-        if command -v xdpyinfo >/dev/null; then
-            timeout 8s xdpyinfo >/dev/null 2>&1 || fail "Cannot access X11 display $DISPLAY."
+        if [[ -z ${DISPLAY:-} ]]; then
+            if [[ -n ${DSIPLAY:-} ]]; then
+                fail_code VIO_E_DISPLAY 'DISPLAY is unset; DSIPLAY is misspelled. Use DISPLAY=:0 (or the display of your Jetson desktop).'
+            fi
+            fail_code VIO_E_DISPLAY 'DISPLAY is unset. Run from the Jetson graphical desktop with DISPLAY=:0 (or your desktop display).'
         fi
-        [[ -x "$bin/stock_viewer" ]] || fail "Missing executable: $bin/stock_viewer"
+        if command -v xdpyinfo >/dev/null; then
+            timeout 8s xdpyinfo >/dev/null 2>&1 || fail_code VIO_E_DISPLAY "Cannot access X11 display $DISPLAY; check the desktop login and X11 access permissions."
+        fi
+        [[ -x "$bin/stock_viewer" ]] || fail_code VIO_E_PATH "Missing or non-executable file: $bin/stock_viewer"
         vocab=${ORB_VOCABULARY:-"$root/Vocabulary/ORBvoc.txt"}
-        [[ -r $vocab && -s $vocab ]] || fail "Missing ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
+        [[ -r $vocab && -s $vocab ]] || fail_code VIO_E_PATH "Missing, empty or unreadable ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
         ;;
 esac
 
+if [[ $mode == live-headless ]]; then
+    vocab=${ORB_VOCABULARY:-"$root/Vocabulary/ORBvoc.txt"}
+    [[ -r $vocab && -s $vocab ]] || fail_code VIO_E_PATH "Missing, empty or unreadable ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
+fi
+
 case "$mode" in
-    live)
-        [[ -x "$bin/camera_live" && -x "$bin/orb_live_viewer" ]] || fail 'Missing live executables.'
+    live|live-headless)
+        live_binary="$bin/orb_live_viewer"
+        viewer_args=(--viewer)
+        if [[ $mode == live-headless ]]; then
+            live_binary="$bin/orb_live_runner"
+            viewer_args=()
+        fi
+        for executable in "$bin/camera_live" "$live_binary"; do
+            [[ -x "$executable" ]] || fail_code VIO_E_PATH "Missing or non-executable file: $executable"
+        done
+        for parameter in "$cfg" "$timing"; do
+            [[ -f "$parameter" && -r "$parameter" ]] || fail_code VIO_E_CONFIG "Missing or unreadable parameter file: $parameter"
+        done
         camera=/dev/gmsl/B
-        [[ -c $camera && -r $camera && -w $camera ]] ||
-            fail "Camera unavailable to $(id -un): $camera. Check the GMSL driver and video group."
+        [[ -c $camera ]] || fail_code VIO_E_CAMERA "Camera device not found: $camera. Check the B-port connection, device link and GMSL driver."
+        [[ -r $camera && -w $camera ]] ||
+            fail_code VIO_E_PERMISSION "Camera is not readable/writable by $(id -un): $camera. Check the video group/device permissions."
         printf '%s\n' "$camera: 1920x1441 UYVY; crop top row to 1920x1440; ORB input resize to 960x720." \
             'Trial calibration: fit_05 and camera–IMU time shift inherited from channel C.'
         runs=${ORB_HUB_RUNS:-"$root/runs"}
@@ -74,8 +116,9 @@ case "$mode" in
         run=$(mktemp -d -- "$runs/live_XXXXXX")
         cp -- "$cfg" "$run/settings.yaml"
         cp -- "$timing" "$run/timing.json"
+        python3 "$root/map_session.py" prepare "$root" "$run"
         exec python3 -u "$tools/live.py" "$bin" "$vocab" "$run/settings.yaml" "$run/timing.json" \
-            "$run/session" --viewer --seconds "${2:-0}"
+            "$run/session" "${viewer_args[@]}" --seconds "${2:-0}"
         ;;
     record|record-view)
         [[ -x "$bin/camera_umi" ]] || fail "Missing executable: $bin/camera_umi"

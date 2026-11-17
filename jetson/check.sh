@@ -9,6 +9,8 @@ grep -Eq '^# R36\b.*REVISION:[[:space:]]*5\.0\b' /etc/nv_tegra_release ||
 sha256sum --quiet -c SHA256SUMS
 [[ -L bin/orb_live_viewer && $(readlink bin/orb_live_viewer) == stock_viewer ]] ||
     fail 'Invalid native viewer entry point.'
+[[ -L bin/orb_live_runner && $(readlink bin/orb_live_runner) == stock_viewer ]] ||
+    fail 'Invalid headless entry point.'
 unset LD_LIBRARY_PATH LD_PRELOAD LD_AUDIT
 export LC_ALL=C
 for file in bin/stock_viewer bin/mono_inertial_euroc bin/camera_live bin/camera_umi lib/*.so; do

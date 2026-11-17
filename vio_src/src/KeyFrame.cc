@@ -17,9 +17,12 @@
 */
 
 #include "KeyFrame.h"
+#include <Eigen/Eigenvalues>
+#include <stdexcept>
 #include "Converter.h"
 #include "ImuTypes.h"
 #include<mutex>
+#include <cmath>
 
 namespace ORB_SLAM3
 {
@@ -37,9 +40,10 @@ KeyFrame::KeyFrame():
         mfLogScaleFactor(0), mvScaleFactors(0), mvLevelSigma2(0), mvInvLevelSigma2(0), mnMinX(0), mnMinY(0), mnMaxX(0),
         mnMaxY(0), mPrevKF(static_cast<KeyFrame*>(NULL)), mNextKF(static_cast<KeyFrame*>(NULL)), mbFirstConnection(true), mpParent(NULL), mbNotErase(false),
         mbToBeErased(false), mbBad(false), mHalfBaseline(0), mbCurrentPlaceRecognition(false), mnMergeCorrectedForKF(0),
-        NLeft(0),NRight(0), mnNumberOfOpt(0), mbHasVelocity(false)
+        NLeft(0),NRight(0), mnNumberOfOpt(0), mbHasVelocity(false),
+        mpCamera(nullptr), mpCamera2(nullptr), mpImuPreintegrated(nullptr)
 {
-
+    mfScale = 1.f;
 }
 
 KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB):
@@ -62,6 +66,7 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB):
     mvKeysRight(F.mvKeysRight), NLeft(F.Nleft), NRight(F.Nright), mTrl(F.GetRelativePoseTrl()), mnNumberOfOpt(0), mbHasVelocity(false)
 {
     mnId=nNextId++;
+    mfScale = 1.f;
 
     mGrid.resize(mnGridCols);
     if(F.Nleft != -1)  mGridRight.resize(mnGridCols);
@@ -93,6 +98,50 @@ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB):
     SetPose(F.GetPose());
 
     mnOriginMapId = pMap->GetId();
+}
+
+// A numerical fit is a measurement with uncertainty. In particular, never
+// promote a short relocalization window into an exact BA boundary velocity.
+void KeyFrame::SetRecoveryDynamicsPrior(const Eigen::Vector3f& velocity, const IMU::Bias& bias,
+                                       const Eigen::Matrix<double,9,9>& information)
+{
+    const Eigen::Vector3d gyro(bias.bwx,bias.bwy,bias.bwz);
+    const Eigen::Vector3d accel(bias.bax,bias.bay,bias.baz);
+    Eigen::Matrix<double,9,9> symmetric=(information+information.transpose())*0.5;
+    if(!velocity.allFinite() || !gyro.allFinite() || !accel.allFinite() || !symmetric.allFinite())
+        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: nonfinite dynamics information");
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,9,9>> eig(symmetric);
+    if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<=1e-12)
+        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: invalid dynamics information");
+    unique_lock<mutex> lock(mMutexPose);
+    const Eigen::Matrix3d Rwb=(mTwc*mImuCalib.mTcb).rotationMatrix().cast<double>();
+    Eigen::Matrix<double,9,9> bodyFromWorld=Eigen::Matrix<double,9,9>::Identity();
+    bodyFromWorld.block<3,3>(0,0)=Rwb.transpose();
+    mRecoveryVelocityBody=Rwb.transpose()*velocity.cast<double>();
+    mRecoveryGyroPrior=gyro; mRecoveryAccPrior=accel;
+    mRecoveryDynamicsInformation=bodyFromWorld*symmetric*bodyFromWorld.transpose();
+    mbRecoveryDynamicsPrior=true;
+}
+
+bool KeyFrame::GetRecoveryDynamicsPrior(Eigen::Vector3d& velocity, Eigen::Vector3d& gyro,
+                                       Eigen::Vector3d& accel, Eigen::Matrix<double,9,9>& information)
+{
+    unique_lock<mutex> lock(mMutexPose);
+    if(!mbRecoveryDynamicsPrior)return false;
+    // Also validate deserialized data before it enters an optimizer.
+    if(!mRecoveryVelocityBody.allFinite() || !mRecoveryGyroPrior.allFinite() ||
+       !mRecoveryAccPrior.allFinite() || !mRecoveryDynamicsInformation.allFinite() ||
+       (mRecoveryDynamicsInformation-mRecoveryDynamicsInformation.transpose()).norm()>1e-6)
+        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: corrupt saved dynamics prior");
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,9,9>> eig(mRecoveryDynamicsInformation);
+    if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<=1e-12)
+        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: nonpositive saved dynamics information");
+    const Eigen::Matrix3d Rwb=(mTwc*mImuCalib.mTcb).rotationMatrix().cast<double>();
+    Eigen::Matrix<double,9,9> worldFromBody=Eigen::Matrix<double,9,9>::Identity();
+    worldFromBody.block<3,3>(0,0)=Rwb;
+    velocity=Rwb*mRecoveryVelocityBody; gyro=mRecoveryGyroPrior; accel=mRecoveryAccPrior;
+    information=worldFromBody*mRecoveryDynamicsInformation*worldFromBody.transpose();
+    return true;
 }
 
 void KeyFrame::ComputeBoW()
@@ -915,8 +964,16 @@ void KeyFrame::PreSave(set<KeyFrame*>& spKF,set<MapPoint*>& spMP, set<GeometricC
     if(mNextKF && spKF.find(mNextKF) != spKF.end())
         mBackupNextKFId = mNextKF->mnId;
 
-    if(mpImuPreintegrated)
+    if(mPrevKF && mpImuPreintegrated)
         mBackupImuPreintegrated.CopyFrom(mpImuPreintegrated);
+    else {
+        // A new temporal root has no incoming inertial edge. Store a fully
+        // initialized zero-duration placeholder, never uninitialized Eigen
+        // matrices from Preintegrated's serialization-only default ctor.
+        IMU::Calib zeroCalibration(Sophus::SE3f(), 0.f, 0.f, 0.f, 0.f);
+        IMU::Preintegrated empty(IMU::Bias(), zeroCalibration);
+        mBackupImuPreintegrated.CopyFrom(&empty);
+    }
 }
 
 void KeyFrame::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid, map<long unsigned int, MapPoint*>& mpMPid, map<unsigned int, GeometricCamera*>& mpCamId){
@@ -924,6 +981,9 @@ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid, map<long unsi
 
     // Pose
     SetPose(mTcw);
+    Eigen::Vector3d priorVelocity,priorGyro,priorAcc;
+    Eigen::Matrix<double,9,9> priorInformation;
+    GetRecoveryDynamicsPrior(priorVelocity,priorGyro,priorAcc,priorInformation);
 
     mTrl = mTlr.inverse();
 
@@ -996,7 +1056,8 @@ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid, map<long unsi
     {
         mNextKF = mpKFid[mBackupNextKFId];
     }
-    mpImuPreintegrated = &mBackupImuPreintegrated;
+    mpImuPreintegrated = mPrevKF && std::isfinite(mBackupImuPreintegrated.dT) &&
+        mBackupImuPreintegrated.dT > 0 ? &mBackupImuPreintegrated : nullptr;
 
 
     // Remove all backup container

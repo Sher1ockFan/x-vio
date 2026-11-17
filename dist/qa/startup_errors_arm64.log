@@ -1,0 +1,22 @@
+PASS startup_fail
+PASS startup_zero
+PASS success
+PASS runtime_fail
+PASS signal_fail
+PASS report_fail
+PASS startup_map
+PASS startup_permission
+PASS startup_camera
+PASS startup_orb
+PASS map_success
+PASS map_fail
+PASS map_runtime_failure
+PASS running
+PASS startup_wait
+PASS non_live_help_and_missing_helper
+PASS actual_shell_misspelled_display
+PASS actual_shell_valid_display_not_overridden
+PASS startup_runs_path_failure
+PASS viewer_request_caller_shutdown_contract
+PASS startup_classifier_cases 14
+LIVE_CONSOLE_TEST_PASS original_cases=13 additional_subprocess_cases=7 classifier_cases=14

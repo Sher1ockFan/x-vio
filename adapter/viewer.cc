@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <time.h>
 #include <sstream>
 #include <stdexcept>
@@ -42,7 +43,46 @@ bool initialized_tracked_map(ORB_SLAM3::System &slam, int state) {
     return tracked_map && tracked_map->isImuInitialized();
 }
 
+std::string csv_string(const std::string &value) {
+    std::string result = "\"";
+    for (const char c : value) {
+        if (c == '"') result += '"';
+        result += (c == '\r' || c == '\n') ? ' ' : c;
+    }
+    return result + "\"";
+}
+
 int track(ORB_SLAM3::System &slam) {
+    std::ofstream poses("poses.csv"), events("recovery_events.csv"), diagnostics("state_diagnostics.csv");
+    std::ofstream recovery_timing("recovery_timing.csv");
+    if (!poses || !events || !diagnostics || !recovery_timing) throw std::runtime_error("Cannot open pose/recovery diagnostics");
+    recovery_timing << "frame_idx,camera_ns,map_id,recovery_id,phase,recovery_method,"
+                       "recovery_search_ms,recovery_global_attempted,recovery_window_resets" << std::endl;
+    recovery_timing << std::setprecision(12);
+    poses << "frame_idx,camera_ns,map_id,tracking_state,visual_ready,inertial_ready,valid,"
+             "recovery_id,phase,tx,ty,tz,qx,qy,qz,qw" << std::endl;
+    events << "frame_idx,camera_ns,recovery_id,phase,map_id,reference_keyframe_id,"
+              "inliers,visual_ready,inertial_ready,reason" << std::endl;
+    diagnostics << "frame_idx,camera_ns,map_id,recovery_id,phase,tracking_state,map_updated,valid,"
+                   "health_evaluated,health_accepted,hard_fault,health_reason,dynamics_available,"
+                   "velocity_w_x_mps,velocity_w_y_mps,velocity_w_z_mps,"
+                   "gyro_bias_x_radps,gyro_bias_y_radps,gyro_bias_z_radps,"
+                   "accel_bias_x_mps2,accel_bias_y_mps2,accel_bias_z_mps2,"
+                   "tracking_inliers,visual_inliers,visual_cells,visual_rms_px,fused_rms_px,"
+                   "visual_translation_error_m,visual_rotation_error_rad,pose_step_m,pose_step_dt_s,"
+                   "output_pose_baseline,output_pose_step_m,output_pose_step_dt_s,"
+                   "flow_matches,flow_median_px_s,flow_p90_px_s,imu_window_samples,"
+                   "imu_gyro_mean_norm_radps,imu_gyro_std_radps,imu_acc_mean_norm_mps2,imu_acc_std_mps2,"
+                   "stationary_candidate,stationary_evidence_held,stationary_duration_s,stationary_displacement_m,"
+                   "recovery_fit_velocity_w_x_mps,recovery_fit_velocity_w_y_mps,recovery_fit_velocity_w_z_mps,"
+                   "recovery_fit_gyro_bias_x_radps,recovery_fit_gyro_bias_y_radps,recovery_fit_gyro_bias_z_radps,"
+                   "recovery_fit_accel_bias_x_mps2,recovery_fit_accel_bias_y_mps2,recovery_fit_accel_bias_z_mps2,"
+                   "recovery_fit_position_rms_m,recovery_fit_rotation_rms_rad,"
+                   "recovery_holdout_position_rms_m,recovery_holdout_rotation_rms_rad,"
+                   "recovery_fit_span_s,recovery_holdout_span_s,recovery_fit_condition_number" << std::endl;
+    poses << std::setprecision(12);
+    diagnostics << std::setprecision(12);
+    std::string previous_event;
     std::ofstream timing;
     const char *timing_env = std::getenv("VIO_TIMING");
     if (timing_env && std::string(timing_env) == "1") {
@@ -94,11 +134,75 @@ int track(ORB_SLAM3::System &slam) {
             break;
 
         const auto track_start = timing.is_open() ? host_raw_ns() : 0;
-        slam.TrackMonocular(gray, camera_ns * ns_to_seconds, batch);
+        const Sophus::SE3f T_cw = slam.TrackMonocular(gray, camera_ns * ns_to_seconds, batch);
         const auto track_end = timing.is_open() ? host_raw_ns() : 0;
+        const int state = slam.GetTrackingState();
+        const auto reuse = slam.GetMapReuseStatus();
+        recovery_timing << frames << ',' << camera_ns << ',' << reuse.map_id << ',' << reuse.recovery_id << ','
+                        << csv_string(reuse.phase) << ',' << csv_string(reuse.recovery_method) << ','
+                        << reuse.recovery_search_ms << ',' << reuse.recovery_global_attempted << ','
+                        << reuse.recovery_window_resets << std::endl;
+        // An old map's isImuInitialized flag cannot certify a new segment's
+        // velocity/bias. Recovery remains invalid until the fresh IMU solve.
+        const bool imu_ready = state == 2 && (reuse.enabled ? reuse.inertial_ready :
+                                             initialized_tracked_map(slam, state));
+        const bool visual_ready = reuse.enabled ? reuse.visual_ready : state == 2;
+        const auto &health = reuse.health;
+        const bool health_ok = !reuse.enabled || (health.evaluated && health.accepted && !health.hard_fault);
+        const bool valid = imu_ready && health_ok && T_cw.matrix().allFinite();
+        // Log every frame, including rejected candidates and periods when no
+        // state exists. Unknown quantities remain NaN; they are not zero motion.
+        diagnostics << frames << ',' << camera_ns << ',' << reuse.map_id << ',' << reuse.recovery_id << ','
+                    << csv_string(reuse.phase) << ',' << state << ',' << health.map_updated << ',' << valid << ','
+                    << health.evaluated << ',' << health.accepted << ',' << health.hard_fault << ','
+                    << csv_string(health.reason) << ',' << health.dynamics_available;
+        for (const auto value : health.velocity_w) diagnostics << ',' << value;
+        for (const auto value : health.gyro_bias) diagnostics << ',' << value;
+        for (const auto value : health.accel_bias) diagnostics << ',' << value;
+        diagnostics << ',' << reuse.inliers << ',' << health.visual_inliers << ',' << health.visual_cells
+                    << ',' << health.visual_rms_px << ',' << health.fused_rms_px
+                    << ',' << health.visual_translation_error_m << ',' << health.visual_rotation_error_rad
+                    << ',' << health.pose_step_m << ',' << health.pose_step_dt_s
+                    << ',' << health.output_pose_baseline << ',' << health.output_pose_step_m
+                    << ',' << health.output_pose_step_dt_s
+                    << ',' << health.flow_matches << ',' << health.flow_median_px_s << ',' << health.flow_p90_px_s
+                    << ',' << health.imu_window_samples << ',' << health.imu_gyro_mean_norm << ',' << health.imu_gyro_std
+                    << ',' << health.imu_acc_mean_norm << ',' << health.imu_acc_std
+                    << ',' << health.stationary_candidate << ',' << health.stationary_evidence_held
+                    << ',' << health.stationary_duration_s
+                    << ',' << health.stationary_displacement_m;
+        for (const auto value : health.recovery_fit_velocity_w) diagnostics << ',' << value;
+        for (const auto value : health.recovery_fit_gyro_bias) diagnostics << ',' << value;
+        for (const auto value : health.recovery_fit_accel_bias) diagnostics << ',' << value;
+        diagnostics << ',' << health.recovery_fit_position_rms_m << ',' << health.recovery_fit_rotation_rms_rad
+                    << ',' << health.recovery_holdout_position_rms_m << ',' << health.recovery_holdout_rotation_rms_rad
+                    << ',' << health.recovery_fit_span_s << ',' << health.recovery_holdout_span_s
+                    << ',' << health.recovery_fit_condition_number << std::endl;
+        poses << frames << ',' << camera_ns << ',' << reuse.map_id << ',' << state << ','
+              << visual_ready << ',' << imu_ready << ',' << valid << ',' << reuse.recovery_id << ','
+              << csv_string(reuse.phase) << ',';
+        if (valid) {
+            const Sophus::SE3f T_wc = T_cw.inverse();
+            const auto p = T_wc.translation();
+            const auto q = T_wc.unit_quaternion();
+            poses << p.x() << ',' << p.y() << ',' << p.z() << ','
+                  << q.x() << ',' << q.y() << ',' << q.z() << ',' << q.w();
+        } else {
+            poses << "nan,nan,nan,nan,nan,nan,nan";
+        }
+        poses << std::endl;
+        std::ostringstream event_key;
+        event_key << reuse.recovery_id << ',' << reuse.phase << ',' << reuse.map_id << ','
+                  << visual_ready << ',' << imu_ready << ',' << reuse.reason;
+        if (event_key.str() != previous_event) {
+            events << frames << ',' << camera_ns << ',' << reuse.recovery_id << ','
+                   << csv_string(reuse.phase) << ',' << reuse.map_id << ','
+                   << reuse.reference_keyframe_id << ',' << reuse.inliers << ','
+                   << visual_ready << ',' << imu_ready << ',' << csv_string(reuse.reason) << std::endl;
+            previous_event = event_key.str();
+        }
+        if (!poses || !events || !diagnostics || !recovery_timing) throw std::runtime_error("Cannot write pose/recovery diagnostics");
         if (timing.is_open()) {
-            const int state = slam.GetTrackingState();
-            const bool imu_ready = initialized_tracked_map(slam, state);
             timing << frames << ',' << camera_ns << ',' << imu_count << ','
                    << imu_first_ns << ',' << imu_last_ns << ',' << packet_read_end << ','
                    << track_start << ',' << track_end << ',' << state << ','
@@ -125,8 +229,9 @@ int track(ORB_SLAM3::System &slam) {
 } // namespace
 
 int main(int argc, char **argv) {
-    if (argc != 3) {
-        std::cerr << "Usage: stock_viewer VOCABULARY SETTINGS < sensor_stream\n";
+    const bool headless = argc == 4 && std::string(argv[3]) == "--headless";
+    if (argc != 3 && !headless) {
+        std::cerr << "Usage: stock_viewer VOCABULARY SETTINGS [--headless] < sensor_stream\n";
         return 2;
     }
     std::ios::sync_with_stdio(false);
@@ -135,17 +240,24 @@ int main(int argc, char **argv) {
     ORB_SLAM3::System *slam = nullptr;
     int result = 1;
     try {
-        slam = new ORB_SLAM3::System(argv[1], argv[2], ORB_SLAM3::System::IMU_MONOCULAR, true);
+        slam = new ORB_SLAM3::System(argv[1], argv[2], ORB_SLAM3::System::IMU_MONOCULAR, !headless);
         result = track(*slam);
     } catch (const std::exception &error) {
         std::cerr << "STOCK_INPUT_ERROR " << error.what() << std::endl;
     }
-    if (slam && !slam->isShutDown())
-        slam->Shutdown();
+    // The Viewer may have requested shutdown without performing serialization.
+    // The caller thread always completes the worker joins and map save.
+    if (slam) {
+        try {
+            slam->Shutdown();
+        } catch (const std::exception &error) {
+            std::cerr << "STOCK_SHUTDOWN_ERROR " << error.what() << std::endl;
+            result = 1;
+        }
+    }
 
-    // Upstream Shutdown requests background workers to stop and leaves the
-    // Viewer thread running. End this process after flushing our own output
-    // without racing the native threads against OpenGL static destructors.
+    // Shutdown has joined the native workers and finished map serialization.
+    // Avoid invoking process-wide OpenGL static destructors after GUI teardown.
     std::cout.flush();
     std::cerr.flush();
     std::_Exit(result);

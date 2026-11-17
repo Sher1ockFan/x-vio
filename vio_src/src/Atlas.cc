@@ -26,7 +26,7 @@
 namespace ORB_SLAM3
 {
 
-Atlas::Atlas(){
+Atlas::Atlas(): mnLastInitKFidMap(0), mHasViewer(false){
     mpCurrentMap = static_cast<Map*>(NULL);
 }
 
@@ -299,7 +299,14 @@ bool Atlas::isImuInitialized()
     return mpCurrentMap->isImuInitialized();
 }
 
-void Atlas::PreSave()
+bool Atlas::IsMatureMap(Map* map)
+{
+    return map && !map->IsBad() && map->IsInertial() &&
+        map->isImuInitialized() && map->GetIniertialBA2() &&
+        map->KeyFramesInMap() >= 12 && map->MapPointsInMap() >= 50;
+}
+
+void Atlas::PreSave(bool matureOnly)
 {
     if(mpCurrentMap){
         if(!mspMaps.empty() && mnLastInitKFidMap < mpCurrentMap->GetMaxKFid())
@@ -313,7 +320,11 @@ void Atlas::PreSave()
             return elem1->GetId() < elem2->GetId();
         }
     };
-    std::copy(mspMaps.begin(), mspMaps.end(), std::back_inserter(mvpBackupMaps));
+    mvpBackupMaps.clear();
+    for (Map* map : mspMaps)
+        if (map && !map->IsBad() && map->KeyFramesInMap() > 0 &&
+            (!matureOnly || IsMatureMap(map)))
+            mvpBackupMaps.push_back(map);
     sort(mvpBackupMaps.begin(), mvpBackupMaps.end(), compFunctor());
 
     std::set<GeometricCamera*> spCams(mvpCameras.begin(), mvpCameras.end());
@@ -322,14 +333,8 @@ void Atlas::PreSave()
         if(!pMi || pMi->IsBad())
             continue;
 
-        if(pMi->GetAllKeyFrames().size() == 0) {
-            // Empty map, erase before of save it.
-            SetMapBad(pMi);
-            continue;
-        }
         pMi->PreSave(spCams);
     }
-    RemoveBadMaps();
 }
 
 void Atlas::PostLoad()

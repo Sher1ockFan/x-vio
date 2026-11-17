@@ -190,6 +190,13 @@ class KeyFrame
         ar & boost::serialization::make_array(mVw.data(), mVw.size());
         ar & boost::serialization::make_array(mOwb.data(), mOwb.size());
         ar & mbHasVelocity;
+        // v2 Atlas: a recovered temporal root has a finite-uncertainty dynamics
+        // prior, never an exact velocity/bias boundary condition.
+        ar & mbRecoveryDynamicsPrior;
+        ar & boost::serialization::make_array(mRecoveryVelocityBody.data(), mRecoveryVelocityBody.size());
+        ar & boost::serialization::make_array(mRecoveryGyroPrior.data(), mRecoveryGyroPrior.size());
+        ar & boost::serialization::make_array(mRecoveryAccPrior.data(), mRecoveryAccPrior.size());
+        ar & boost::serialization::make_array(mRecoveryDynamicsInformation.data(), mRecoveryDynamicsInformation.size());
     }
 
 public:
@@ -213,6 +220,14 @@ public:
     Eigen::Vector3f GetTranslation();
     Eigen::Vector3f GetVelocity();
     bool isVelocitySet();
+
+    // Information ordering: world velocity, body gyro bias, body accel bias.
+    // The velocity component is stored in body coordinates so an Atlas/world
+    // rotation does not turn a saved prior into a different physical velocity.
+    void SetRecoveryDynamicsPrior(const Eigen::Vector3f& velocity, const IMU::Bias& bias,
+                                  const Eigen::Matrix<double,9,9>& information);
+    bool GetRecoveryDynamicsPrior(Eigen::Vector3d& velocity, Eigen::Vector3d& gyro,
+                                  Eigen::Vector3d& accel, Eigen::Matrix<double,9,9>& information);
 
     // Bag of Words Representation
     void ComputeBoW();
@@ -444,6 +459,11 @@ protected:
 
     // Imu bias
     IMU::Bias mImuBias;
+    bool mbRecoveryDynamicsPrior = false;
+    Eigen::Vector3d mRecoveryVelocityBody = Eigen::Vector3d::Zero();
+    Eigen::Vector3d mRecoveryGyroPrior = Eigen::Vector3d::Zero();
+    Eigen::Vector3d mRecoveryAccPrior = Eigen::Vector3d::Zero();
+    Eigen::Matrix<double,9,9> mRecoveryDynamicsInformation = Eigen::Matrix<double,9,9>::Zero();
 
     // MapPoints associated to keypoints
     std::vector<MapPoint*> mvpMapPoints;

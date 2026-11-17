@@ -37,6 +37,8 @@
 #include "System.h"
 #include "ImuTypes.h"
 #include "Settings.h"
+#include "MapReuseStatus.h"
+#include "ImuRecovery.h"
 
 #include "GeometricCamera.h"
 
@@ -73,6 +75,7 @@ public:
     Sophus::SE3f GrabImageMonocular(const cv::Mat &im, const double &timestamp, string filename);
 
     void GrabImuData(const IMU::Point &imuMeasurement);
+    MapReuseStatus GetMapReuseStatus() const;
 
     void SetLocalMapper(LocalMapping* pLocalMapper);
     void SetLoopClosing(LoopClosing* pLoopClosing);
@@ -234,6 +237,52 @@ protected:
     // Vector of IMU measurements from previous to current frame (to be filled by PreintegrateIMU)
     std::vector<IMU::Point> mvImuFromLastFrame;
     std::mutex mMutexImuQueue;
+
+    // Recovery is owned by the tracking thread. Workers are paused before any
+    // map is inspected or switched; pending frames still refresh FrameDrawer.
+    bool mbMapReuseEnabled = false;
+    bool mbMapRecoveryActive = false;
+    bool mbMapRecoveryPaused = false;
+    double mMapRecoveryTimeout = 12.0;
+    double mMapRecoveryBudgetMs = 40.0;
+    double mMapRecoveryStartTime = 0;
+    double mMapRecoveryStartWall = 0;
+    double mMapRecoveryCooldownUntil = -1;
+    double mMapRecoveryCooldownWall = -1;
+    Map* mpRecoveryMap = nullptr;
+    KeyFrame* mpRecoveryReference = nullptr;
+    // Visual-only snapshot: no velocity, bias or preintegration is propagated.
+    Frame mRecoveryVisualFrame;
+    bool mbRecoveryVisualFrameValid = false;
+    RecoveryPoses mvRecoveryPoses;
+    RecoveryPoses mvRecoveryHoldout;
+    ImuRecoveryResult mRecoveryCandidate;
+    RecoveryPose mRecoveryFitEnd;
+    double mRecoveryFitSpan = 0;
+    bool mbRecoveryCandidate = false;
+    double mStationarySince = -1;
+    StationaryEvidenceState mStationaryEvidence;
+    OutputPoseBaseline mOutputPoseBaseline;
+    Eigen::Vector3f mStationaryOrigin = Eigen::Vector3f::Zero();
+    KeyFrame* mpStationaryReference = nullptr;
+    std::deque<IMU::Point> mRecoveryImu;
+    MapReuseStatus mMapReuseStatus;
+    mutable std::mutex mMutexMapReuseStatus;
+    std::vector<Map*> ReusableMaps() const;
+    bool ProcessMapRecovery();
+    bool RelocalizeInMap(Map* map, KeyFrame*& reference, int& inliers, double deadline);
+    bool TrackRecoveryLocalMap(Map* map, KeyFrame*& reference, int& inliers, double deadline);
+    bool VerifyRecoveryVisualPose(Map* map, int& inliers);
+    void ClearRecoveryWindow();
+    void BeginMapRecovery(const std::string& reason);
+    void EndMapRecovery();
+    void PublishRecoveryFrame();
+    void CommitMapRecovery(const ImuRecoveryResult& result);
+    void RefreshMapReuseStatus();
+    void RecordCurrentDynamics();
+    void RecordRecoveryFit(const ImuRecoveryResult& result);
+    void RecordVisualDiagnostics(const Frame& visual);
+    bool CheckCurrentFrameHealth(const Frame& visual);
 
     // Imu calibration parameters
     IMU::Calib *mpImuCalib;

@@ -117,7 +117,25 @@
  
  include_directories(
  ${PROJECT_SOURCE_DIR}
-@@ -125,266 +125,7 @@
+@@ -73,6 +73,8 @@
+ src/Sim3Solver.cc
+ src/Viewer.cc
+ src/ImuTypes.cc
++src/ImuRecovery.cc
++src/TrackingHealth.cc
+ src/G2oTypes.cc
+ src/CameraModels/Pinhole.cpp
+ src/CameraModels/KannalaBrandt8.cpp
+@@ -101,6 +103,8 @@
+ include/Sim3Solver.h
+ include/Viewer.h
+ include/ImuTypes.h
++include/ImuRecovery.h
++include/MapReuseStatus.h
+ include/G2oTypes.h
+ include/CameraModels/GeometricCamera.h
+ include/CameraModels/Pinhole.h
+@@ -125,266 +129,7 @@
  -lcrypto
  )
  
@@ -388,7 +406,7 @@
 -endif()
 --- a/README.md
 +++ b/README.md
-@@ -1,235 +1,13 @@
+@@ -1,235 +1,21 @@
 -# ORB-SLAM3
 +# mono_imu_vio: modified ORB-SLAM3 core
  
@@ -404,7 +422,10 @@
 +structures used by keyframes, optimization and serialization remain.
  
 -ORB-SLAM3 is the first real-time SLAM library able to perform **Visual, Visual-Inertial and Multi-Map SLAM** with **monocular, stereo and RGB-D** cameras, using **pin-hole and fisheye** lens models. In all sensor configurations, ORB-SLAM3 is as robust as the best systems available in the literature, and significantly more accurate. 
--
++See the project root README and `provenance/` for build instructions and change
++records. The upstream authors' copyright and GPLv3 license remain in `LICENSE`
++and the source headers. This fork is not the unmodified upstream release.
+ 
 -We provide examples to run ORB-SLAM3 in the [EuRoC dataset](http://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets) using stereo or monocular, with or without IMU, and in the [TUM-VI dataset](https://vision.in.tum.de/data/datasets/visual-inertial-dataset) using fisheye stereo or monocular, with or without IMU. Videos of some example executions can be found at [ORB-SLAM3 channel](https://www.youtube.com/channel/UCXVt-kXG6T95Z4tVaYlU80Q).
 -
 -This software is based on [ORB-SLAM2](https://github.com/raulmur/ORB_SLAM2) developed by [Raul Mur-Artal](http://webdiis.unizar.es/~raulmur/), [Juan D. Tardos](http://webdiis.unizar.es/~jdtardos/), [J. M. M. Montiel](http://webdiis.unizar.es/~josemari/) and [Dorian Galvez-Lopez](http://doriangalvez.com/) ([DBoW2](https://github.com/dorian3d/DBoW2)).
@@ -631,9 +652,147 @@
 -
 -# 9. Calibration
 -You can find a tutorial for visual-inertial calibration and a detailed description of the contents of valid configuration files at  `Calibration_Tutorial.pdf`
-+See the project root README and `provenance/` for build instructions and change
-+records. The upstream authors' copyright and GPLv3 license remain in `LICENSE`
-+and the source headers. This fork is not the unmodified upstream release.
++The mono_imu_vio map-reuse extension adds mature-map candidate search,
++multi-frame geometric verification, and fresh visual/IMU velocity and bias
++recovery. Only after these checks does a recovered segment become inertially
++ready. Saved Atlas files use a guarded versioned format with vocabulary and
++calibration checks. Worker shutdown is synchronized before atomic persistence.
++See `Tracking.cc`, `ImuRecovery.cc`, `System.cc`, `AtlasPersistence.h`, and the
++Jetson README for the state machine and persistence policy.
+--- a/include/Atlas.h
++++ b/include/Atlas.h
+@@ -124,7 +124,10 @@
+     bool isImuInitialized();
+ 
+     // Function for garantee the correction of serialization of this object
+-    void PreSave();
++    // Persistence snapshots are taken only after all mutation workers stop.
++    // matureOnly filters the serialized view without deleting live maps.
++    void PreSave(bool matureOnly = false);
++    static bool IsMatureMap(Map* map);
+     void PostLoad();
+ 
+     map<long unsigned int, KeyFrame*> GetAtlasKeyframes();
+--- /dev/null
++++ b/include/AtlasPersistence.h
+@@ -0,0 +1,117 @@
++// mono_imu_vio persistence helpers. GPLv3, same license as ORB-SLAM3.
++#ifndef MONO_IMU_ATLAS_PERSISTENCE_H
++#define MONO_IMU_ATLAS_PERSISTENCE_H
++
++#include <algorithm>
++#include <cerrno>
++#include <cstring>
++#include <fcntl.h>
++#include <fstream>
++#include <functional>
++#include <iomanip>
++#include <sstream>
++#include <stdexcept>
++#include <string>
++#include <vector>
++#include <unistd.h>
++#include <opencv2/core.hpp>
++#include <openssl/sha.h>
++
++namespace ORB_SLAM3 { namespace AtlasPersistence {
++
++inline std::string Parent(const std::string& path) {
++    const std::size_t slash = path.find_last_of('/');
++    return slash == std::string::npos ? "." : (slash == 0 ? "/" : path.substr(0, slash));
++}
++
++inline void ValidateExactPath(const std::string& path) {
++    if (path.empty() || path[0] != '/' || path.size() < 5 ||
++        path.substr(path.size()-4) != ".osa" || path.find('\0') != std::string::npos)
++        throw std::runtime_error("MAP_E_PATH: MapReuse paths must be absolute exact .osa filenames");
++}
++
++// The old file remains intact if encoding, flush, or fsync fails. The temporary
++// file resides beside the destination, so rename is an atomic replacement.
++inline void WriteAtomically(const std::string& path,
++                            const std::function<void(std::ostream&)>& encode) {
++    std::string pattern = path + ".tmp.XXXXXX";
++    std::vector<char> name(pattern.begin(), pattern.end());
++    name.push_back('\0');
++    int fd = mkstemp(name.data());
++    if (fd < 0) throw std::runtime_error("MAP_E_SAVE: mkstemp: " + std::string(strerror(errno)));
++    const std::string temp(name.data());
++    try {
++        std::ofstream out(temp, std::ios::binary | std::ios::trunc);
++        out.exceptions(std::ios::failbit | std::ios::badbit);
++        encode(out);
++        out.flush();
++        out.close();
++        if (fsync(fd) != 0) throw std::runtime_error("MAP_E_SAVE: fsync failed");
++        if (close(fd) != 0) { fd = -1; throw std::runtime_error("MAP_E_SAVE: close failed"); }
++        fd = -1;
++        if (rename(temp.c_str(), path.c_str()) != 0)
++            throw std::runtime_error("MAP_E_SAVE: rename: " + std::string(strerror(errno)));
++        int dirfd = open(Parent(path).c_str(), O_RDONLY | O_DIRECTORY);
++        if (dirfd < 0) throw std::runtime_error("MAP_E_SAVE: directory open failed after rename");
++        int synced = fsync(dirfd);
++        close(dirfd);
++        if (synced != 0) throw std::runtime_error("MAP_E_SAVE: directory fsync failed after rename");
++    } catch (...) {
++        if (fd >= 0) close(fd);
++        unlink(temp.c_str());
++        throw;
++    }
++}
++
++inline std::string JsonString(const std::string& s) {
++    std::ostringstream out;
++    out << '"';
++    for (unsigned char c : s) {
++        if (c == '"' || c == '\\') out << '\\' << char(c);
++        else if (c < 32) out << "\\u" << std::hex << std::setw(4) << std::setfill('0') << int(c);
++        else out << char(c);
++    }
++    out << '"';
++    return out.str();
++}
++
++inline void CanonicalNode(std::ostream& out, const cv::FileNode& node) {
++    if (node.isMap()) {
++        std::vector<std::string> keys;
++        for (auto it = node.begin(); it != node.end(); ++it) keys.push_back((*it).name());
++        std::sort(keys.begin(), keys.end());
++        out << '{';
++        for (const auto& key : keys) { out << JsonString(key) << ':'; CanonicalNode(out, node[key]); out << ';'; }
++        out << '}';
++    } else if (node.isSeq()) {
++        out << '[';
++        for (auto it = node.begin(); it != node.end(); ++it) { CanonicalNode(out, *it); out << ';'; }
++        out << ']';
++    } else if (node.isString()) out << JsonString(std::string(node));
++    else if (node.isInt() || node.isReal()) out << std::setprecision(17) << double(node);
++    else out << "null";
++}
++
++inline std::string CalibrationFingerprint(const cv::FileStorage& settings) {
++    std::vector<std::string> keys;
++    for (auto it = settings.root().begin(); it != settings.root().end(); ++it) {
++        std::string key = (*it).name();
++        if (key.compare(0, 7, "Camera.") == 0 || key.compare(0, 8, "Camera1.") == 0 ||
++            (key.compare(0, 4, "IMU.") == 0 && key != "IMU.InsertKFsWhenLost") ||
++            key == "ORBextractor.scaleFactor" || key == "ORBextractor.nLevels" || key == "Tbc")
++            keys.push_back(key);
++    }
++    std::sort(keys.begin(), keys.end());
++    std::ostringstream canonical;
++    canonical << "mono_imu_vio-calibration-v1;";
++    for (const auto& key : keys) { canonical << JsonString(key) << ':'; CanonicalNode(canonical, settings[key]); canonical << ';'; }
++    const std::string bytes = canonical.str();
++    unsigned char digest[SHA256_DIGEST_LENGTH];
++    SHA256(reinterpret_cast<const unsigned char*>(bytes.data()), bytes.size(), digest);
++    std::ostringstream hex;
++    for (unsigned char c : digest) hex << std::hex << std::setw(2) << std::setfill('0') << unsigned(c);
++    return hex.str();
++}
++
++}} // namespace ORB_SLAM3::AtlasPersistence
++#endif
 --- a/include/Frame.h
 +++ b/include/Frame.h
 @@ -1,3 +1,4 @@
@@ -716,6 +875,122 @@
  
      cv::Mat imgLeft, imgRight;
  
+--- /dev/null
++++ b/include/ImuRecovery.h
+@@ -0,0 +1,48 @@
++#ifndef ORB_SLAM3_IMU_RECOVERY_H
++#define ORB_SLAM3_IMU_RECOVERY_H
++#include "ImuTypes.h"
++#include <Eigen/Core>
++#include <deque>
++#include <string>
++#include <vector>
++#include <limits>
++
++namespace ORB_SLAM3 {
++struct RecoveryPose {
++    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
++    double t;
++    Eigen::Matrix3d Rwb;
++    Eigen::Vector3d pwb;
++};
++using RecoveryPoses = std::vector<RecoveryPose, Eigen::aligned_allocator<RecoveryPose>>;
++struct ImuRecoveryResult {
++    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
++    bool valid = false;
++    std::string reason;
++    IMU::Bias bias;
++    Eigen::Vector3f velocity = Eigen::Vector3f::Zero();
++    Eigen::Matrix<double,15,15> information = Eigen::Matrix<double,15,15>::Zero();
++    double rotation_rms = std::numeric_limits<double>::quiet_NaN();
++    double position_rms = std::numeric_limits<double>::quiet_NaN();
++    double condition_number = std::numeric_limits<double>::quiet_NaN();
++};
++// Fits only fresh-session dynamics against metric poses in a gravity-aligned,
++// mature map. No old keyframe velocity, bias or integration is reused.
++ImuRecoveryResult SolveImuRecovery(const RecoveryPoses& poses,
++                                 const std::deque<IMU::Point>& samples,
++                                 const IMU::Calib& calibration);
++struct ImuRecoveryValidation {
++    bool valid=false;
++    std::string reason;
++    double position_rms=std::numeric_limits<double>::quiet_NaN();
++    double rotation_rms=std::numeric_limits<double>::quiet_NaN();
++    Eigen::Vector3f velocity=Eigen::Vector3f::Zero();
++};
++// Independent future-data check. The fit is frozen: no holdout visual pose is
++// used to refit velocity/bias. Predict from the last training pose through fresh
++// raw IMU, then compare against geometrically verified future visual poses.
++ImuRecoveryValidation ValidateImuRecovery(const RecoveryPose& fit_end,
++    const ImuRecoveryResult& fit, const RecoveryPoses& holdout,
++    const std::deque<IMU::Point>& samples, const IMU::Calib& calibration);
++}
++#endif
+--- a/include/KeyFrame.h
++++ b/include/KeyFrame.h
+@@ -190,6 +190,13 @@
+         ar & boost::serialization::make_array(mVw.data(), mVw.size());
+         ar & boost::serialization::make_array(mOwb.data(), mOwb.size());
+         ar & mbHasVelocity;
++        // v2 Atlas: a recovered temporal root has a finite-uncertainty dynamics
++        // prior, never an exact velocity/bias boundary condition.
++        ar & mbRecoveryDynamicsPrior;
++        ar & boost::serialization::make_array(mRecoveryVelocityBody.data(), mRecoveryVelocityBody.size());
++        ar & boost::serialization::make_array(mRecoveryGyroPrior.data(), mRecoveryGyroPrior.size());
++        ar & boost::serialization::make_array(mRecoveryAccPrior.data(), mRecoveryAccPrior.size());
++        ar & boost::serialization::make_array(mRecoveryDynamicsInformation.data(), mRecoveryDynamicsInformation.size());
+     }
+ 
+ public:
+@@ -213,6 +220,14 @@
+     Eigen::Vector3f GetTranslation();
+     Eigen::Vector3f GetVelocity();
+     bool isVelocitySet();
++
++    // Information ordering: world velocity, body gyro bias, body accel bias.
++    // The velocity component is stored in body coordinates so an Atlas/world
++    // rotation does not turn a saved prior into a different physical velocity.
++    void SetRecoveryDynamicsPrior(const Eigen::Vector3f& velocity, const IMU::Bias& bias,
++                                  const Eigen::Matrix<double,9,9>& information);
++    bool GetRecoveryDynamicsPrior(Eigen::Vector3d& velocity, Eigen::Vector3d& gyro,
++                                  Eigen::Vector3d& accel, Eigen::Matrix<double,9,9>& information);
+ 
+     // Bag of Words Representation
+     void ComputeBoW();
+@@ -444,6 +459,11 @@
+ 
+     // Imu bias
+     IMU::Bias mImuBias;
++    bool mbRecoveryDynamicsPrior = false;
++    Eigen::Vector3d mRecoveryVelocityBody = Eigen::Vector3d::Zero();
++    Eigen::Vector3d mRecoveryGyroPrior = Eigen::Vector3d::Zero();
++    Eigen::Vector3d mRecoveryAccPrior = Eigen::Vector3d::Zero();
++    Eigen::Matrix<double,9,9> mRecoveryDynamicsInformation = Eigen::Matrix<double,9,9>::Zero();
+ 
+     // MapPoints associated to keypoints
+     std::vector<MapPoint*> mvpMapPoints;
+--- a/include/KeyFrameDatabase.h
++++ b/include/KeyFrameDatabase.h
+@@ -77,6 +77,8 @@
+ 
+     // Relocalization
+     std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F, Map* pMap);
++    // Query-local scores: safe to search several maps for the same frame ID.
++    std::vector<KeyFrame*> DetectMapReuseCandidates(Frame* F, Map* pMap, size_t limit=5);
+ 
+     void PreSave();
+     void PostLoad(map<long unsigned int, KeyFrame*> mpKFid);
+--- a/include/LocalMapping.h
++++ b/include/LocalMapping.h
+@@ -56,6 +56,8 @@
+ 
+     // Thread Synch
+     void RequestStop();
++    // Call only after isStopped(), while loop closing is paused too.
++    void StartRecoveredChain();
+     void RequestReset();
+     void RequestResetActiveMap(Map* pMap);
+     bool Stop();
 --- a/include/LoopClosing.h
 +++ b/include/LoopClosing.h
 @@ -1,3 +1,4 @@
@@ -723,7 +998,20 @@
  /**
  * This file is part of ORB-SLAM3
  *
-@@ -139,7 +140,6 @@
+@@ -79,6 +80,12 @@
+     }   
+ 
+     void RequestFinish();
++
++    // Nonblocking recovery barrier: isPaused becomes true only at a safe
++    // Run boundary, after the current correction and all GBA writes finish.
++    void RequestPause();
++    bool isPaused();
++    void ReleasePause();
+ 
+     bool isFinished();
+ 
+@@ -139,7 +146,6 @@
  
      void CorrectLoop();
  
@@ -731,6 +1019,57 @@
      void MergeLocal2();
  
      void CheckObservations(set<KeyFrame*> &spKFsMap1, set<KeyFrame*> &spKFsMap2);
+@@ -152,9 +158,13 @@
+ 
+     bool CheckFinish();
+     void SetFinish();
++    void StopAndJoinGBA();
+     bool mbFinishRequested;
+     bool mbFinished;
+     std::mutex mMutexFinish;
++    bool mbPauseRequested = false;
++    bool mbPaused = false;
++    std::mutex mMutexPause;
+ 
+     Atlas* mpAtlas;
+     Tracking* mpTracker;
+@@ -223,7 +233,7 @@
+     bool mbFixScale;
+ 
+ 
+-    bool mnFullBAIdx;
++    unsigned long mnFullBAIdx;
+ 
+ 
+ 
+--- /dev/null
++++ b/include/MapReuseStatus.h
+@@ -0,0 +1,25 @@
++#ifndef ORB_SLAM3_MAP_REUSE_STATUS_H
++#define ORB_SLAM3_MAP_REUSE_STATUS_H
++#include <string>
++#include "TrackingHealth.h"
++namespace ORB_SLAM3 {
++// Snapshot of current-frame validity, separate from a map's historical IMU flag.
++struct MapReuseStatus {
++    bool enabled = false;
++    std::string phase = "MAPPING";
++    long map_id = -1;
++    long reference_keyframe_id = -1;
++    int inliers = 0;
++    unsigned long recovery_id = 0;
++    bool visual_ready = false;
++    bool inertial_ready = false;
++    // Per-frame recovery search telemetry; cumulative resets belong to recovery_id.
++    std::string recovery_method = "NONE";
++    double recovery_search_ms = 0;
++    bool recovery_global_attempted = false;
++    unsigned long recovery_window_resets = 0;
++    std::string reason;
++    TrackingHealthDiagnostics health;
++};
++}
++#endif
 --- a/include/Settings.h
 +++ b/include/Settings.h
 @@ -1,5 +1,6 @@
@@ -862,7 +1201,15 @@
  *
  * Copyright (C) 2017-2021 Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
  * Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
-@@ -83,14 +84,9 @@
+@@ -39,6 +40,7 @@
+ #include "Viewer.h"
+ #include "ImuTypes.h"
+ #include "Settings.h"
++#include "MapReuseStatus.h"
+ 
+ 
+ namespace ORB_SLAM3
+@@ -83,14 +85,9 @@
  class System
  {
  public:
@@ -879,7 +1226,7 @@
      };
  
      // File type
-@@ -104,21 +100,10 @@
+@@ -104,21 +101,10 @@
      // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
      System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor, const bool bUseViewer = true, const int initFr = 0, const string &strSequence = std::string());
  
@@ -903,7 +1250,13 @@
  
  
      // This stops local mapping thread (map building) and performs only camera tracking.
-@@ -141,13 +126,13 @@
+@@ -138,16 +124,19 @@
+     // It waits until all threads have finished.
+     // This function must be called before saving the trajectory.
+     void Shutdown();
++    // Viewer requests shutdown; the frame/adapter thread performs the barrier
++    // and persistence so process exit cannot race a GUI-thread file write.
++    void RequestShutdown();
      bool isShutDown();
  
      // Save camera trajectory in the TUM RGB-D dataset format.
@@ -919,7 +1272,7 @@
      // Call first Shutdown()
      // See format details at: http://vision.in.tum.de/data/datasets/rgbd-dataset
      void SaveKeyFrameTrajectoryTUM(const string &filename);
-@@ -162,7 +147,7 @@
+@@ -162,7 +151,7 @@
      void SaveDebugData(const int &iniIdx);
  
      // Save camera trajectory in the KITTI dataset format.
@@ -928,16 +1281,18 @@
      // Call first Shutdown()
      // See format details at: http://www.cvlibs.net/datasets/kitti/eval_odometry.php
      void SaveTrajectoryKITTI(const string &filename);
-@@ -172,7 +157,7 @@
+@@ -172,8 +161,9 @@
      // LoadMap(const string &filename);
  
      // Information from most recent processed frame
 -    // You can call this right after TrackMonocular (or stereo or RGBD)
 +    // You can call this right after TrackMonocular.
      int GetTrackingState();
++    MapReuseStatus GetMapReuseStatus();
      std::vector<MapPoint*> GetTrackedMapPoints();
      std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
-@@ -187,7 +172,6 @@
+ 
+@@ -187,7 +177,6 @@
      float GetImageScale();
  
  #ifdef REGISTER_TIMES
@@ -945,7 +1300,12 @@
      void InsertResizeTime(double& time);
      void InsertTrackTime(double& time);
  #endif
-@@ -200,7 +184,7 @@
+@@ -196,11 +185,12 @@
+ 
+     void SaveAtlas(int type);
+     bool LoadAtlas(int type);
++    void WriteMapSaveStatus(const string& status, const string& reason, Map* selected = nullptr);
+ 
      string CalculateCheckSum(string filename, int type);
  
      // Input sensor
@@ -954,6 +1314,32 @@
  
      // ORB vocabulary used for place recognition and feature matching.
      ORBVocabulary* mpVocabulary;
+@@ -248,18 +238,25 @@
+ 
+     // Shutdown flag
+     bool mbShutDown;
++    bool mbShutdownRequested = false;
++    std::timed_mutex mMutexTrack;
+ 
+     // Tracking state
+     int mTrackingState;
+     std::vector<MapPoint*> mTrackedMapPoints;
+     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
+     std::mutex mMutexState;
++    MapReuseStatus mMapReuseStatus;
+ 
+     //
+     string mStrLoadAtlasFromFile;
+     string mStrSaveAtlasToFile;
+ 
+     string mStrVocabularyFilePath;
++    string mCalibrationFingerprint;
++    bool mMapReuseEnabled = false;
++    bool mExactAtlasLoadPath = false;
++    bool mExactAtlasSavePath = false;
+ 
+     Settings* settings_;
+ };
 --- a/include/Tracking.h
 +++ b/include/Tracking.h
 @@ -1,5 +1,6 @@
@@ -963,7 +1349,16 @@
  *
  * Copyright (C) 2017-2021 Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
  * Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
-@@ -69,8 +70,6 @@
+@@ -36,6 +37,8 @@
+ #include "System.h"
+ #include "ImuTypes.h"
+ #include "Settings.h"
++#include "MapReuseStatus.h"
++#include "ImuRecovery.h"
+ 
+ #include "GeometricCamera.h"
+ 
+@@ -69,11 +72,10 @@
      bool ParseIMUParamFile(cv::FileStorage &fSettings);
  
      // Preprocess the input and call Track(). Extract features and performs stereo matching.
@@ -972,7 +1367,11 @@
      Sophus::SE3f GrabImageMonocular(const cv::Mat &im, const double &timestamp, string filename);
  
      void GrabImuData(const IMU::Point &imuMeasurement);
-@@ -131,8 +130,8 @@
++    MapReuseStatus GetMapReuseStatus() const;
+ 
+     void SetLocalMapper(LocalMapping* pLocalMapper);
+     void SetLoopClosing(LoopClosing* pLoopClosing);
+@@ -131,8 +133,8 @@
      eTrackingState mState;
      eTrackingState mLastProcessedState;
  
@@ -983,7 +1382,7 @@
  
      // Current Frame
      Frame mCurrentFrame;
-@@ -181,10 +180,8 @@
+@@ -181,10 +183,8 @@
      void TrackStats2File();
      void PrintTimeStats();
  
@@ -994,7 +1393,7 @@
      vector<double> vdIMUInteg_ms;
      vector<double> vdPosePred_ms;
      vector<double> vdLMTrack_ms;
-@@ -194,11 +191,8 @@
+@@ -194,11 +194,8 @@
  
  protected:
  
@@ -1007,7 +1406,60 @@
  
      // Map initialization for monocular
      void MonocularInitialization();
-@@ -258,7 +252,7 @@
+@@ -241,6 +238,52 @@
+     std::vector<IMU::Point> mvImuFromLastFrame;
+     std::mutex mMutexImuQueue;
+ 
++    // Recovery is owned by the tracking thread. Workers are paused before any
++    // map is inspected or switched; pending frames still refresh FrameDrawer.
++    bool mbMapReuseEnabled = false;
++    bool mbMapRecoveryActive = false;
++    bool mbMapRecoveryPaused = false;
++    double mMapRecoveryTimeout = 12.0;
++    double mMapRecoveryBudgetMs = 40.0;
++    double mMapRecoveryStartTime = 0;
++    double mMapRecoveryStartWall = 0;
++    double mMapRecoveryCooldownUntil = -1;
++    double mMapRecoveryCooldownWall = -1;
++    Map* mpRecoveryMap = nullptr;
++    KeyFrame* mpRecoveryReference = nullptr;
++    // Visual-only snapshot: no velocity, bias or preintegration is propagated.
++    Frame mRecoveryVisualFrame;
++    bool mbRecoveryVisualFrameValid = false;
++    RecoveryPoses mvRecoveryPoses;
++    RecoveryPoses mvRecoveryHoldout;
++    ImuRecoveryResult mRecoveryCandidate;
++    RecoveryPose mRecoveryFitEnd;
++    double mRecoveryFitSpan = 0;
++    bool mbRecoveryCandidate = false;
++    double mStationarySince = -1;
++    StationaryEvidenceState mStationaryEvidence;
++    OutputPoseBaseline mOutputPoseBaseline;
++    Eigen::Vector3f mStationaryOrigin = Eigen::Vector3f::Zero();
++    KeyFrame* mpStationaryReference = nullptr;
++    std::deque<IMU::Point> mRecoveryImu;
++    MapReuseStatus mMapReuseStatus;
++    mutable std::mutex mMutexMapReuseStatus;
++    std::vector<Map*> ReusableMaps() const;
++    bool ProcessMapRecovery();
++    bool RelocalizeInMap(Map* map, KeyFrame*& reference, int& inliers, double deadline);
++    bool TrackRecoveryLocalMap(Map* map, KeyFrame*& reference, int& inliers, double deadline);
++    bool VerifyRecoveryVisualPose(Map* map, int& inliers);
++    void ClearRecoveryWindow();
++    void BeginMapRecovery(const std::string& reason);
++    void EndMapRecovery();
++    void PublishRecoveryFrame();
++    void CommitMapRecovery(const ImuRecoveryResult& result);
++    void RefreshMapReuseStatus();
++    void RecordCurrentDynamics();
++    void RecordRecoveryFit(const ImuRecoveryResult& result);
++    void RecordVisualDiagnostics(const Frame& visual);
++    bool CheckCurrentFrameHealth(const Frame& visual);
++
+     // Imu calibration parameters
+     IMU::Calib *mpImuCalib;
+ 
+@@ -258,7 +301,7 @@
      LoopClosing* mpLoopClosing;
  
      //ORB
@@ -1016,7 +1468,7 @@
      ORBextractor* mpIniORBextractor;
  
      //BoW
-@@ -290,7 +284,8 @@
+@@ -290,7 +333,8 @@
      cv::Mat mK;
      Eigen::Matrix3f mK_;
      cv::Mat mDistCoef;
@@ -1026,7 +1478,7 @@
      float mImageScale;
  
      float mImuFreq;
-@@ -304,13 +299,8 @@
+@@ -304,13 +348,8 @@
      int mnFirstImuFrameId;
      int mnFramesToResetIMU;
  
@@ -1042,7 +1494,7 @@
  
      //Current matches in frame
      int mnMatchesInliers;
-@@ -349,11 +339,10 @@
+@@ -349,11 +388,10 @@
      double mTime_LocalMapTrack;
      double mTime_NewKF_Dec;
  
@@ -1055,6 +1507,134 @@
  
      void newParameterLoader(Settings* settings);
  
+--- /dev/null
++++ b/include/TrackingHealth.h
+@@ -0,0 +1,70 @@
++#ifndef ORB_SLAM3_TRACKING_HEALTH_H
++#define ORB_SLAM3_TRACKING_HEALTH_H
++#include <array>
++#include <limits>
++#include <string>
++namespace ORB_SLAM3 {
++inline double HealthUnknown() { return std::numeric_limits<double>::quiet_NaN(); }
++struct TrackingHealthDiagnostics {
++    bool evaluated=false, accepted=false, stationary_candidate=false, dynamics_available=false, hard_fault=false, map_updated=false;
++    bool stationary_evidence_held=false, output_pose_baseline=false;
++    std::string reason;
++    std::array<double,3> velocity_w{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    std::array<double,3> gyro_bias{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    std::array<double,3> accel_bias{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    std::array<double,3> recovery_fit_velocity_w{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    std::array<double,3> recovery_fit_gyro_bias{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    std::array<double,3> recovery_fit_accel_bias{{HealthUnknown(),HealthUnknown(),HealthUnknown()}};
++    int visual_inliers=0, visual_cells=0, flow_matches=0, imu_window_samples=0;
++    double visual_rms_px=HealthUnknown(), fused_rms_px=HealthUnknown();
++    double visual_translation_error_m=HealthUnknown(), visual_rotation_error_rad=HealthUnknown();
++    double pose_step_m=HealthUnknown(), pose_step_dt_s=HealthUnknown();
++    double output_pose_step_m=HealthUnknown(), output_pose_step_dt_s=HealthUnknown();
++    double flow_median_px_s=HealthUnknown(), flow_p90_px_s=HealthUnknown();
++    double imu_gyro_mean_norm=HealthUnknown(), imu_gyro_std=HealthUnknown();
++    double imu_acc_mean_norm=HealthUnknown(), imu_acc_std=HealthUnknown();
++    double stationary_duration_s=HealthUnknown(), stationary_displacement_m=HealthUnknown();
++    double recovery_fit_position_rms_m=HealthUnknown(), recovery_fit_rotation_rms_rad=HealthUnknown();
++    double recovery_holdout_position_rms_m=HealthUnknown(), recovery_holdout_rotation_rms_rad=HealthUnknown();
++    double recovery_fit_span_s=HealthUnknown(), recovery_holdout_span_s=HealthUnknown();
++    double recovery_fit_condition_number=HealthUnknown();
++};
++// Handheld gross-failure gates, not a precision/zero-motion certificate.
++// Off mode does not call this gate. No pose is clamped or replaced by a zero pose.
++struct TrackingHealthLimits {
++    double max_speed_m_s=8.0, max_gyro_bias_rad_s=0.3, max_accel_bias_m_s2=2.0;
++    double pose_step_margin_m=0.10, max_pose_speed_m_s=8.0;
++    double max_visual_translation_error_m=0.12, max_visual_rotation_error_rad=0.12;
++    int min_visual_inliers=20, min_visual_cells=3;
++    double stationary_min_duration_s=0.7, stationary_max_speed_m_s=0.15;
++    double stationary_max_displacement_m=0.05;
++    double stationary_evidence_hold_s=0.5;
++};
++// The caller supplies an independent visual fit and a fused state from the same
++// frame, before publishing or creating a keyframe. Missing required data fails.
++bool EvaluateTrackingHealth(TrackingHealthDiagnostics& d, bool finite_pose,
++                            const TrackingHealthLimits& limits=TrackingHealthLimits());
++bool IsStationaryEvidence(const TrackingHealthDiagnostics& d);
++// Immutable snapshot of a previously accepted published body position. It is
++// owned by Tracking, never by a Frame or optimizable KeyFrame.
++struct OutputPoseBaseline {
++    bool available=false;
++    long map_id=-1;
++    unsigned long frame_id=0;
++    double time=0;
++    std::array<double,3> body_position{{0,0,0}};
++};
++void MeasurePublishedPoseStep(TrackingHealthDiagnostics& d,const OutputPoseBaseline& previous,
++    long map_id,unsigned long frame_id,double time,const std::array<double,3>& body_position);
++
++struct StationaryEvidenceState {
++    double started_s=-1, last_full_s=-1, last_update_s=-1;
++    bool confirmed=false;
++};
++// Preserve an already-confirmed visual/gyro-static interval briefly across an
++// accelerometer transient. A real image/gyro change, missing coverage, invalid
++// time or nonfinite statistic releases it immediately. This is not a ZUPT.
++void UpdateStationaryEvidence(TrackingHealthDiagnostics& d,double time,
++    StationaryEvidenceState& state,const TrackingHealthLimits& limits=TrackingHealthLimits());
++}
++#endif
+--- a/src/Atlas.cc
++++ b/src/Atlas.cc
+@@ -26,7 +26,7 @@
+ namespace ORB_SLAM3
+ {
+ 
+-Atlas::Atlas(){
++Atlas::Atlas(): mnLastInitKFidMap(0), mHasViewer(false){
+     mpCurrentMap = static_cast<Map*>(NULL);
+ }
+ 
+@@ -299,7 +299,14 @@
+     return mpCurrentMap->isImuInitialized();
+ }
+ 
+-void Atlas::PreSave()
++bool Atlas::IsMatureMap(Map* map)
++{
++    return map && !map->IsBad() && map->IsInertial() &&
++        map->isImuInitialized() && map->GetIniertialBA2() &&
++        map->KeyFramesInMap() >= 12 && map->MapPointsInMap() >= 50;
++}
++
++void Atlas::PreSave(bool matureOnly)
+ {
+     if(mpCurrentMap){
+         if(!mspMaps.empty() && mnLastInitKFidMap < mpCurrentMap->GetMaxKFid())
+@@ -313,7 +320,11 @@
+             return elem1->GetId() < elem2->GetId();
+         }
+     };
+-    std::copy(mspMaps.begin(), mspMaps.end(), std::back_inserter(mvpBackupMaps));
++    mvpBackupMaps.clear();
++    for (Map* map : mspMaps)
++        if (map && !map->IsBad() && map->KeyFramesInMap() > 0 &&
++            (!matureOnly || IsMatureMap(map)))
++            mvpBackupMaps.push_back(map);
+     sort(mvpBackupMaps.begin(), mvpBackupMaps.end(), compFunctor());
+ 
+     std::set<GeometricCamera*> spCams(mvpCameras.begin(), mvpCameras.end());
+@@ -322,14 +333,8 @@
+         if(!pMi || pMi->IsBad())
+             continue;
+ 
+-        if(pMi->GetAllKeyFrames().size() == 0) {
+-            // Empty map, erase before of save it.
+-            SetMapBad(pMi);
+-            continue;
+-        }
+         pMi->PreSave(spCams);
+     }
+-    RemoveBadMaps();
+ }
+ 
+ void Atlas::PostLoad()
 --- a/src/Frame.cc
 +++ b/src/Frame.cc
 @@ -1,3 +1,4 @@
@@ -1108,7 +1688,7 @@
  {
      // Frame ID
      mnId=nNextId++;
-@@ -119,15 +113,13 @@
+@@ -119,71 +113,53 @@
  #ifdef REGISTER_TIMES
      std::chrono::steady_clock::time_point time_StartExtORB = std::chrono::steady_clock::now();
  #endif
@@ -1122,14 +1702,14 @@
  
      mTimeORB_Ext = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndExtORB - time_StartExtORB).count();
  #endif
+ 
 +
- 
      N = mvKeys.size();
-     if(mvKeys.empty())
-@@ -135,55 +127,38 @@
- 
-     UndistortKeyPoints();
- 
+-    if(mvKeys.empty())
+-        return;
+-
+-    UndistortKeyPoints();
+-
 -#ifdef REGISTER_TIMES
 -    std::chrono::steady_clock::time_point time_StartStereoMatches = std::chrono::steady_clock::now();
 -#endif
@@ -1139,6 +1719,12 @@
 -
 -    mTimeStereoMatch = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndStereoMatches - time_StartStereoMatches).count();
 -#endif
++    // A fully occluded frame still needs a valid IMU mutex, dimensions and
++    // mono-only sentinel fields so tracking can report loss and recover safely.
++    // Only point undistortion is skipped when no features were detected.
++    if(!mvKeys.empty())
++        UndistortKeyPoints();
++
 +    // Set no stereo information
 +    mvuRight = vector<float>(N,-1);
 +    mvDepth = vector<float>(N,-1);
@@ -1200,7 +1786,7 @@
  
      //Set no stereo fisheye information
      Nleft = -1;
-@@ -195,176 +170,6 @@
+@@ -195,176 +171,6 @@
      monoRight = -1;
  
      AssignFeaturesToGrid();
@@ -1377,7 +1963,7 @@
  
      if(pPrevF)
      {
-@@ -384,44 +189,25 @@
+@@ -384,44 +190,25 @@
  
  void Frame::AssignFeaturesToGrid()
  {
@@ -1431,7 +2017,7 @@
  }
  
  bool Frame::isSet() const {
-@@ -511,79 +297,67 @@
+@@ -511,79 +298,67 @@
  
  bool Frame::isInFrustum(MapPoint *pMP, float viewingCosLimit)
  {
@@ -1572,7 +2158,7 @@
  
  bool Frame::ProjectPointDistort(MapPoint* pMP, cv::Point2f &kp, float &u, float &v)
  {
-@@ -808,217 +582,6 @@
+@@ -808,217 +583,6 @@
      }
  }
  
@@ -1790,7 +2376,7 @@
  bool Frame::imuIsPreintegrated()
  {
      unique_lock<std::mutex> lock(*mpMutexImu);
-@@ -1031,218 +594,4 @@
+@@ -1031,218 +595,4 @@
      mbImuPreintegrated = true;
  }
  
@@ -2009,6 +2595,521 @@
 -}
 -
  } //namespace ORB_SLAM
+--- /dev/null
++++ b/src/ImuRecovery.cc
+@@ -0,0 +1,242 @@
++// mono_imu_vio: fresh visual-inertial alignment after map relocalization.
++#include "ImuRecovery.h"
++#include <Eigen/Cholesky>
++#include <Eigen/Eigenvalues>
++#include <Eigen/Geometry>
++#include <algorithm>
++#include <cmath>
++#include <memory>
++
++namespace ORB_SLAM3 {
++namespace {
++using V3 = Eigen::Vector3d;
++using M3 = Eigen::Matrix3d;
++using M6 = Eigen::Matrix<double,6,6>;
++using V6 = Eigen::Matrix<double,6,1>;
++V3 LogRotation(const M3& r) {
++    const Eigen::AngleAxisd angle(r);
++    return angle.axis() * angle.angle();
++}
++struct Segment { EIGEN_MAKE_ALIGNED_OPERATOR_NEW V3 a,w; double dt; };
++using Segments = std::vector<Segment,Eigen::aligned_allocator<Segment>>;
++
++bool MakeSegments(double begin, double end, const std::deque<IMU::Point>& s,
++                  Segments& out) {
++    if(s.size()<2 || !(end>begin) || begin<s.front().t-0.004 || end>s.back().t+0.004)
++        return false;
++    auto at = [&](double t, V3& a,V3& w) {
++        auto right=std::lower_bound(s.begin(),s.end(),t,
++            [](const IMU::Point& x,double y){return x.t<y;});
++        if(right==s.begin()){a=right->a.cast<double>(); w=right->w.cast<double>(); return;}
++        if(right==s.end()){a=s.back().a.cast<double>(); w=s.back().w.cast<double>(); return;}
++        auto left=right-1;
++        double u=(t-left->t)/(right->t-left->t);
++        a=(1-u)*left->a.cast<double>()+u*right->a.cast<double>();
++        w=(1-u)*left->w.cast<double>()+u*right->w.cast<double>();
++    };
++    double t=begin;
++    auto it=std::upper_bound(s.begin(),s.end(),begin,
++        [](double x,const IMU::Point& y){return x<y.t;});
++    while(t<end-1e-9){
++        double next=it==s.end()?end:std::min(end,it->t);
++        if(next<=t){++it;continue;}
++        if(next-t>0.010)return false;
++        V3 a0,w0,a1,w1;at(t,a0,w0);at(next,a1,w1);
++        out.push_back({(a0+a1)*0.5,(w0+w1)*0.5,next-t});
++        t=next;if(it!=s.end() && it->t<=t+1e-9)++it;
++    }
++    return !out.empty();
++}
++std::unique_ptr<IMU::Preintegrated> Integrate(const Segments& s,const V3& bg,
++                                           const V3& ba,const IMU::Calib& c) {
++    IMU::Bias b(ba.x(),ba.y(),ba.z(),bg.x(),bg.y(),bg.z());
++    std::unique_ptr<IMU::Preintegrated> p(new IMU::Preintegrated(b,c));
++    for(const auto& x:s)p->IntegrateNewMeasurement(x.a.cast<float>(),x.w.cast<float>(),x.dt);
++    return p;
++}
++M3 IntegrateRotation(const Segments& segments,const V3& bg) {
++    M3 rotation=M3::Identity();
++    // Bias fitting needs rotations only. Avoid repeatedly propagating a full
++    // 15x15 covariance for the finite-difference evaluations on each frame.
++    for(const auto& sample:segments){
++        V3 angle=(sample.w-bg)*sample.dt;
++        double norm=angle.norm();
++        if(norm>1e-12)rotation=rotation*Eigen::AngleAxisd(norm,angle/norm).toRotationMatrix();
++    }
++    return rotation;
++}
++}
++
++ImuRecoveryResult SolveImuRecovery(const RecoveryPoses& poses,
++                                 const std::deque<IMU::Point>& samples,
++                                 const IMU::Calib& calibration) {
++    ImuRecoveryResult out;
++    auto fail=[&](const std::string& reason){out.reason=reason;return out;};
++    if(poses.size()<12 || poses.back().t-poses.front().t<1.0)
++        return fail("need >=12 visual poses spanning >=1 second");
++    if(poses.back().t-poses.front().t>4.0)return fail("alignment window too long");
++    if(samples.size()<2)return fail("insufficient fresh IMU samples");
++    for(size_t i=0;i<samples.size();++i){
++        if(!std::isfinite(samples[i].t)||!samples[i].a.allFinite()||!samples[i].w.allFinite())
++            return fail("nonfinite IMU sample");
++        if(i && samples[i].t<=samples[i-1].t)return fail("nonmonotonic IMU samples");
++        // Check gaps only inside the actual recovery interval.
++        if(i && samples[i].t>=poses.front().t && samples[i-1].t<=poses.back().t &&
++           samples[i].t-samples[i-1].t>0.010)return fail("IMU sample gap exceeds 10 ms");
++    }
++    std::vector<Segments> segments(poses.size()-1);
++    for(size_t i=0;i<poses.size();++i){
++        if(!std::isfinite(poses[i].t)||!poses[i].Rwb.allFinite()||!poses[i].pwb.allFinite())
++            return fail("nonfinite visual pose");
++        if((poses[i].Rwb.transpose()*poses[i].Rwb-M3::Identity()).norm()>1e-3 ||
++           std::abs(poses[i].Rwb.determinant()-1)>1e-3)return fail("invalid visual rotation");
++        if(i){
++            double dt=poses[i].t-poses[i-1].t;
++            if(dt<=0 || dt>0.25)return fail("visual pose gap exceeds 250 ms");
++            if((poses[i].pwb-poses[i-1].pwb).norm()/dt>8 ||
++               LogRotation(poses[i-1].Rwb.transpose()*poses[i].Rwb).norm()/dt>12)
++                return fail("inconsistent visual pose jump");
++            if(!MakeSegments(poses[i-1].t,poses[i].t,samples,segments[i-1]))
++                return fail("IMU interval not covered");
++        }
++    }
++    // Gyro bias is observed by metric-map visual rotations. Numerical Jacobians
++    // use freshly integrated measurements, not stale KF preintegration objects.
++    V3 bg=V3::Zero();M3 gyroH=M3::Zero();
++    for(int iteration=0;iteration<7;++iteration){
++        gyroH.setZero();V3 gradient=V3::Zero();
++        for(size_t i=0;i<segments.size();++i){
++            M3 visual=poses[i].Rwb.transpose()*poses[i+1].Rwb;
++            V3 r=LogRotation(IntegrateRotation(segments[i],bg).transpose()*visual);
++            M3 J;
++            for(int k=0;k<3;++k){
++                V3 b=bg;b[k]+=1e-4;
++                J.col(k)=(LogRotation(IntegrateRotation(segments[i],b).transpose()*visual)-r)/1e-4;
++            }
++            gyroH.noalias()+=J.transpose()*J;gradient.noalias()+=J.transpose()*r;
++        }
++        Eigen::SelfAdjointEigenSolver<M3> eig(gyroH);
++        if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<1e-6)
++            return fail("gyro bias fit ill conditioned: min="+std::to_string(eig.eigenvalues().minCoeff())+
++                        " trace="+std::to_string(gyroH.trace())+" intervals="+std::to_string(segments.size()));
++        V3 step=gyroH.ldlt().solve(-gradient);
++        if(!step.allFinite())return fail("gyro bias fit failed");
++        bg+=step;
++        if(bg.norm()>0.3)return fail("estimated gyro bias exceeds 0.3 rad/s");
++        if(step.norm()<1e-5)break;
++    }
++    std::vector<std::unique_ptr<IMU::Preintegrated>> integrations;
++    double rotationSse=0;
++    for(size_t i=0;i<segments.size();++i){
++        auto p=Integrate(segments[i],bg,V3::Zero(),calibration);
++        V3 r=LogRotation(p->dR.cast<double>().transpose()*poses[i].Rwb.transpose()*poses[i+1].Rwb);
++        rotationSse+=r.squaredNorm();
++        if(r.norm()>0.06)return fail("visual/gyro rotation residual exceeds 0.06 rad");
++        integrations.push_back(std::move(p));
++    }
++    out.rotation_rms=std::sqrt(rotationSse/segments.size());
++    if(out.rotation_rms>0.025)return fail("visual/gyro rotation RMS exceeds 0.025 rad");
++
++    // Unknowns are first-window velocity and constant accelerometer bias.
++    // Positions and rotations are fixed by independently verified mature-map
++    // visual poses; gravity is the saved metric map's aligned negative z axis.
++    const V3 gravity(0,0,-IMU::GRAVITY_VALUE);
++    V3 dp=V3::Zero(),dv=V3::Zero();M3 Bp=M3::Zero(),Bv=M3::Zero();
++    Eigen::MatrixXd A(3*(poses.size()-1),6);Eigen::VectorXd rhs(A.rows());
++    for(size_t i=0;i<integrations.size();++i){
++        const auto& p=*integrations[i];double dt=p.dT;
++        const M3& R=poses[i].Rwb;
++        dp+=dv*dt+0.5*gravity*dt*dt+R*p.dP.cast<double>();
++        Bp+=Bv*dt+R*p.JPa.cast<double>();
++        dv+=gravity*dt+R*p.dV.cast<double>();Bv+=R*p.JVa.cast<double>();
++        double elapsed=poses[i+1].t-poses[0].t;
++        A.block<3,3>(3*i,0)=elapsed*M3::Identity();A.block<3,3>(3*i,3)=Bp;
++        rhs.segment<3>(3*i)=poses[i+1].pwb-poses[0].pwb-dp;
++    }
++    M6 H=A.transpose()*A;
++    Eigen::SelfAdjointEigenSolver<M6> eig(H);
++    if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<1e-5 ||
++       eig.eigenvalues().maxCoeff()/eig.eigenvalues().minCoeff()>1e6)
++        return fail("velocity/accelerometer fit ill conditioned");
++    out.condition_number=eig.eigenvalues().maxCoeff()/eig.eigenvalues().minCoeff();
++    V6 x=H.ldlt().solve(A.transpose()*rhs);
++    if(!x.allFinite())return fail("nonfinite velocity/bias fit");
++    const V3 ba=x.tail<3>();
++    if(ba.norm()>2.0)return fail("estimated accelerometer bias exceeds 2 m/s^2");
++    V3 velocity=x.head<3>()+dv+Bv*ba;
++    if(velocity.norm()>8)return fail("estimated speed exceeds 8 m/s");
++    Eigen::VectorXd residual=A*x-rhs;
++    out.position_rms=std::sqrt(residual.squaredNorm()/(poses.size()-1));
++    for(int i=0;i<residual.rows();i+=3)
++        if(residual.segment<3>(i).norm()>0.06)return fail("visual/IMU position residual exceeds 6 cm");
++    if(out.position_rms>0.025)return fail("visual/IMU position RMS exceeds 2.5 cm");
++
++    // A heuristic uncertainty-floored prior for the first frame-to-frame
++    // inertial optimization. Correlations between separately fitted variables
++    // are not available, so this is not a statistically conservative covariance.
++    // Least-squares covariance is enlarged by floors to account for correlated
++    // visual poses and model error; these values are not an accuracy certificate.
++    M6 covariance=H.ldlt().solve(M6::Identity())*std::max(0.0001,out.position_rms*out.position_rms);
++    Eigen::Matrix<double,3,6> Jv;Jv.leftCols<3>()=M3::Identity();Jv.rightCols<3>()=Bv;
++    V3 varianceVelocity=(Jv*covariance*Jv.transpose()).diagonal();
++    V3 varianceGyro=(gyroH.ldlt().solve(M3::Identity())*std::max(0.0001,out.rotation_rms*out.rotation_rms)).diagonal();
++    for(int k=0;k<3;++k){
++        out.information(k,k)=1.0/(0.03*0.03);
++        out.information(k+3,k+3)=1.0/(0.03*0.03);
++        out.information(k+6,k+6)=1.0/std::max(0.04,varianceVelocity[k]);
++        out.information(k+9,k+9)=1.0/std::max(0.0004,varianceGyro[k]);
++        out.information(k+12,k+12)=1.0/std::max(0.04,covariance(k+3,k+3));
++    }
++    out.bias=IMU::Bias(ba.x(),ba.y(),ba.z(),bg.x(),bg.y(),bg.z());
++    out.velocity=velocity.cast<float>();out.valid=true;out.reason="fresh visual-inertial alignment accepted";
++    return out;
++}
++
++ImuRecoveryValidation ValidateImuRecovery(const RecoveryPose& first,
++    const ImuRecoveryResult& fit, const RecoveryPoses& holdout,
++    const std::deque<IMU::Point>& samples, const IMU::Calib& calibration) {
++    ImuRecoveryValidation out;
++    auto fail=[&](const std::string& reason){out.reason=reason;return out;};
++    if(!fit.valid || !fit.velocity.allFinite() || !first.Rwb.allFinite() || !first.pwb.allFinite())
++        return fail("invalid frozen recovery state");
++    if(holdout.size()<8 || holdout.back().t-first.t<0.6)
++        return fail("need >=8 fresh holdout poses spanning >=0.6 second");
++    if(holdout.back().t-first.t>2.0)return fail("recovery holdout interval too long");
++    if(samples.size()<2)return fail("holdout IMU samples absent");
++    for(size_t i=0;i<samples.size();++i){
++        if(!std::isfinite(samples[i].t)||!samples[i].a.allFinite()||!samples[i].w.allFinite())
++            return fail("nonfinite holdout IMU sample");
++        if(i && samples[i].t<=samples[i-1].t)return fail("nonmonotonic holdout IMU sample");
++        if(i && samples[i].t>=first.t && samples[i-1].t<=holdout.back().t &&
++           samples[i].t-samples[i-1].t>0.010)return fail("holdout IMU gap exceeds 10 ms");
++    }
++    const V3 bg(fit.bias.bwx,fit.bias.bwy,fit.bias.bwz);
++    const V3 ba(fit.bias.bax,fit.bias.bay,fit.bias.baz), gravity(0,0,-IMU::GRAVITY_VALUE);
++    if(!bg.allFinite()||!ba.allFinite())return fail("nonfinite frozen recovery bias");
++    double p2=0,r2=0,previous=first.t;size_t compared=0;
++    for(const auto& pose:holdout){
++        if(!std::isfinite(pose.t)||!pose.Rwb.allFinite()||!pose.pwb.allFinite()||
++           pose.t<=previous||pose.t-previous>0.25)return fail("invalid holdout visual interval");
++        Segments segments;
++        if(!MakeSegments(first.t,pose.t,samples,segments))return fail("holdout IMU interval uncovered");
++        auto pre=Integrate(segments,bg,ba,calibration);
++        const double dt=pose.t-first.t;
++        const V3 predicted=first.pwb+fit.velocity.cast<double>()*dt+0.5*gravity*dt*dt+
++                           first.Rwb*pre->dP.cast<double>();
++        const M3 rotation=first.Rwb*pre->dR.cast<double>();
++        double pe=(predicted-pose.pwb).norm(),re=LogRotation(rotation.transpose()*pose.Rwb).norm();
++        p2+=pe*pe;r2+=re*re;
++        ++compared;out.position_rms=std::sqrt(p2/compared);
++        out.rotation_rms=std::sqrt(r2/compared);
++        if(pe>0.06||re>0.06)return fail("frozen recovery state failed future visual/IMU check");
++        out.velocity=(fit.velocity.cast<double>()+gravity*dt+first.Rwb*pre->dV.cast<double>()).cast<float>();
++        previous=pose.t;
++    }
++    if(out.position_rms>0.025||out.rotation_rms>0.025)
++        return fail("recovery holdout RMS too large");
++    if(!out.velocity.allFinite()||out.velocity.norm()>8)return fail("recovery holdout speed invalid");
++    out.valid=true;out.reason="fresh visual-inertial alignment and future-data validation accepted";
++    return out;
++}
++
++}
+--- a/src/KeyFrame.cc
++++ b/src/KeyFrame.cc
+@@ -17,9 +17,12 @@
+ */
+ 
+ #include "KeyFrame.h"
++#include <Eigen/Eigenvalues>
++#include <stdexcept>
+ #include "Converter.h"
+ #include "ImuTypes.h"
+ #include<mutex>
++#include <cmath>
+ 
+ namespace ORB_SLAM3
+ {
+@@ -37,9 +40,10 @@
+         mfLogScaleFactor(0), mvScaleFactors(0), mvLevelSigma2(0), mvInvLevelSigma2(0), mnMinX(0), mnMinY(0), mnMaxX(0),
+         mnMaxY(0), mPrevKF(static_cast<KeyFrame*>(NULL)), mNextKF(static_cast<KeyFrame*>(NULL)), mbFirstConnection(true), mpParent(NULL), mbNotErase(false),
+         mbToBeErased(false), mbBad(false), mHalfBaseline(0), mbCurrentPlaceRecognition(false), mnMergeCorrectedForKF(0),
+-        NLeft(0),NRight(0), mnNumberOfOpt(0), mbHasVelocity(false)
+-{
+-
++        NLeft(0),NRight(0), mnNumberOfOpt(0), mbHasVelocity(false),
++        mpCamera(nullptr), mpCamera2(nullptr), mpImuPreintegrated(nullptr)
++{
++    mfScale = 1.f;
+ }
+ 
+ KeyFrame::KeyFrame(Frame &F, Map *pMap, KeyFrameDatabase *pKFDB):
+@@ -62,6 +66,7 @@
+     mvKeysRight(F.mvKeysRight), NLeft(F.Nleft), NRight(F.Nright), mTrl(F.GetRelativePoseTrl()), mnNumberOfOpt(0), mbHasVelocity(false)
+ {
+     mnId=nNextId++;
++    mfScale = 1.f;
+ 
+     mGrid.resize(mnGridCols);
+     if(F.Nleft != -1)  mGridRight.resize(mnGridCols);
+@@ -93,6 +98,50 @@
+     SetPose(F.GetPose());
+ 
+     mnOriginMapId = pMap->GetId();
++}
++
++// A numerical fit is a measurement with uncertainty. In particular, never
++// promote a short relocalization window into an exact BA boundary velocity.
++void KeyFrame::SetRecoveryDynamicsPrior(const Eigen::Vector3f& velocity, const IMU::Bias& bias,
++                                       const Eigen::Matrix<double,9,9>& information)
++{
++    const Eigen::Vector3d gyro(bias.bwx,bias.bwy,bias.bwz);
++    const Eigen::Vector3d accel(bias.bax,bias.bay,bias.baz);
++    Eigen::Matrix<double,9,9> symmetric=(information+information.transpose())*0.5;
++    if(!velocity.allFinite() || !gyro.allFinite() || !accel.allFinite() || !symmetric.allFinite())
++        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: nonfinite dynamics information");
++    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,9,9>> eig(symmetric);
++    if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<=1e-12)
++        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: invalid dynamics information");
++    unique_lock<mutex> lock(mMutexPose);
++    const Eigen::Matrix3d Rwb=(mTwc*mImuCalib.mTcb).rotationMatrix().cast<double>();
++    Eigen::Matrix<double,9,9> bodyFromWorld=Eigen::Matrix<double,9,9>::Identity();
++    bodyFromWorld.block<3,3>(0,0)=Rwb.transpose();
++    mRecoveryVelocityBody=Rwb.transpose()*velocity.cast<double>();
++    mRecoveryGyroPrior=gyro; mRecoveryAccPrior=accel;
++    mRecoveryDynamicsInformation=bodyFromWorld*symmetric*bodyFromWorld.transpose();
++    mbRecoveryDynamicsPrior=true;
++}
++
++bool KeyFrame::GetRecoveryDynamicsPrior(Eigen::Vector3d& velocity, Eigen::Vector3d& gyro,
++                                       Eigen::Vector3d& accel, Eigen::Matrix<double,9,9>& information)
++{
++    unique_lock<mutex> lock(mMutexPose);
++    if(!mbRecoveryDynamicsPrior)return false;
++    // Also validate deserialized data before it enters an optimizer.
++    if(!mRecoveryVelocityBody.allFinite() || !mRecoveryGyroPrior.allFinite() ||
++       !mRecoveryAccPrior.allFinite() || !mRecoveryDynamicsInformation.allFinite() ||
++       (mRecoveryDynamicsInformation-mRecoveryDynamicsInformation.transpose()).norm()>1e-6)
++        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: corrupt saved dynamics prior");
++    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<double,9,9>> eig(mRecoveryDynamicsInformation);
++    if(eig.info()!=Eigen::Success || eig.eigenvalues().minCoeff()<=1e-12)
++        throw std::runtime_error("MAP_E_RECOVERY_PRIOR: nonpositive saved dynamics information");
++    const Eigen::Matrix3d Rwb=(mTwc*mImuCalib.mTcb).rotationMatrix().cast<double>();
++    Eigen::Matrix<double,9,9> worldFromBody=Eigen::Matrix<double,9,9>::Identity();
++    worldFromBody.block<3,3>(0,0)=Rwb;
++    velocity=Rwb*mRecoveryVelocityBody; gyro=mRecoveryGyroPrior; accel=mRecoveryAccPrior;
++    information=worldFromBody*mRecoveryDynamicsInformation*worldFromBody.transpose();
++    return true;
+ }
+ 
+ void KeyFrame::ComputeBoW()
+@@ -915,8 +964,16 @@
+     if(mNextKF && spKF.find(mNextKF) != spKF.end())
+         mBackupNextKFId = mNextKF->mnId;
+ 
+-    if(mpImuPreintegrated)
++    if(mPrevKF && mpImuPreintegrated)
+         mBackupImuPreintegrated.CopyFrom(mpImuPreintegrated);
++    else {
++        // A new temporal root has no incoming inertial edge. Store a fully
++        // initialized zero-duration placeholder, never uninitialized Eigen
++        // matrices from Preintegrated's serialization-only default ctor.
++        IMU::Calib zeroCalibration(Sophus::SE3f(), 0.f, 0.f, 0.f, 0.f);
++        IMU::Preintegrated empty(IMU::Bias(), zeroCalibration);
++        mBackupImuPreintegrated.CopyFrom(&empty);
++    }
+ }
+ 
+ void KeyFrame::PostLoad(map<long unsigned int, KeyFrame*>& mpKFid, map<long unsigned int, MapPoint*>& mpMPid, map<unsigned int, GeometricCamera*>& mpCamId){
+@@ -924,6 +981,9 @@
+ 
+     // Pose
+     SetPose(mTcw);
++    Eigen::Vector3d priorVelocity,priorGyro,priorAcc;
++    Eigen::Matrix<double,9,9> priorInformation;
++    GetRecoveryDynamicsPrior(priorVelocity,priorGyro,priorAcc,priorInformation);
+ 
+     mTrl = mTlr.inverse();
+ 
+@@ -996,7 +1056,8 @@
+     {
+         mNextKF = mpKFid[mBackupNextKFId];
+     }
+-    mpImuPreintegrated = &mBackupImuPreintegrated;
++    mpImuPreintegrated = mPrevKF && std::isfinite(mBackupImuPreintegrated.dT) &&
++        mBackupImuPreintegrated.dT > 0 ? &mBackupImuPreintegrated : nullptr;
+ 
+ 
+     // Remove all backup container
+--- a/src/KeyFrameDatabase.cc
++++ b/src/KeyFrameDatabase.cc
+@@ -23,6 +23,8 @@
+ #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
+ 
+ #include<mutex>
++#include <algorithm>
++#include <map>
+ 
+ using namespace std;
+ 
+@@ -844,6 +846,41 @@
+     return vpRelocCandidates;
+ }
+ 
++std::vector<KeyFrame*> KeyFrameDatabase::DetectMapReuseCandidates(Frame* frame, Map* map, size_t limit)
++{
++    std::map<KeyFrame*,int> words;
++    {
++        std::unique_lock<std::mutex> lock(mMutex);
++        for(const auto& word:frame->mBowVec)
++            for(KeyFrame* kf:mvInvertedFile[word.first])
++                if(kf && kf->GetMap()==map && !kf->isBad())++words[kf];
++    }
++    int maximum=0;
++    for(const auto& item:words)maximum=std::max(maximum,item.second);
++    std::map<KeyFrame*,float> scores;
++    for(const auto& item:words)
++        if(item.second>0.8f*maximum)scores[item.first]=mpVoc->score(frame->mBowVec,item.first->mBowVec);
++    std::vector<std::pair<float,KeyFrame*>> ranked;
++    for(const auto& item:scores){
++        float accumulated=item.second;
++        for(KeyFrame* other:item.first->GetBestCovisibilityKeyFrames(10)){
++            auto found=scores.find(other);
++            if(found!=scores.end())accumulated+=found->second;
++        }
++        ranked.emplace_back(accumulated,item.first);
++    }
++    std::sort(ranked.begin(),ranked.end(),[](const std::pair<float,KeyFrame*>& a,
++                                           const std::pair<float,KeyFrame*>& b){
++        return a.first!=b.first?a.first>b.first:a.second->mnId<b.second->mnId;
++    });
++    std::vector<KeyFrame*> result;
++    for(const auto& item:ranked){
++        if(result.size()>=limit || item.first<0.75f*ranked.front().first)break;
++        result.push_back(item.second);
++    }
++    return result;
++}
++
+ void KeyFrameDatabase::SetORBVocabulary(ORBVocabulary* pORBVoc)
+ {
+     ORBVocabulary** ptr;
+--- a/src/LocalMapping.cc
++++ b/src/LocalMapping.cc
+@@ -26,12 +26,13 @@
+ 
+ #include<mutex>
+ #include<chrono>
++#include<stdexcept>
+ 
+ namespace ORB_SLAM3
+ {
+ 
+ LocalMapping::LocalMapping(System* pSys, Atlas *pAtlas, const float bMonocular, bool bInertial, const string &_strSeqName):
+-    mpSystem(pSys), mbMonocular(bMonocular), mbInertial(bInertial), mbResetRequested(false), mbResetRequestedActiveMap(false), mbFinishRequested(false), mbFinished(true), mpAtlas(pAtlas), bInitializing(false),
++    mpSystem(pSys), mbMonocular(bMonocular), mbInertial(bInertial), mbResetRequested(false), mbResetRequestedActiveMap(false), mbFinishRequested(false), mbFinished(false), mpAtlas(pAtlas), bInitializing(false),
+     mbAbortBA(false), mbStopped(false), mbStopRequested(false), mbNotStop(false), mbAcceptKeyFrames(true),
+     mIdxInit(0), mScale(1.0), mInitSect(0), mbNotBA1(true), mbNotBA2(true), mIdxIteration(0), infoInertial(Eigen::MatrixXd::Zero(9,9))
+ {
+@@ -63,8 +64,6 @@
+ 
+ void LocalMapping::Run()
+ {
+-    mbFinished = false;
+-
+     while(1)
+     {
+         // Tracking will see that Local Mapping is busy
+@@ -128,6 +127,15 @@
+ 
+                     if(mbInertial && mpCurrentKeyFrame->GetMap()->isImuInitialized())
+                     {
++                        // A recovered session starts a new temporal chain. Never
++                        // form an IMU edge to an old-session keyframe or run BA
++                        // until two fresh integrated edges exist.
++                        const bool freshChain = mpCurrentKeyFrame->mPrevKF &&
++                            mpCurrentKeyFrame->mPrevKF->mPrevKF &&
++                            mpCurrentKeyFrame->mpImuPreintegrated &&
++                            mpCurrentKeyFrame->mPrevKF->mpImuPreintegrated;
++                        if(freshChain)
++                        {
+                         float dist = (mpCurrentKeyFrame->mPrevKF->GetCameraCenter() - mpCurrentKeyFrame->GetCameraCenter()).norm() +
+                                 (mpCurrentKeyFrame->mPrevKF->mPrevKF->GetCameraCenter() - mpCurrentKeyFrame->mPrevKF->GetCameraCenter()).norm();
+ 
+@@ -148,6 +156,7 @@
+                         bool bLarge = ((mpTracker->GetMatchesInliers()>75)&&mbMonocular)||((mpTracker->GetMatchesInliers()>100)&&!mbMonocular);
+                         Optimizer::LocalInertialBA(mpCurrentKeyFrame, &mbAbortBA, mpCurrentKeyFrame->GetMap(),num_FixedKF_BA,num_OptKF_BA,num_MPs_BA,num_edges_BA, bLarge, !mpCurrentKeyFrame->GetMap()->GetIniertialBA2());
+                         b_doneLBA = true;
++                        }
+                     }
+                     else
+                     {
+@@ -820,6 +829,17 @@
+ 
+     // Update connections in covisibility graph
+     mpCurrentKeyFrame->UpdateConnections();
++}
++
++void LocalMapping::StartRecoveredChain()
++{
++    unique_lock<mutex> lock(mMutexStop);
++    if(!mbStopped)
++        throw std::runtime_error("MAP_E_RECOVERY: local mapping is not stopped");
++    // Mature metric map: no initialization or short-window scale refinement.
++    mTinit = 100.f;
++    mlpRecentAddedMapPoints.clear();
++    mbBadImu = false;
+ }
+ 
+ void LocalMapping::RequestStop()
+@@ -1017,7 +1037,7 @@
+                 if(pKF->mnId>(mpCurrentKeyFrame->mnId-2))
+                     continue;
+ 
+-                if(pKF->mPrevKF && pKF->mNextKF)
++                if(pKF->mPrevKF && pKF->mNextKF && pKF->mpImuPreintegrated && pKF->mNextKF->mpImuPreintegrated)
+                 {
+                     const float t = pKF->mNextKF->mTimeStamp-pKF->mPrevKF->mTimeStamp;
+ 
+@@ -1158,9 +1178,10 @@
+ 
+ void LocalMapping::SetFinish()
+ {
+-    unique_lock<mutex> lock(mMutexFinish);
+-    mbFinished = true;    
+-    unique_lock<mutex> lock2(mMutexStop);
++    // Match Release's lock order; shutdown must not race into an inversion.
++    unique_lock<mutex> lock(mMutexStop);
++    unique_lock<mutex> lock2(mMutexFinish);
++    mbFinished = true;
+     mbStopped = true;
+ }
+ 
 --- a/src/LoopClosing.cc
 +++ b/src/LoopClosing.cc
 @@ -1,3 +1,4 @@
@@ -2016,7 +3117,60 @@
  /**
  * This file is part of ORB-SLAM3
  *
-@@ -121,7 +122,7 @@
+@@ -33,12 +34,13 @@
+ {
+ 
+ LoopClosing::LoopClosing(Atlas *pAtlas, KeyFrameDatabase *pDB, ORBVocabulary *pVoc, const bool bFixScale, const bool bActiveLC):
+-    mbResetRequested(false), mbResetActiveMapRequested(false), mbFinishRequested(false), mbFinished(true), mpAtlas(pAtlas),
++    mbResetRequested(false), mbResetActiveMapRequested(false), mbFinishRequested(false), mbFinished(false), mpAtlas(pAtlas),
+     mpKeyFrameDB(pDB), mpORBVocabulary(pVoc), mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
+     mbStopGBA(false), mpThreadGBA(NULL), mbFixScale(bFixScale), mnFullBAIdx(0), mnLoopNumCoincidences(0), mnMergeNumCoincidences(0),
+     mbLoopDetected(false), mbMergeDetected(false), mnLoopNumNotFound(0), mnMergeNumNotFound(0), mbActiveLC(bActiveLC)
+ {
+     mnCovisibilityConsistencyTh = 3;
++    mpCurrentKF = nullptr;
+     mpLastCurrentKF = static_cast<KeyFrame*>(NULL);
+ 
+ #ifdef REGISTER_TIMES
+@@ -89,10 +91,35 @@
+ 
+ void LoopClosing::Run()
+ {
+-    mbFinished =false;
+-
++    // mbFinished starts false; all completion writes use mMutexFinish.
+     while(1)
+     {
++        if (CheckFinish()) break;
++        bool pauseRequested;
++        {
++            unique_lock<mutex> lock(mMutexPause);
++            pauseRequested = mbPauseRequested;
++        }
++        if (pauseRequested)
++        {
++            StopAndJoinGBA();
++            {
++                unique_lock<mutex> lock(mMutexPause);
++                mbPaused = mbPauseRequested;
++            }
++            while (!CheckFinish())
++            {
++                // A reset requested by Tracking must not deadlock while the
++                // loop worker is paused for recovery.
++                ResetIfRequested();
++                {
++                    unique_lock<mutex> lock(mMutexPause);
++                    if (!mbPauseRequested) { mbPaused = false; break; }
++                }
++                usleep(5000);
++            }
++            if (CheckFinish()) break;
++        }
+ 
+         //NEW LOOP AND MERGE DETECTION ALGORITHM
+         //----------------------------
+@@ -121,7 +148,7 @@
              {
                  if(mbMergeDetected)
                  {
@@ -2025,7 +3179,7 @@
                          (!mpCurrentKF->GetMap()->isImuInitialized()))
                      {
                          cout << "IMU is not initilized, merge is aborted" << endl;
-@@ -153,7 +154,7 @@
+@@ -153,7 +180,7 @@
                                  continue;
                              }
                              // If inertial, force only yaw
@@ -2034,7 +3188,7 @@
                                     mpCurrentKF->GetMap()->GetIniertialBA1())
                              {
                                  Eigen::Vector3d phi = LogSO3(mSold_new.rotation().toRotationMatrix());
-@@ -177,10 +178,7 @@
+@@ -177,10 +204,7 @@
                          nMerges += 1;
  #endif
                          // TODO UNCOMMENT
@@ -2046,7 +3200,7 @@
  
  #ifdef REGISTER_TIMES
                          std::chrono::steady_clock::time_point time_EndMerge = std::chrono::steady_clock::now();
-@@ -242,7 +240,7 @@
+@@ -242,7 +266,7 @@
                              if(mpCurrentKF->GetMap()->IsInertial())
                              {
                                  // If inertial, force only yaw
@@ -2055,7 +3209,44 @@
                                          mpCurrentKF->GetMap()->GetIniertialBA2())
                                  {
                                      phi(0)=0;
-@@ -345,17 +343,9 @@
+@@ -305,6 +329,7 @@
+         usleep(5000);
+     }
+ 
++    StopAndJoinGBA();
+     SetFinish();
+ }
+ 
+@@ -323,10 +348,6 @@
+ 
+ bool LoopClosing::NewDetectCommonRegions()
+ {
+-    // To deactivate placerecognition. No loopclosing nor merging will be performed
+-    if(!mbActiveLC)
+-        return false;
+-
+     {
+         unique_lock<mutex> lock(mMutexLoopQueue);
+         mpCurrentKF = mlpLoopKeyFrameQueue.front();
+@@ -338,6 +359,17 @@
+         mpLastMap = mpCurrentKF->GetMap();
+     }
+ 
++    // Disabling loop/merge optimization must still consume the queue and index
++    // keyframes for relocalization. An early return before the dequeue left
++    // mpCurrentKF uninitialized and Run dereferenced it on the next iteration.
++    if(!mbActiveLC)
++    {
++        mpKeyFrameDB->add(mpCurrentKF);
++        mpCurrentKF->mbCurrentPlaceRecognition = false;
++        mpCurrentKF->SetErase();
++        return false;
++    }
++
+     if(mpLastMap->IsInertial() && !mpLastMap->GetIniertialBA2())
+     {
+         mpKeyFrameDB->add(mpCurrentKF);
+@@ -345,17 +377,9 @@
          return false;
      }
  
@@ -2074,24 +3265,73 @@
          mpKeyFrameDB->add(mpCurrentKF);
          mpCurrentKF->SetErase();
          return false;
-@@ -1212,574 +1202,6 @@
+@@ -970,27 +994,13 @@
+ {
+     //cout << "Loop detected!" << endl;
+ 
+-    // Send a stop signal to Local Mapping
+-    // Avoid new keyframes are inserted while correcting the loop
++    // If a Global Bundle Adjustment is running, abort it
++    StopAndJoinGBA();
++
++    // A completing GBA may release Local Mapping; request its stop only after
++    // joining the GBA, otherwise that release can erase our stop request.
+     mpLocalMapper->RequestStop();
+-    mpLocalMapper->EmptyQueue(); // Proccess keyframes in the queue
+-
+-    // If a Global Bundle Adjustment is running, abort it
+-    if(isRunningGBA())
+-    {
+-        cout << "Stoping Global Bundle Adjustment...";
+-        unique_lock<mutex> lock(mMutexGBA);
+-        mbStopGBA = true;
+-
+-        mnFullBAIdx++;
+-
+-        if(mpThreadGBA)
+-        {
+-            mpThreadGBA->detach();
+-            delete mpThreadGBA;
+-        }
+-        cout << "  Done!!" << endl;
+-    }
++    mpLocalMapper->EmptyQueue();
+ 
+     // Wait until Local Mapping has effectively stopped
+     while(!mpLocalMapper->isStopped())
+@@ -1198,6 +1208,7 @@
+     // Launch a new thread to perform Global Bundle Adjustment (Only if few keyframes, if not it would take too much time)
+     if(!pLoopMap->isImuInitialized() || (pLoopMap->KeyFramesInMap()<200 && mpAtlas->CountMaps()==1))
+     {
++        unique_lock<mutex> lock(mMutexGBA);
+         mbRunningGBA = true;
+         mbFinishedGBA = false;
+         mbStopGBA = false;
+@@ -1212,9 +1223,11 @@
      mLastLoopKFid = mpCurrentKF->mnId; //TODO old varible, it is not use in the new algorithm
  }
  
 -void LoopClosing::MergeLocal()
 -{
 -    int numTemporalKFs = 25; //Temporal KFs in the local window if the map is inertial.
--
--    //Relationship to rebuild the essential graph, it is used two times, first in the local window and later in the rest of the map
--    KeyFrame* pNewChild;
--    KeyFrame* pNewParent;
--
--    vector<KeyFrame*> vpLocalCurrentWindowKFs;
--    vector<KeyFrame*> vpMergeConnectedKFs;
--
--    // Flag that is true only when we stopped a running BA, in this case we need relaunch at the end of the merge
--    bool bRelaunchBA = false;
--
++void LoopClosing::MergeLocal2()
++{
++    //cout << "Merge detected!!!!" << endl;
++
++    int numTemporalKFs = 11; //TODO (set by parameter): Temporal KFs in the local window if the map is inertial.
+ 
+     //Relationship to rebuild the essential graph, it is used two times, first in the local window and later in the rest of the map
+     KeyFrame* pNewChild;
+@@ -1223,598 +1236,16 @@
+     vector<KeyFrame*> vpLocalCurrentWindowKFs;
+     vector<KeyFrame*> vpMergeConnectedKFs;
+ 
++    KeyFrameAndPose CorrectedSim3, NonCorrectedSim3;
++    // NonCorrectedSim3[mpCurrentKF]=mg2oLoopScw;
++
+     // Flag that is true only when we stopped a running BA, in this case we need relaunch at the end of the merge
+     bool bRelaunchBA = false;
+ 
 -    //Verbose::PrintMess("MERGE-VISUAL: Check Full Bundle Adjustment", Verbose::VERBOSITY_DEBUG);
 -    // If a Global Bundle Adjustment is running, abort it
 -    if(isRunningGBA())
@@ -2646,10 +3886,47 @@
 -}
 -
 -
- void LoopClosing::MergeLocal2()
- {
-     //cout << "Merge detected!!!!" << endl;
-@@ -1854,7 +1276,7 @@
+-void LoopClosing::MergeLocal2()
+-{
+-    //cout << "Merge detected!!!!" << endl;
+-
+-    int numTemporalKFs = 11; //TODO (set by parameter): Temporal KFs in the local window if the map is inertial.
+-
+-    //Relationship to rebuild the essential graph, it is used two times, first in the local window and later in the rest of the map
+-    KeyFrame* pNewChild;
+-    KeyFrame* pNewParent;
+-
+-    vector<KeyFrame*> vpLocalCurrentWindowKFs;
+-    vector<KeyFrame*> vpMergeConnectedKFs;
+-
+-    KeyFrameAndPose CorrectedSim3, NonCorrectedSim3;
+-    // NonCorrectedSim3[mpCurrentKF]=mg2oLoopScw;
+-
+-    // Flag that is true only when we stopped a running BA, in this case we need relaunch at the end of the merge
+-    bool bRelaunchBA = false;
+-
+     //cout << "Check Full Bundle Adjustment" << endl;
+     // If a Global Bundle Adjustment is running, abort it
+-    if(isRunningGBA())
+-    {
+-        unique_lock<mutex> lock(mMutexGBA);
+-        mbStopGBA = true;
+-
+-        mnFullBAIdx++;
+-
+-        if(mpThreadGBA)
+-        {
+-            mpThreadGBA->detach();
+-            delete mpThreadGBA;
+-        }
+-        bRelaunchBA = true;
+-    }
++    bRelaunchBA = isRunningGBA();
++    StopAndJoinGBA();
+ 
+ 
+     //cout << "Request Stop Local Mapping" << endl;
+@@ -1854,7 +1285,7 @@
  
      const int numKFnew=pCurrentMap->KeyFramesInMap();
  
@@ -2658,6 +3935,233 @@
         && !pCurrentMap->GetIniertialBA2()){
          // Map is not completly initialized
          Eigen::Vector3d bg, ba;
+@@ -2279,6 +1710,11 @@
+ #endif
+ 
+     const bool bImuInit = pActiveMap->isImuInitialized();
++    unsigned long idx;
++    {
++        unique_lock<mutex> lock(mMutexGBA);
++        idx = mnFullBAIdx;
++    }
+ 
+     if(!bImuInit)
+         Optimizer::GlobalBundleAdjustemnt(pActiveMap,10,&mbStopGBA,nLoopKF,false);
+@@ -2297,7 +1733,6 @@
+     }
+ #endif
+ 
+-    int idx =  mnFullBAIdx;
+     // Optimizer::GlobalBundleAdjustemnt(mpMap,10,&mbStopGBA,nLoopKF,false);
+ 
+     // Update all MapPoints and KeyFrames
+@@ -2306,11 +1741,17 @@
+     // We need to propagate the correction through the spanning tree
+     {
+         unique_lock<mutex> lock(mMutexGBA);
+-        if(idx!=mnFullBAIdx)
++        if(idx!=mnFullBAIdx) {
++            mbFinishedGBA = true;
++            mbRunningGBA = false;
+             return;
+-
+-        if(!bImuInit && pActiveMap->isImuInitialized())
++        }
++
++        if(!bImuInit && pActiveMap->isImuInitialized()) {
++            mbFinishedGBA = true;
++            mbRunningGBA = false;
+             return;
++        }
+ 
+         if(!mbStopGBA)
+         {
+@@ -2517,6 +1958,46 @@
+     mbFinishRequested = true;
+ }
+ 
++void LoopClosing::RequestPause()
++{
++    unique_lock<mutex> lock(mMutexPause);
++    mbPauseRequested = true;
++}
++
++bool LoopClosing::isPaused()
++{
++    unique_lock<mutex> lock(mMutexPause);
++    return mbPaused;
++}
++
++void LoopClosing::ReleasePause()
++{
++    unique_lock<mutex> lock(mMutexPause);
++    mbPauseRequested = false;
++    mbPaused = false;
++}
++
++void LoopClosing::StopAndJoinGBA()
++{
++    // Only the loop worker owns/replaces this thread pointer. Never join under
++    // mMutexGBA: the worker takes that mutex to finish its bookkeeping.
++    {
++        unique_lock<mutex> lock(mMutexGBA);
++        mbStopGBA = true;
++        ++mnFullBAIdx;
++    }
++    if (mpThreadGBA) {
++        if (mpThreadGBA->joinable()) mpThreadGBA->join();
++        delete mpThreadGBA;
++        mpThreadGBA = nullptr;
++    }
++    {
++        unique_lock<mutex> lock(mMutexGBA);
++        mbRunningGBA = false;
++        mbFinishedGBA = true;
++    }
++}
++
+ bool LoopClosing::CheckFinish()
+ {
+     unique_lock<mutex> lock(mMutexFinish);
+--- a/src/MLPnPsolver.cpp
++++ b/src/MLPnPsolver.cpp
+@@ -52,6 +52,11 @@
+ 
+ 
+ namespace ORB_SLAM3 {
++    // All owned storage is value/container storage. Map points/camera are borrowed.
++    // The upstream declaration had no definition because its callers leaked the
++    // solver; bounded map recovery uses stack ownership and requires destruction.
++    MLPnPsolver::~MLPnPsolver() = default;
++
+     MLPnPsolver::MLPnPsolver(const Frame &F, const vector<MapPoint *> &vpMapPointMatches):
+             mnInliersi(0), mnIterations(0), mnBestInliers(0), N(0), mpCamera(F.mpCamera){
+         mvpMapPointMatches = vpMapPointMatches;
+--- a/src/Optimizer.cc
++++ b/src/Optimizer.cc
+@@ -2446,6 +2446,10 @@
+         lFixedKeyFrames.push_back(vpOptimizableKFs.back());
+         vpOptimizableKFs.pop_back();
+     }
++    // The temporal boundary's pose still anchors the local world frame. Only a
++    // root fitted during relocalization gets soft (optimizable) dynamics.
++    KeyFrame* temporalBoundary=lFixedKeyFrames.front();
++    KeyFrame* softDynamicsBoundary=nullptr;
+ 
+     // Optimizable visual KFs
+     const int maxCovKF = 0;
+@@ -2573,18 +2577,37 @@
+ 
+         if(pKFi->bImu) // This should be done only for keyframe just before temporal window
+         {
++            Eigen::Vector3d priorVelocity,priorGyro,priorAcc;
++            Eigen::Matrix<double,9,9> priorInformation;
++            const bool softDynamics=pKFi==temporalBoundary && !pKFi->mPrevKF &&
++                pKFi->GetRecoveryDynamicsPrior(priorVelocity,priorGyro,priorAcc,priorInformation);
+             VertexVelocity* VV = new VertexVelocity(pKFi);
+             VV->setId(maxKFid+3*(pKFi->mnId)+1);
+-            VV->setFixed(true);
++            VV->setFixed(!softDynamics);
+             optimizer.addVertex(VV);
+             VertexGyroBias* VG = new VertexGyroBias(pKFi);
+             VG->setId(maxKFid+3*(pKFi->mnId)+2);
+-            VG->setFixed(true);
++            VG->setFixed(!softDynamics);
+             optimizer.addVertex(VG);
+             VertexAccBias* VA = new VertexAccBias(pKFi);
+             VA->setId(maxKFid+3*(pKFi->mnId)+3);
+-            VA->setFixed(true);
++            VA->setFixed(!softDynamics);
+             optimizer.addVertex(VA);
++            if(softDynamics)
++            {
++                // Existing 15D prior edge supports a 9D dynamics prior by
++                // assigning zero information to its fixed pose block. It
++                // copies the constraint values, so no borrowed lifetime.
++                Matrix15d info=Matrix15d::Zero();
++                info.block<9,9>(6,6)=priorInformation;
++                ConstraintPoseImu constraint(pKFi->GetImuRotation().cast<double>(),
++                    pKFi->GetImuPosition().cast<double>(),priorVelocity,priorGyro,priorAcc,info);
++                EdgePriorPoseImu* prior=new EdgePriorPoseImu(&constraint);
++                prior->setVertex(0,VP);prior->setVertex(1,VV);
++                prior->setVertex(2,VG);prior->setVertex(3,VA);
++                optimizer.addEdge(prior);
++                softDynamicsBoundary=pKFi;
++            }
+         }
+     }
+ 
+@@ -2888,13 +2911,41 @@
+ 
+ 
+     // TODO: Some convergence problems have been detected here
+-    if((2*err < err_end || isnan(err) || isnan(err_end)) && !bLarge) //bGN)
++    if(!std::isfinite(err) || !std::isfinite(err_end) || (2*err < err_end && !bLarge))
+     {
+         cout << "FAIL LOCAL-INERTIAL BA!!!!" << endl;
+         return;
+     }
+ 
+ 
++
++    // Never publish a nonfinite backend solution, including in the large-BA
++    // path where the upstream relative-cost check is deliberately relaxed.
++    for(auto keyframe:vpOptimizableKFs)
++    {
++        const auto pose=static_cast<VertexPose*>(optimizer.vertex(keyframe->mnId));
++        if(!pose->estimate().Rwb.allFinite() || !pose->estimate().twb.allFinite())
++        { cout << "LOCAL_BA_REJECT nonfinite pose" << endl; return; }
++        if(keyframe->bImu)
++        {
++            const auto velocity=static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*keyframe->mnId+1));
++            const auto gyro=static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*keyframe->mnId+2));
++            const auto accel=static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*keyframe->mnId+3));
++            if(!velocity->estimate().allFinite() || !gyro->estimate().allFinite() || !accel->estimate().allFinite())
++            { cout << "LOCAL_BA_REJECT nonfinite dynamics" << endl; return; }
++        }
++    }
++    if(softDynamicsBoundary)
++    {
++        const auto id=softDynamicsBoundary->mnId;
++        if(!static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*id+1))->estimate().allFinite() ||
++           !static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*id+2))->estimate().allFinite() ||
++           !static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*id+3))->estimate().allFinite())
++        { cout << "LOCAL_BA_REJECT nonfinite recovered-root dynamics" << endl; return; }
++    }
++    for(auto point:lLocalMapPoints)
++        if(!static_cast<g2o::VertexSBAPointXYZ*>(optimizer.vertex(point->mnId+iniMPid+1))->estimate().allFinite())
++        { cout << "LOCAL_BA_REJECT nonfinite map point" << endl; return; }
+ 
+     if(!vToErase.empty())
+     {
+@@ -2933,6 +2984,27 @@
+             pKFi->SetNewBias(IMU::Bias(b[3],b[4],b[5],b[0],b[1],b[2]));
+ 
+         }
++    }
++
++    // Pose-fixed recovered root dynamics were optimized as well. The stored
++    // recovery prior remains the original uncertain measurement, not a newly
++    // overconfident posterior repeatedly fed back as an independent prior.
++    if(softDynamicsBoundary)
++    {
++        KeyFrame* boundary=softDynamicsBoundary;
++        auto VV=static_cast<VertexVelocity*>(optimizer.vertex(maxKFid+3*boundary->mnId+1));
++        auto VG=static_cast<VertexGyroBias*>(optimizer.vertex(maxKFid+3*boundary->mnId+2));
++        auto VA=static_cast<VertexAccBias*>(optimizer.vertex(maxKFid+3*boundary->mnId+3));
++        const auto beforeVelocity=boundary->GetVelocity();
++        const auto beforeBias=boundary->GetImuBias();
++        boundary->SetVelocity(VV->estimate().cast<float>());
++        const auto bg=VG->estimate(),ba=VA->estimate();
++        boundary->SetNewBias(IMU::Bias(ba.x(),ba.y(),ba.z(),bg.x(),bg.y(),bg.z()));
++        cout << "RECOVERY_ROOT_BA kf=" << boundary->mnId
++             << " velocity_delta=" << (VV->estimate()-beforeVelocity.cast<double>()).norm()
++             << " gyro_delta=" << (bg-Eigen::Vector3d(beforeBias.bwx,beforeBias.bwy,beforeBias.bwz)).norm()
++             << " accel_delta=" << (ba-Eigen::Vector3d(beforeBias.bax,beforeBias.bay,beforeBias.baz)).norm()
++             << " cost_before=" << err << " cost_after=" << err_end << endl;
+     }
+ 
+     // Local visual KeyFrame
 --- a/src/Settings.cc
 +++ b/src/Settings.cc
 @@ -1,5 +1,6 @@
@@ -3100,15 +4604,17 @@
  #include "System.h"
  #include "Converter.h"
  #include <thread>
-@@ -27,6 +27,7 @@
+@@ -27,6 +27,9 @@
  #include <boost/serialization/base_object.hpp>
  #include <boost/serialization/string.hpp>
  #include <boost/archive/text_iarchive.hpp>
 +#include <stdexcept>
++#include <chrono>
++#include "AtlasPersistence.h"
  #include <boost/archive/text_oarchive.hpp>
  #include <boost/archive/binary_iarchive.hpp>
  #include <boost/archive/binary_oarchive.hpp>
-@@ -43,6 +44,9 @@
+@@ -43,6 +46,9 @@
      mSensor(sensor), mpViewer(static_cast<Viewer*>(NULL)), mbReset(false), mbResetActiveMap(false),
      mbActivateLocalizationMode(false), mbDeactivateLocalizationMode(false), mbShutDown(false)
  {
@@ -3118,7 +4624,7 @@
      // Output welcome message
      cout << endl <<
      "ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza." << endl <<
-@@ -51,20 +55,10 @@
+@@ -51,20 +57,10 @@
      "This is free software, and you are welcome to redistribute it" << endl <<
      "under certain conditions. See LICENSE.txt." << endl << endl;
  
@@ -3141,7 +4647,80 @@
  
      //Check settings file
      cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);
-@@ -178,8 +172,7 @@
+@@ -98,6 +94,24 @@
+         }
+     }
+ 
++    node = fsSettings["MapReuse.Enabled"];
++    mMapReuseEnabled = !node.empty() && int(node) != 0;
++    mCalibrationFingerprint = AtlasPersistence::CalibrationFingerprint(fsSettings);
++    node = fsSettings["MapReuse.LoadPath"];
++    if (!node.empty() && !std::string(node).empty()) {
++        mStrLoadAtlasFromFile = std::string(node);
++        AtlasPersistence::ValidateExactPath(mStrLoadAtlasFromFile);
++        mExactAtlasLoadPath = true;
++    }
++    node = fsSettings["MapReuse.SavePath"];
++    if (!node.empty() && !std::string(node).empty()) {
++        mStrSaveAtlasToFile = std::string(node);
++        AtlasPersistence::ValidateExactPath(mStrSaveAtlasToFile);
++        mExactAtlasSavePath = true;
++    }
++    if ((mExactAtlasLoadPath || mExactAtlasSavePath) && !mMapReuseEnabled)
++        throw std::runtime_error("MAP_E_CONFIG: MapReuse.Enabled must be 1 when persistence paths are supplied");
++
+     node = fsSettings["loopClosing"];
+     bool activeLC = true;
+     if(!node.empty())
+@@ -120,7 +134,7 @@
+         {
+             cerr << "Wrong path to vocabulary. " << endl;
+             cerr << "Falied to open at: " << strVocFile << endl;
+-            exit(-1);
++            throw std::runtime_error("MAP_E_VOCABULARY: cannot load ORB vocabulary");
+         }
+         cout << "Vocabulary loaded!" << endl << endl;
+ 
+@@ -142,7 +156,7 @@
+         {
+             cerr << "Wrong path to vocabulary. " << endl;
+             cerr << "Falied to open at: " << strVocFile << endl;
+-            exit(-1);
++            throw std::runtime_error("MAP_E_LOAD: cannot load atlas or vocabulary");
+         }
+         cout << "Vocabulary loaded!" << endl << endl;
+ 
+@@ -159,7 +173,7 @@
+         if(!isRead)
+         {
+             cout << "Error to load the file, please try with other session file or vocabulary file" << endl;
+-            exit(-1);
++            throw std::runtime_error("MAP_E_LOAD: cannot load atlas or vocabulary");
+         }
+         //mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
+ 
+@@ -168,7 +182,19 @@
+ 
+         loadedAtlas = true;
+ 
+-        mpAtlas->CreateNewMap();
++        if (mMapReuseEnabled) {
++            Map* reference = nullptr;
++            for (Map* candidate : mpAtlas->GetAllMaps())
++                if (Atlas::IsMatureMap(candidate) && (!reference ||
++                    candidate->KeyFramesInMap() > reference->KeyFramesInMap())) reference = candidate;
++            if (!reference) throw std::runtime_error("MAP_E_LOAD: atlas contains no mature inertial map");
++            mpAtlas->ChangeMap(reference);
++            cout << "MAP_REFERENCE_LOADED id=" << reference->GetId()
++                 << " keyframes=" << reference->KeyFramesInMap()
++                 << "; current velocity/bias still require recovery" << endl;
++        } else {
++            mpAtlas->CreateNewMap();
++        }
+ 
+         //clock_t timeElapsed = clock() - start;
+         //unsigned msElapsed = timeElapsed / (CLOCKS_PER_SEC / 1000);
+@@ -178,8 +204,7 @@
      }
  
  
@@ -3151,7 +4730,7 @@
  
      //Create Drawers. These are used by the Viewer
      mpFrameDrawer = new FrameDrawer(mpAtlas);
-@@ -192,8 +185,7 @@
+@@ -192,8 +217,7 @@
                               mpAtlas, mpKeyFrameDatabase, strSettingsFile, mSensor, settings_, strSequence);
  
      //Initialize the Local Mapping thread and launch
@@ -3161,7 +4740,7 @@
      mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run,mpLocalMapper);
      mpLocalMapper->mInitFr = initFr;
      if(settings_)
-@@ -209,8 +201,7 @@
+@@ -209,8 +233,7 @@
          mpLocalMapper->mbFarPoints = false;
  
      //Initialize the Loop Closing thread and launch
@@ -3171,7 +4750,7 @@
      mptLoopClosing = new thread(&ORB_SLAM3::LoopClosing::Run, mpLoopCloser);
  
      //Set pointers between threads
-@@ -227,7 +218,6 @@
+@@ -227,7 +250,6 @@
  
      //Initialize the Viewer thread and launch
      if(bUseViewer)
@@ -3179,7 +4758,7 @@
      {
          mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,strSettingsFile,settings_);
          mptViewer = new thread(&Viewer::Run, mpViewer);
-@@ -241,31 +231,22 @@
+@@ -241,31 +263,31 @@
  
  }
  
@@ -3211,11 +4790,20 @@
 +
 +Sophus::SE3f System::TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 +{
++    unique_lock<std::timed_mutex> trackingLock(mMutexTrack);
 +
 +    {
 +        unique_lock<mutex> lock(mMutexReset);
-+        if(mbShutDown)
++        if(mbShutDown || mbShutdownRequested)
++        {
++            unique_lock<mutex> stateLock(mMutexState);
++            mTrackingState = Tracking::NO_IMAGES_YET;
++            mMapReuseStatus.visual_ready = false;
++            mMapReuseStatus.inertial_ready = false;
++            mMapReuseStatus.phase = "STOPPING";
++            mMapReuseStatus.reason = "shutdown requested";
 +            return Sophus::SE3f();
++        }
 +    }
 +
 +
@@ -3227,16 +4815,15 @@
      }
  
      // Check mode change
-@@ -303,19 +284,16 @@
+@@ -303,176 +325,25 @@
          }
          else if(mbResetActiveMap)
          {
-+            cout << "SYSTEM-> Reseting active map in monocular case" << endl;
-             mpTracker->ResetActiveMap();
-             mbResetActiveMap = false;
-         }
-     }
- 
+-            mpTracker->ResetActiveMap();
+-            mbResetActiveMap = false;
+-        }
+-    }
+-
 -    if (mSensor == System::IMU_STEREO)
 -        for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
 -            mpTracker->GrabImuData(vImuMeas[i_imu]);
@@ -3245,17 +4832,14 @@
 -    Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed,imRightToFeed,timestamp,filename);
 -
 -    // std::cout << "out grabber" << std::endl;
-+    for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
-+        mpTracker->GrabImuData(vImuMeas[i_imu]);
-+
-+    Sophus::SE3f Tcw = mpTracker->GrabImageMonocular(imToFeed,timestamp,filename);
- 
-     unique_lock<mutex> lock2(mMutexState);
-     mTrackingState = mpTracker->mState;
-@@ -324,155 +302,6 @@
- 
-     return Tcw;
- }
+-
+-    unique_lock<mutex> lock2(mMutexState);
+-    mTrackingState = mpTracker->mState;
+-    mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
+-    mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
+-
+-    return Tcw;
+-}
 -
 -Sophus::SE3f System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp, const vector<IMU::Point>& vImuMeas, string filename)
 -{
@@ -3385,30 +4969,122 @@
 -        }
 -        else if(mbResetActiveMap)
 -        {
--            cout << "SYSTEM-> Reseting active map in monocular case" << endl;
--            mpTracker->ResetActiveMap();
--            mbResetActiveMap = false;
--        }
--    }
--
+             cout << "SYSTEM-> Reseting active map in monocular case" << endl;
+             mpTracker->ResetActiveMap();
+             mbResetActiveMap = false;
+         }
+     }
+ 
 -    if (mSensor == System::IMU_MONOCULAR)
 -        for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
 -            mpTracker->GrabImuData(vImuMeas[i_imu]);
--
--    Sophus::SE3f Tcw = mpTracker->GrabImageMonocular(imToFeed,timestamp,filename);
--
--    unique_lock<mutex> lock2(mMutexState);
--    mTrackingState = mpTracker->mState;
--    mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
--    mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
--
--    return Tcw;
--}
++    for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
++        mpTracker->GrabImuData(vImuMeas[i_imu]);
+ 
+     Sophus::SE3f Tcw = mpTracker->GrabImageMonocular(imToFeed,timestamp,filename);
+ 
+     unique_lock<mutex> lock2(mMutexState);
+     mTrackingState = mpTracker->mState;
++    mMapReuseStatus = mpTracker->GetMapReuseStatus();
+     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
+     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
+ 
+     return Tcw;
+ }
 -
  
  
  void System::ActivateLocalizationMode()
-@@ -569,11 +398,7 @@
+@@ -516,64 +387,61 @@
+ {
+     {
+         unique_lock<mutex> lock(mMutexReset);
++        if (mbShutDown) return;
+         mbShutDown = true;
+     }
+-
++    // No frame may mutate the Atlas while workers stop or it is serialized.
++    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
++    unique_lock<std::timed_mutex> trackingLock(mMutexTrack, std::defer_lock);
++    if (!trackingLock.try_lock_until(deadline)) {
++        WriteMapSaveStatus("ERROR", "MAP_E_SHUTDOWN: tracking did not stop within 30 seconds");
++        throw std::runtime_error("MAP_E_SHUTDOWN: tracking did not stop within 30 seconds; atlas not saved");
++    }
+     cout << "Shutdown" << endl;
+-
++    mpLocalMapper->RequestStop();
++    mpLocalMapper->InterruptBA();
+     mpLocalMapper->RequestFinish();
+     mpLoopCloser->RequestFinish();
+-    /*if(mpViewer)
+-    {
++    const bool fromViewer = mpViewer && mptViewer->get_id() == std::this_thread::get_id();
++    if (mpViewer) {
+         mpViewer->RequestFinish();
+-        while(!mpViewer->isFinished())
+-            usleep(5000);
+-    }*/
+-
+-    // Wait until all thread have effectively stopped
+-    /*while(!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() || mpLoopCloser->isRunningGBA())
+-    {
+-        if(!mpLocalMapper->isFinished())
+-            cout << "mpLocalMapper is not finished" << endl;*/
+-        /*if(!mpLoopCloser->isFinished())
+-            cout << "mpLoopCloser is not finished" << endl;
+-        if(mpLoopCloser->isRunningGBA()){
+-            cout << "mpLoopCloser is running GBA" << endl;
+-            cout << "break anyway..." << endl;
+-            break;
+-        }*/
+-        /*usleep(5000);
+-    }*/
+-
+-    if(!mStrSaveAtlasToFile.empty())
+-    {
+-        Verbose::PrintMess("Atlas saving to file " + mStrSaveAtlasToFile, Verbose::VERBOSITY_NORMAL);
+-        SaveAtlas(FileType::BINARY_FILE);
+-    }
+-
+-    /*if(mpViewer)
+-        pangolin::BindToContext("ORB-SLAM2: Map Viewer");*/
+-
++        mpViewer->Release();
++    }
++    // LoopClosing::isFinished now means its GBA worker has also been joined.
++    // A timeout is a failed shutdown, never permission to serialize live data.
++    while (!mpLocalMapper->isFinished() || !mpLoopCloser->isFinished() ||
++           (mpViewer && !fromViewer && !mpViewer->isFinished())) {
++        if (std::chrono::steady_clock::now() >= deadline) {
++            WriteMapSaveStatus("ERROR", "MAP_E_SHUTDOWN: workers did not stop within 30 seconds");
++            throw std::runtime_error("MAP_E_SHUTDOWN: workers did not stop within 30 seconds; atlas not saved");
++        }
++        usleep(5000);
++    }
++    if (mptLocalMapping->joinable()) mptLocalMapping->join();
++    if (mptLoopClosing->joinable()) mptLoopClosing->join();
++    // When called by the Viewer's Stop button, that same thread is already
++    // quiescent inside Shutdown. Joining oneself would deadlock.
++    if (mpViewer && !fromViewer && mptViewer->joinable()) mptViewer->join();
++    if (!mStrSaveAtlasToFile.empty()) SaveAtlas(FileType::BINARY_FILE);
+ #ifdef REGISTER_TIMES
+     mpTracker->PrintTimeStats();
+ #endif
+-
+-
+ }
+ 
+ bool System::isShutDown() {
+     unique_lock<mutex> lock(mMutexReset);
+-    return mbShutDown;
++    return mbShutDown || mbShutdownRequested;
++}
++
++void System::RequestShutdown() {
++    unique_lock<mutex> lock(mMutexReset);
++    mbShutdownRequested = true;
+ }
+ 
  void System::SaveTrajectoryTUM(const string &filename)
  {
      cout << endl << "Saving camera trajectory to " << filename << " ..." << endl;
@@ -3421,7 +5097,7 @@
  
      vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
      sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
-@@ -663,11 +488,7 @@
+@@ -663,11 +531,7 @@
  {
  
      cout << endl << "Saving trajectory to " << filename << " ..." << endl;
@@ -3434,7 +5110,7 @@
  
      vector<Map*> vpMaps = mpAtlas->GetAllMaps();
      int numMaxKFs = 0;
-@@ -688,11 +509,8 @@
+@@ -688,11 +552,8 @@
  
      // Transform all keyframes so that the first keyframe is at the origin.
      // After a loop closure the first keyframe might not be at the origin.
@@ -3448,7 +5124,7 @@
  
      ofstream f;
      f.open(filename.c_str());
-@@ -754,20 +572,12 @@
+@@ -754,20 +615,12 @@
  
          // cout << "4" << endl;
  
@@ -3469,7 +5145,7 @@
  
          // cout << "5" << endl;
      }
-@@ -780,11 +590,7 @@
+@@ -780,11 +633,7 @@
  {
  
      cout << endl << "Saving trajectory of map " << pMap->GetId() << " to " << filename << " ..." << endl;
@@ -3482,7 +5158,7 @@
  
      int numMaxKFs = 0;
  
-@@ -793,11 +599,8 @@
+@@ -793,11 +642,8 @@
  
      // Transform all keyframes so that the first keyframe is at the origin.
      // After a loop closure the first keyframe might not be at the origin.
@@ -3496,7 +5172,7 @@
  
      ofstream f;
      f.open(filename.c_str());
-@@ -859,20 +662,12 @@
+@@ -859,20 +705,12 @@
  
          // cout << "4" << endl;
  
@@ -3517,7 +5193,7 @@
  
          // cout << "5" << endl;
      }
-@@ -881,141 +676,27 @@
+@@ -881,141 +719,27 @@
      cout << endl << "End of saving trajectory to " << filename << " ..." << endl;
  }
  
@@ -3668,7 +5344,7 @@
      }
  
      vector<KeyFrame*> vpKFs = pBiggerMap->GetAllKeyFrames();
-@@ -1033,50 +714,24 @@
+@@ -1033,50 +757,24 @@
  
         // pKF->SetPose(pKF->GetPose()*Two);
  
@@ -3736,7 +5412,7 @@
      sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
  
      // Transform all keyframes so that the first keyframe is at the origin.
-@@ -1089,11 +744,8 @@
+@@ -1089,11 +787,8 @@
      {
          KeyFrame* pKF = vpKFs[i];
  
@@ -3748,7 +5424,7 @@
          {
              Sophus::SE3f Twb = pKF->GetImuPose();
              Eigen::Quaternionf q = Twb.unit_quaternion();
-@@ -1101,116 +753,15 @@
+@@ -1101,116 +796,15 @@
              f << setprecision(6) << 1e9*pKF->mTimeStamp  << " " <<  setprecision(9) << twb(0) << " " << twb(1) << " " << twb(2) << " " << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << endl;
  
          }
@@ -3872,7 +5548,20 @@
  
      vector<KeyFrame*> vpKFs = mpAtlas->GetAllKeyFrames();
      sort(vpKFs.begin(),vpKFs.end(),KeyFrame::lId);
-@@ -1384,11 +935,6 @@
+@@ -1324,6 +918,12 @@
+     return mTrackingState;
+ }
+ 
++MapReuseStatus System::GetMapReuseStatus()
++{
++    unique_lock<mutex> lock(mMutexState);
++    return mMapReuseStatus;
++}
++
+ vector<MapPoint*> System::GetTrackedMapPoints()
+ {
+     unique_lock<mutex> lock(mMutexState);
+@@ -1384,11 +984,6 @@
  }
  
  #ifdef REGISTER_TIMES
@@ -3884,6 +5573,232 @@
  void System::InsertResizeTime(double& time)
  {
      mpTracker->vdResizeImage_ms.push_back(time);
+@@ -1400,109 +995,117 @@
+ }
+ #endif
+ 
+-void System::SaveAtlas(int type){
+-    if(!mStrSaveAtlasToFile.empty())
+-    {
+-        //clock_t start = clock();
+-
+-        // Save the current session
+-        mpAtlas->PreSave();
+-
+-        string pathSaveFileName = "./";
+-        pathSaveFileName = pathSaveFileName.append(mStrSaveAtlasToFile);
+-        pathSaveFileName = pathSaveFileName.append(".osa");
+-
+-        string strVocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath,TEXT_FILE);
+-        std::size_t found = mStrVocabularyFilePath.find_last_of("/\\");
+-        string strVocabularyName = mStrVocabularyFilePath.substr(found+1);
+-
+-        if(type == TEXT_FILE) // File text
+-        {
+-            cout << "Starting to write the save text file " << endl;
+-            std::remove(pathSaveFileName.c_str());
+-            std::ofstream ofs(pathSaveFileName, std::ios::binary);
+-            boost::archive::text_oarchive oa(ofs);
+-
+-            oa << strVocabularyName;
+-            oa << strVocabularyChecksum;
+-            oa << mpAtlas;
+-            cout << "End to write the save text file" << endl;
+-        }
+-        else if(type == BINARY_FILE) // File binary
+-        {
+-            cout << "Starting to write the save binary file" << endl;
+-            std::remove(pathSaveFileName.c_str());
+-            std::ofstream ofs(pathSaveFileName, std::ios::binary);
+-            boost::archive::binary_oarchive oa(ofs);
+-            oa << strVocabularyName;
+-            oa << strVocabularyChecksum;
+-            oa << mpAtlas;
+-            cout << "End to write save binary file" << endl;
+-        }
++namespace {
++const char kAtlasMagic[] = "MONO_IMU_ATLAS_2\n";
++std::string AtlasPath(const std::string& configured, bool exact) {
++    if (exact || (configured.size() >= 4 && configured.substr(configured.size()-4) == ".osa")) return configured;
++    return configured + ".osa";
++}
++template<class Archive>
++void DecodeAtlas(Archive& archive, bool guarded, const string& expectedVocabulary,
++                 const string& expectedCalibration, Atlas*& atlas) {
++    string name, vocabularyChecksum, calibration;
++    archive >> name >> vocabularyChecksum;
++    // Validate metadata before decoding objects (which updates global IDs).
++    if (vocabularyChecksum != expectedVocabulary)
++        throw std::runtime_error("MAP_E_LOAD: vocabulary checksum mismatch");
++    if (guarded) {
++        archive >> calibration;
++        if (calibration != expectedCalibration)
++            throw std::runtime_error("MAP_E_LOAD: camera/IMU calibration or extractor settings differ");
++    }
++    archive >> atlas;
++}
++}
++
++void System::WriteMapSaveStatus(const string& status, const string& reason, Map* selected)
++{
++    if (mStrSaveAtlasToFile.empty()) return;
++    const string path = AtlasPath(mStrSaveAtlasToFile, mExactAtlasSavePath);
++    const string report = AtlasPersistence::Parent(path) + "/map_save.json";
++    AtlasPersistence::WriteAtomically(report, [&](std::ostream& out) {
++        out << "{\n  \"status\": " << AtlasPersistence::JsonString(status)
++            << ",\n  \"reason\": " << AtlasPersistence::JsonString(reason)
++            << ",\n  \"path\": " << AtlasPersistence::JsonString(path)
++            << ",\n  \"calibration_sha256\": " << AtlasPersistence::JsonString(mCalibrationFingerprint)
++            << ",\n  \"selected_map_id\": " << (selected ? static_cast<long>(selected->GetId()) : -1)
++            << ",\n  \"keyframes\": " << (selected ? selected->KeyFramesInMap() : 0)
++            << ",\n  \"map_points\": " << (selected ? selected->MapPointsInMap() : 0) << "\n}\n";
++    });
++}
++
++void System::SaveAtlas(int type)
++{
++    if (mStrSaveAtlasToFile.empty()) return;
++    Map* reference = nullptr;
++    for (Map* candidate : mpAtlas->GetAllMaps())
++        if (Atlas::IsMatureMap(candidate) && (!reference ||
++            candidate->KeyFramesInMap() > reference->KeyFramesInMap())) reference = candidate;
++    if (mMapReuseEnabled && !reference) {
++        WriteMapSaveStatus("SKIPPED", "No mature inertial map: require initialized IMU, BA2, >=12 keyframes and >=50 points");
++        cout << "MAP_SAVE_SKIPPED: no mature map; existing reference is unchanged" << endl;
++        return;
++    }
++    const string path = AtlasPath(mStrSaveAtlasToFile, mExactAtlasSavePath);
++    try {
++        mpAtlas->PreSave(mMapReuseEnabled);
++        const string vocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath, BINARY_FILE);
++        if (vocabularyChecksum.empty()) throw std::runtime_error("MAP_E_SAVE: vocabulary checksum unavailable");
++        const string vocabularyName = mStrVocabularyFilePath.substr(mStrVocabularyFilePath.find_last_of("/\\")+1);
++        AtlasPersistence::WriteAtomically(path, [&](std::ostream& out) {
++            if (mExactAtlasSavePath) out.write(kAtlasMagic, sizeof(kAtlasMagic)-1);
++            if (type == TEXT_FILE) {
++                boost::archive::text_oarchive archive(out);
++                archive << vocabularyName << vocabularyChecksum;
++                if (mExactAtlasSavePath) archive << mCalibrationFingerprint;
++                archive << mpAtlas;
++            } else {
++                boost::archive::binary_oarchive archive(out);
++                archive << vocabularyName << vocabularyChecksum;
++                if (mExactAtlasSavePath) archive << mCalibrationFingerprint;
++                archive << mpAtlas;
++            }
++        });
++        WriteMapSaveStatus("SAVED", "Workers stopped; mature Atlas written atomically", reference);
++        cout << "MAP_SAVED " << path << endl;
++    } catch (const std::exception& e) {
++        try { WriteMapSaveStatus("ERROR", e.what(), reference); } catch (...) {}
++        throw std::runtime_error(string("MAP_E_SAVE: ") + e.what());
+     }
+ }
+ 
+ bool System::LoadAtlas(int type)
+ {
+-    string strFileVoc, strVocChecksum;
+-    bool isRead = false;
+-
+-    string pathLoadFileName = "./";
+-    pathLoadFileName = pathLoadFileName.append(mStrLoadAtlasFromFile);
+-    pathLoadFileName = pathLoadFileName.append(".osa");
+-
+-    if(type == TEXT_FILE) // File text
+-    {
+-        cout << "Starting to read the save text file " << endl;
+-        std::ifstream ifs(pathLoadFileName, std::ios::binary);
+-        if(!ifs.good())
+-        {
+-            cout << "Load file not found" << endl;
+-            return false;
+-        }
+-        boost::archive::text_iarchive ia(ifs);
+-        ia >> strFileVoc;
+-        ia >> strVocChecksum;
+-        ia >> mpAtlas;
+-        cout << "End to load the save text file " << endl;
+-        isRead = true;
+-    }
+-    else if(type == BINARY_FILE) // File binary
+-    {
+-        cout << "Starting to read the save binary file"  << endl;
+-        std::ifstream ifs(pathLoadFileName, std::ios::binary);
+-        if(!ifs.good())
+-        {
+-            cout << "Load file not found" << endl;
+-            return false;
+-        }
+-        boost::archive::binary_iarchive ia(ifs);
+-        ia >> strFileVoc;
+-        ia >> strVocChecksum;
+-        ia >> mpAtlas;
+-        cout << "End to load the save binary file" << endl;
+-        isRead = true;
+-    }
+-
+-    if(isRead)
+-    {
+-        //Check if the vocabulary is the same
+-        string strInputVocabularyChecksum = CalculateCheckSum(mStrVocabularyFilePath,TEXT_FILE);
+-
+-        if(strInputVocabularyChecksum.compare(strVocChecksum) != 0)
+-        {
+-            cout << "The vocabulary load isn't the same which the load session was created " << endl;
+-            cout << "-Vocabulary name: " << strFileVoc << endl;
+-            return false; // Both are differents
+-        }
+-
++    const string path = AtlasPath(mStrLoadAtlasFromFile, mExactAtlasLoadPath);
++    std::ifstream in(path, std::ios::binary);
++    if (!in) throw std::runtime_error("MAP_E_LOAD: cannot open " + path);
++    char header[sizeof(kAtlasMagic)-1] = {};
++    in.read(header, sizeof(header));
++    const bool guarded = in.gcount() == sizeof(header) && memcmp(header, kAtlasMagic, sizeof(header)) == 0;
++    if(in.gcount()==sizeof(header) && memcmp(header,"MONO_IMU_ATLAS_1\n",sizeof(header))==0)
++        throw std::runtime_error("MAP_E_LOAD: Atlas v1 lacks recovered-root uncertainty; use a new v2 reference map");
++    if (!guarded) {
++        if (mExactAtlasLoadPath) throw std::runtime_error("MAP_E_LOAD: incompatible Atlas; this build requires mono_imu_vio Atlas v2 (recovery dynamics priors). Build a new reference map");
++        in.clear(); in.seekg(0);
++    }
++    const string expectedVocabulary = CalculateCheckSum(mStrVocabularyFilePath, BINARY_FILE);
++    if (expectedVocabulary.empty()) throw std::runtime_error("MAP_E_LOAD: vocabulary checksum unavailable");
++    try {
++        if (type == TEXT_FILE) {
++            boost::archive::text_iarchive archive(in);
++            DecodeAtlas(archive, guarded, expectedVocabulary, mCalibrationFingerprint, mpAtlas);
++        } else {
++            boost::archive::binary_iarchive archive(in);
++            DecodeAtlas(archive, guarded, expectedVocabulary, mCalibrationFingerprint, mpAtlas);
++        }
++        if (!mpAtlas) throw std::runtime_error("Atlas pointer is null");
+         mpAtlas->SetKeyFrameDababase(mpKeyFrameDatabase);
+         mpAtlas->SetORBVocabulary(mpVocabulary);
+         mpAtlas->PostLoad();
+-
+         return true;
+-    }
+-    return false;
++    } catch (const std::exception& e) {
++        throw std::runtime_error(string("MAP_E_LOAD: ") + e.what());
++    }
+ }
+ 
+ string System::CalculateCheckSum(string filename, int type)
+@@ -1526,10 +1129,9 @@
+     char buffer[1024];
+ 
+     MD5_Init (&md5Context);
+-    while ( int count = f.readsome(buffer, sizeof(buffer)))
+-    {
+-        MD5_Update(&md5Context, buffer, count);
+-    }
++    while (f.read(buffer, sizeof(buffer)) || f.gcount() > 0)
++        MD5_Update(&md5Context, buffer, static_cast<size_t>(f.gcount()));
++    if (f.bad()) return "";
+ 
+     f.close();
+ 
 --- a/src/Tracking.cc
 +++ b/src/Tracking.cc
 @@ -1,5 +1,6 @@
@@ -3893,7 +5808,29 @@
  *
  * Copyright (C) 2017-2021 Carlos Campos, Richard Elvira, Juan J. Gómez Rodríguez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
  * Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
-@@ -46,7 +47,7 @@
+@@ -33,20 +34,28 @@
+ 
+ #include <mutex>
+ #include <chrono>
++#include <memory>
++#include <stdexcept>
++#include <unordered_map>
++#include <limits>
+ 
+ 
+ using namespace std;
+ 
+ namespace ORB_SLAM3
+ {
+-
++namespace {
++double RecoveryWallTime() {
++    return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
++}
++}
+ 
+ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Atlas *pAtlas, KeyFrameDatabase* pKFDB, const string &strSettingPath, const int sensor, Settings* settings, const string &_nameSeq):
+     mState(NO_IMAGES_YET), mSensor(sensor), mTrackedFr(0), mbStep(false),
      mbOnlyTracking(false), mbMapUpdated(false), mbVO(false), mpORBVocabulary(pVoc), mpKeyFrameDB(pKFDB),
      mbReadyToInitializate(false), mpSystem(pSys), mpViewer(NULL), bStepByStep(false),
      mpFrameDrawer(pFrameDrawer), mpMapDrawer(pMapDrawer), mpAtlas(pAtlas), mnLastRelocFrameId(0), time_recently_lost(5.0),
@@ -3902,7 +5839,7 @@
  {
      // Load camera parameters from settings file
      if(settings){
-@@ -69,7 +70,6 @@
+@@ -69,7 +78,6 @@
          }
  
          bool b_parse_imu = true;
@@ -3910,7 +5847,31 @@
          {
              b_parse_imu = ParseIMUParamFile(fSettings);
              if(!b_parse_imu)
-@@ -118,10 +118,8 @@
+@@ -93,6 +101,23 @@
+             }
+         }
+     }
++
++    // Opt in explicitly; old settings retain the original lifecycle.
++    cv::FileStorage reuseSettings(strSettingPath, cv::FileStorage::READ);
++    if(!reuseSettings["MapReuse.Enabled"].empty())
++        mbMapReuseEnabled = static_cast<int>(reuseSettings["MapReuse.Enabled"]) != 0;
++    if(!reuseSettings["MapReuse.TimeoutSeconds"].empty())
++        mMapRecoveryTimeout = static_cast<double>(reuseSettings["MapReuse.TimeoutSeconds"]);
++    if(!reuseSettings["MapReuse.FrameBudgetMs"].empty())
++        mMapRecoveryBudgetMs = static_cast<double>(reuseSettings["MapReuse.FrameBudgetMs"]);
++    if(!std::isfinite(mMapRecoveryTimeout) || mMapRecoveryTimeout<2 || mMapRecoveryTimeout>60 ||
++       !std::isfinite(mMapRecoveryBudgetMs) || mMapRecoveryBudgetMs<5 || mMapRecoveryBudgetMs>100)
++        throw std::runtime_error("Invalid MapReuse timeout/budget settings");
++    mMapReuseStatus.enabled=mbMapReuseEnabled;
++    mpReferenceKF=nullptr;mnMatchesInliers=0;
++    // Recovery supplies its own fresh inertial prior, rather than the upstream
++    // visual-only relocation countdown followed by the empty ResetFrameIMU().
++    mnFramesToResetIMU=mbMapReuseEnabled?0:mMaxFrames;
+ 
+     initID = 0; lastID = 0;
+     mbInitWith3KFs = false;
+@@ -118,10 +143,8 @@
      }
  
  #ifdef REGISTER_TIMES
@@ -3921,7 +5882,7 @@
      vdIMUInteg_ms.clear();
      vdPosePred_ms.clear();
      vdLMTrack_ms.clear();
-@@ -186,7 +184,7 @@
+@@ -186,7 +209,7 @@
      ofstream f;
      f.open("LocalMapTimeStats.txt");
      f << fixed << setprecision(6);
@@ -3930,7 +5891,7 @@
      for(int i=0; i<mpLocalMapper->vdLMTotal_ms.size(); ++i)
      {
          f << mpLocalMapper->vdKFInsert_ms[i] << "," << mpLocalMapper->vdMPCulling_ms[i] << ","
-@@ -225,15 +223,11 @@
+@@ -225,15 +248,11 @@
      f.open("TrackingTimeStats.txt");
      f << fixed << setprecision(6);
  
@@ -3948,7 +5909,7 @@
  
          double resize_image = 0.0;
          if(!vdResizeImage_ms.empty())
-@@ -241,11 +235,6 @@
+@@ -241,11 +260,6 @@
              resize_image = vdResizeImage_ms[i];
          }
  
@@ -3960,7 +5921,7 @@
  
          double imu_preint = 0.0;
          if(!vdIMUInteg_ms.empty())
-@@ -253,7 +242,7 @@
+@@ -253,7 +267,7 @@
              imu_preint = vdIMUInteg_ms[i];
          }
  
@@ -3969,7 +5930,7 @@
            << vdPosePred_ms[i] <<  "," << vdLMTrack_ms[i] << "," << vdNewKF_ms[i] << "," << vdTrackTotal_ms[i] << endl;
      }
  
-@@ -280,13 +269,7 @@
+@@ -280,13 +294,7 @@
      f << "---------------------------" << std::endl;
      f << "Tracking" << std::setprecision(5) << std::endl << std::endl;
      double average, deviation;
@@ -3984,7 +5945,7 @@
  
      if(!vdResizeImage_ms.empty())
      {
-@@ -301,13 +284,6 @@
+@@ -301,13 +309,6 @@
      std::cout << "ORB Extraction: " << average << "$\\pm$" << deviation << std::endl;
      f << "ORB Extraction: " << average << "$\\pm$" << deviation << std::endl;
  
@@ -3998,7 +5959,7 @@
  
      if(!vdIMUInteg_ms.empty())
      {
-@@ -543,7 +519,7 @@
+@@ -543,7 +544,7 @@
          mDistCoef = cv::Mat::zeros(4,1,CV_32F);
      }
  
@@ -4007,7 +5968,7 @@
      mImageScale = 1.0f;
  
      mK = cv::Mat::eye(3,3,CV_32F);
-@@ -558,28 +534,7 @@
+@@ -558,28 +559,7 @@
      mK_(0,2) = mpCamera->getParameter(2);
      mK_(1,2) = mpCamera->getParameter(3);
  
@@ -4037,7 +5998,7 @@
  
      mMinFrames = 0;
      mMaxFrames = settings->fps();
-@@ -594,11 +549,8 @@
+@@ -594,11 +574,8 @@
  
      mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
  
@@ -4051,7 +6012,7 @@
  
      //IMU parameters
      Sophus::SE3f Tbc = settings->Tbc();
-@@ -917,206 +869,6 @@
+@@ -917,206 +894,6 @@
              mK_(1,2) = cy;
          }
  
@@ -4258,7 +6219,7 @@
  
          if(b_miss_params)
          {
-@@ -1130,24 +882,6 @@
+@@ -1130,24 +907,6 @@
          std::cerr << "Check an example configuration file with the desired sensor" << std::endl;
      }
  
@@ -4283,7 +6244,7 @@
  
      float fps = fSettings["Camera.fps"];
      if(fps==0)
-@@ -1168,43 +902,6 @@
+@@ -1168,43 +927,6 @@
      else
          cout << "- color order: BGR (ignored if grayscale)" << endl;
  
@@ -4327,7 +6288,7 @@
  
      if(b_miss_params)
      {
-@@ -1282,11 +979,8 @@
+@@ -1282,11 +1004,8 @@
  
      mpORBextractorLeft = new ORBextractor(nFeatures,fScaleFactor,nLevels,fIniThFAST,fMinThFAST);
  
@@ -4341,7 +6302,7 @@
  
      cout << endl << "ORB Extractor Parameters: " << endl;
      cout << "- Number of Features: " << nFeatures << endl;
-@@ -1332,7 +1026,6 @@
+@@ -1332,7 +1051,6 @@
  
      if(!mInsertKFsLost)
          cout << "Do not insert keyframes when lost visual tracking " << endl;
@@ -4349,7 +6310,7 @@
  
  
      float Ng, Na, Ngw, Naw;
-@@ -1451,77 +1144,13 @@
+@@ -1451,77 +1169,13 @@
  
  
  
@@ -4434,7 +6395,7 @@
      if(mImGray.channels()==3)
      {
          if(mbRGB)
-@@ -1537,58 +1166,6 @@
+@@ -1537,18 +1191,17 @@
              cvtColor(mImGray,mImGray,cv::COLOR_BGRA2GRAY);
      }
  
@@ -4450,14 +6411,24 @@
 -
 -
 -
--
--    mCurrentFrame.mNameFile = filename;
--    mCurrentFrame.mnDataset = mnNumDataset;
--
--#ifdef REGISTER_TIMES
--    vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
--#endif
--
++    {
++        if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
++        {
++            mCurrentFrame = Frame(mImGray,timestamp,mpIniORBextractor,mpORBVocabulary,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
++        }
++        else
++            mCurrentFrame = Frame(mImGray,timestamp,mpORBextractorLeft,mpORBVocabulary,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
++    }
++
++    if (mState==NO_IMAGES_YET)
++        t0=timestamp;
+ 
+     mCurrentFrame.mNameFile = filename;
+     mCurrentFrame.mnDataset = mnNumDataset;
+@@ -1557,61 +1210,27 @@
+     vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
+ #endif
+ 
 -    Track();
 -
 -    return mCurrentFrame.GetPose();
@@ -4490,10 +6461,92 @@
 -            mCurrentFrame = Frame(mImGray,timestamp,mpORBextractorLeft,mpORBVocabulary,mpCamera,mDistCoef,mbf,mThDepth);
 -    }
 -    else if(mSensor == System::IMU_MONOCULAR)
-     {
-         if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
-         {
-@@ -1856,7 +1433,7 @@
+-    {
+-        if(mState==NOT_INITIALIZED || mState==NO_IMAGES_YET)
+-        {
+-            mCurrentFrame = Frame(mImGray,timestamp,mpIniORBextractor,mpORBVocabulary,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+-        }
+-        else
+-            mCurrentFrame = Frame(mImGray,timestamp,mpORBextractorLeft,mpORBVocabulary,mpCamera,mDistCoef,mbf,mThDepth,&mLastFrame,*mpImuCalib);
+-    }
+-
+-    if (mState==NO_IMAGES_YET)
+-        t0=timestamp;
+-
+-    mCurrentFrame.mNameFile = filename;
+-    mCurrentFrame.mnDataset = mnNumDataset;
+-
+-#ifdef REGISTER_TIMES
+-    vdORBExtract_ms.push_back(mCurrentFrame.mTimeORB_Ext);
+-#endif
+-
+     lastID = mCurrentFrame.mnId;
+-    Track();
+-
+-    return mCurrentFrame.GetPose();
++    unique_lock<mutex> reuseStatusLock(mMutexMapReuseStatus);
++    mMapReuseStatus.health=TrackingHealthDiagnostics();
++    mMapReuseStatus.recovery_method="NONE";
++    mMapReuseStatus.recovery_search_ms=0;
++    mMapReuseStatus.recovery_global_attempted=false;
++    try { Track(); }
++    catch(...) { EndMapRecovery(); throw; }
++    RefreshMapReuseStatus();
++
++    const Sophus::SE3f published=mCurrentFrame.GetPose();
++    if(mbMapReuseEnabled && mMapReuseStatus.inertial_ready && mMapReuseStatus.health.evaluated &&
++       mMapReuseStatus.health.accepted && published.matrix().allFinite()){
++        // Capture the exact pose returned to the caller, not a Frame/KeyFrame
++        // object that later BA or UpdateLastFrame is allowed to rewrite.
++        const Eigen::Vector3f body=published.inverse()*mpImuCalib->mTcb.translation();
++        mOutputPoseBaseline.available=true;mOutputPoseBaseline.map_id=mMapReuseStatus.map_id;
++        mOutputPoseBaseline.frame_id=mCurrentFrame.mnId;mOutputPoseBaseline.time=timestamp;
++        mOutputPoseBaseline.body_position={{body.x(),body.y(),body.z()}};
++    }else mOutputPoseBaseline=OutputPoseBaseline();
++    return published;
+ }
+ 
+ 
+@@ -1619,6 +1238,14 @@
+ {
+     unique_lock<mutex> lock(mMutexImuQueue);
+     mlQueueImuData.push_back(imuMeasurement);
++    {
++        if(!mRecoveryImu.empty() && imuMeasurement.t<=mRecoveryImu.back().t)
++            mRecoveryImu.clear();
++        mRecoveryImu.push_back(imuMeasurement);
++        while(mRecoveryImu.size()>10000 ||
++              (!mRecoveryImu.empty() && imuMeasurement.t-mRecoveryImu.front().t>12.0))
++            mRecoveryImu.pop_front();
++    }
+ }
+ 
+ void Tracking::PreintegrateIMU()
+@@ -1800,6 +1427,23 @@
+         while(!mbStep && bStepByStep)
+             usleep(500);
+         mbStep = false;
++    }
++
++    // This runs before taking mMutexMapUpdate: worker stop/pause acknowledgments
++    // must never be awaited while owning a map update mutex.
++    if(mbMapReuseEnabled){
++        const auto reusable=ReusableMaps();
++        const bool timestampGap=mState!=NO_IMAGES_YET && mLastFrame.isSet() &&
++            (mCurrentFrame.mTimeStamp<=mLastFrame.mTimeStamp ||
++             mCurrentFrame.mTimeStamp-mLastFrame.mTimeStamp>1.0);
++        const bool loaded=(mState==NO_IMAGES_YET || mState==NOT_INITIALIZED) &&
++            Atlas::IsMatureMap(mpAtlas->GetCurrentMap());
++        const bool retryAfterFallback=mState==NOT_INITIALIZED && mMapRecoveryCooldownUntil>=0;
++        if(!mbMapRecoveryActive && !reusable.empty() &&
++           (mCurrentFrame.mTimeStamp>=mMapRecoveryCooldownUntil || RecoveryWallTime()>=mMapRecoveryCooldownWall) &&
++           (loaded || timestampGap || retryAfterFallback || mState==RECENTLY_LOST || mState==LOST || mpLocalMapper->mbBadImu))
++            BeginMapRecovery(loaded?"loaded mature atlas":timestampGap?"input time discontinuity":"tracking lost");
++        if(mbMapRecoveryActive){ProcessMapRecovery();return;}
+     }
+ 
+     if(mpLocalMapper->mbBadImu)
+@@ -1856,7 +1500,7 @@
      }
  
  
@@ -4502,7 +6555,7 @@
          mCurrentFrame.SetNewBias(mpLastKeyFrame->GetImuBias());
  
      if(mState==NO_IMAGES_YET)
-@@ -1866,7 +1443,7 @@
+@@ -1866,7 +1510,7 @@
  
      mLastProcessedState=mState;
  
@@ -4511,7 +6564,7 @@
      {
  #ifdef REGISTER_TIMES
          std::chrono::steady_clock::time_point time_StartPreIMU = std::chrono::steady_clock::now();
-@@ -1898,11 +1475,6 @@
+@@ -1898,16 +1542,12 @@
  
      if(mState==NOT_INITIALIZED)
      {
@@ -4523,7 +6576,14 @@
          {
              MonocularInitialization();
          }
-@@ -1958,8 +1530,7 @@
+ 
+-        //mpFrameDrawer->Update(this);
++        // Continue publishing the live image during fresh-map initialization.
++        mpFrameDrawer->Update(this);
+ 
+         if(mState!=OK) // If rightly initialized, mState=OK
+         {
+@@ -1958,8 +1598,7 @@
  
                  if (!bOK)
                  {
@@ -4533,7 +6593,7 @@
                      {
                          mState = LOST;
                      }
-@@ -1983,7 +1554,6 @@
+@@ -1983,7 +1622,6 @@
                      Verbose::PrintMess("Lost for a short time", Verbose::VERBOSITY_NORMAL);
  
                      bOK = true;
@@ -4541,7 +6601,7 @@
                      {
                          if(pCurrentMap->isImuInitialized())
                              PredictStateIMU();
-@@ -1991,19 +1561,6 @@
+@@ -1991,19 +1629,6 @@
                              bOK = false;
  
                          if (mCurrentFrame.mTimeStamp-mTimeStampLost>time_recently_lost)
@@ -4561,7 +6621,7 @@
                          {
                              mState = LOST;
                              Verbose::PrintMess("Track Lost...", Verbose::VERBOSITY_NORMAL);
-@@ -2038,8 +1595,7 @@
+@@ -2038,8 +1663,7 @@
              // Localization Mode: Local Mapping is deactivated (TODO Not available in inertial mode)
              if(mState==LOST)
              {
@@ -4571,7 +6631,32 @@
                  bOK = Relocalization();
              }
              else
-@@ -2143,7 +1699,6 @@
+@@ -2139,11 +1763,31 @@
+                 bOK = TrackLocalMap();
+         }
+ 
++        // Never insert a lost KF into a reliable map while preparing recovery.
++        // Release the map mutex before requesting worker barriers.
++        if(!bOK && mbMapReuseEnabled &&
++           (mCurrentFrame.mTimeStamp>=mMapRecoveryCooldownUntil || RecoveryWallTime()>=mMapRecoveryCooldownWall) &&
++           !ReusableMaps().empty()){
++            lock.unlock();
++            BeginMapRecovery(mMapReuseStatus.health.evaluated && !mMapReuseStatus.health.accepted ?
++                             mMapReuseStatus.health.reason : "visual/local-map tracking failed");
++            PublishRecoveryFrame();
++            return;
++        }
++
++        if(!bOK && mbMapReuseEnabled && mMapReuseStatus.health.evaluated && !mMapReuseStatus.health.accepted){
++            // A not-yet-mature map cannot be reused. Reject before MapDrawer,
++            // trajectory history or keyframe insertion; request ordinary reset.
++            mState=RECENTLY_LOST;mLastProcessedState=RECENTLY_LOST;
++            mpFrameDrawer->Update(this);
++            mpSystem->ResetActiveMap();
++            return;
++        }
++
+         if(bOK)
              mState = OK;
          else if (mState == OK)
          {
@@ -4579,7 +6664,7 @@
              {
                  Verbose::PrintMess("Track lost for less than one second...", Verbose::VERBOSITY_NORMAL);
                  if(!pCurrentMap->isImuInitialized() || !pCurrentMap->GetIniertialBA2())
-@@ -2153,9 +1708,7 @@
+@@ -2153,9 +1797,7 @@
                  }
  
                  mState=RECENTLY_LOST;
@@ -4590,17 +6675,26 @@
  
              /*if(mCurrentFrame.mnId>mnLastRelocFrameId+mMaxFrames)
              {*/
-@@ -2164,8 +1717,7 @@
+@@ -2164,8 +1806,7 @@
          }
  
          // Save frame if recent relocalization, since they are used for IMU reset (as we are making copy, it shluld be once mCurrFrame is completely modified)
 -        if((mCurrentFrame.mnId<(mnLastRelocFrameId+mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) &&
 -           (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && pCurrentMap->isImuInitialized())
-+        if((mCurrentFrame.mnId<(mnLastRelocFrameId+mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) && (pCurrentMap->isImuInitialized()))
++        if(!mbMapReuseEnabled && (mCurrentFrame.mnId<(mnLastRelocFrameId+mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) && (pCurrentMap->isImuInitialized()))
          {
              // TODO check this situation
              Verbose::PrintMess("Saving pointer to frame. imu needs reset...", Verbose::VERBOSITY_NORMAL);
-@@ -2215,8 +1767,7 @@
+@@ -2180,7 +1821,7 @@
+         {
+             if(bOK)
+             {
+-                if(mCurrentFrame.mnId==(mnLastRelocFrameId+mnFramesToResetIMU))
++                if(!mbMapReuseEnabled && mCurrentFrame.mnId==(mnLastRelocFrameId+mnFramesToResetIMU))
+                 {
+                     cout << "RESETING FRAME!!!" << endl;
+                     ResetFrameIMU();
+@@ -2215,8 +1856,7 @@
                  mbVelocity = false;
              }
  
@@ -4610,7 +6704,7 @@
  
              // Clean VO matches
              for(int i=0; i<mCurrentFrame.N; i++)
-@@ -2245,8 +1796,7 @@
+@@ -2245,8 +1885,7 @@
  
              // Check if we need to insert a new keyframe
              // if(bNeedKF && bOK)
@@ -4620,7 +6714,7 @@
                  CreateNewKeyFrame();
  
  #ifdef REGISTER_TIMES
-@@ -2275,13 +1825,12 @@
+@@ -2275,13 +1914,12 @@
                  mpSystem->ResetActiveMap();
                  return;
              }
@@ -4640,7 +6734,7 @@
  
              CreateMapInAtlas();
  
-@@ -2293,7 +1842,6 @@
+@@ -2293,7 +1931,6 @@
  
          mLastFrame = Frame(mCurrentFrame);
      }
@@ -4648,7 +6742,7 @@
  
  
  
-@@ -2332,117 +1880,6 @@
+@@ -2332,117 +1969,6 @@
  }
  
  
@@ -4766,7 +6860,7 @@
  
  
  void Tracking::MonocularInitialization()
-@@ -2462,7 +1899,6 @@
+@@ -2462,7 +1988,6 @@
  
              fill(mvIniMatches.begin(),mvIniMatches.end(),-1);
  
@@ -4774,7 +6868,7 @@
              {
                  if(mpImuPreintegratedFromLastKF)
                  {
-@@ -2480,7 +1916,7 @@
+@@ -2480,7 +2005,7 @@
      }
      else
      {
@@ -4783,7 +6877,7 @@
          {
              mbReadyToInitializate = false;
  
-@@ -2522,15 +1958,13 @@
+@@ -2522,15 +2047,13 @@
  }
  
  
@@ -4800,7 +6894,7 @@
  
  
      pKFini->ComputeBoW();
-@@ -2581,10 +2015,7 @@
+@@ -2581,10 +2104,7 @@
  
      float medianDepth = pKFini->ComputeSceneMedianDepth(2);
      float invMedianDepth;
@@ -4812,7 +6906,7 @@
  
      if(medianDepth<0 || pKFcur->TrackedMapPoints(1)<50) // TODO Check, originally 100 tracks
      {
-@@ -2610,7 +2041,6 @@
+@@ -2610,7 +2130,6 @@
          }
      }
  
@@ -4820,8 +6914,11 @@
      {
          pKFcur->mPrevKF = pKFini;
          pKFini->mNextKF = pKFcur;
-@@ -2663,8 +2093,7 @@
+@@ -2661,10 +2180,10 @@
+ 
+ void Tracking::CreateMapInAtlas()
  {
++    EndMapRecovery();
      mnLastInitFrameId = mCurrentFrame.mnId;
      mpAtlas->CreateNewMap();
 -    if (mSensor==System::IMU_STEREO || mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_RGBD)
@@ -4830,7 +6927,7 @@
      mbSetInit=false;
  
      mnInitialFrameId = mCurrentFrame.mnId+1;
-@@ -2675,12 +2104,11 @@
+@@ -2675,12 +2194,11 @@
      //mnLastRelocFrameId = mnLastInitFrameId; // The last relocation KF_id is the current id, because it is the new starting point for new map
      Verbose::PrintMess("First frame id in map: " + to_string(mnLastInitFrameId+1), Verbose::VERBOSITY_NORMAL);
      mbVO = false; // Init value for know if there are enough MapPoints in the last KF
@@ -4844,7 +6941,7 @@
      {
          delete mpImuPreintegratedFromLastKF;
          mpImuPreintegratedFromLastKF = new IMU::Preintegrated(IMU::Bias(),*mpImuCalib);
-@@ -2772,83 +2200,15 @@
+@@ -2772,83 +2290,15 @@
          }
      }
  
@@ -4930,7 +7027,7 @@
  }
  
  bool Tracking::TrackWithMotionModel()
-@@ -2856,7 +2216,6 @@
+@@ -2856,7 +2306,6 @@
      ORBmatcher matcher(0.9,true);
  
      // Update last frame pose according to its reference keyframe
@@ -4938,7 +7035,7 @@
      UpdateLastFrame();
  
      if (mpAtlas->isImuInitialized() && (mCurrentFrame.mnId>mnLastRelocFrameId+mnFramesToResetIMU))
-@@ -2872,18 +2231,14 @@
+@@ -2872,18 +2321,14 @@
  
  
  
@@ -4960,7 +7057,7 @@
  
      // If few matches, uses a wider window search
      if(nmatches<20)
-@@ -2891,7 +2246,7 @@
+@@ -2891,7 +2336,7 @@
          Verbose::PrintMess("Not enough matches, wider window search!!", Verbose::VERBOSITY_NORMAL);
          fill(mCurrentFrame.mvpMapPoints.begin(),mCurrentFrame.mvpMapPoints.end(),static_cast<MapPoint*>(NULL));
  
@@ -4969,7 +7066,7 @@
          Verbose::PrintMess("Matches with wider search: " + to_string(nmatches), Verbose::VERBOSITY_NORMAL);
  
      }
-@@ -2899,10 +2254,7 @@
+@@ -2899,10 +2344,7 @@
      if(nmatches<20)
      {
          Verbose::PrintMess("Not enough matches!!", Verbose::VERBOSITY_NORMAL);
@@ -4981,7 +7078,7 @@
      }
  
      // Optimize frame pose with all matches
-@@ -2940,10 +2292,7 @@
+@@ -2940,10 +2382,7 @@
          return nmatches>20;
      }
  
@@ -4993,7 +7090,32 @@
  }
  
  bool Tracking::TrackLocalMap()
-@@ -3019,8 +2368,7 @@
+@@ -2966,6 +2405,14 @@
+                 aux2++;
+         }
+ 
++    std::unique_ptr<Frame> independentVisual;
++    const bool useHealth=mbMapReuseEnabled && mpAtlas->isImuInitialized();
++    if(useHealth && (!mCurrentFrame.isSet() || !mCurrentFrame.GetPose().matrix().allFinite())){
++        auto& d=mMapReuseStatus.health;RecordCurrentDynamics();
++        d.evaluated=true;d.accepted=false;d.hard_fault=true;d.reason="health: nonfinite predicted pose";
++        return false;
++    }
++    if(useHealth){independentVisual.reset(new Frame(mCurrentFrame));Optimizer::PoseOptimization(independentVisual.get());}
+     int inliers;
+     if (!mpAtlas->isImuInitialized())
+         Optimizer::PoseOptimization(&mCurrentFrame);
+@@ -3002,6 +2449,9 @@
+         }
+ 
+     mnMatchesInliers = 0;
++
++    if(useHealth && !CheckCurrentFrameHealth(*independentVisual))
++        return false;
+ 
+     // Update MapPoints Statistics
+     for(int i=0; i<mCurrentFrame.N; i++)
+@@ -3019,8 +2469,7 @@
                  else
                      mnMatchesInliers++;
              }
@@ -5003,7 +7125,7 @@
          }
      }
  
-@@ -3034,7 +2382,6 @@
+@@ -3034,7 +2483,6 @@
          return true;
  
  
@@ -5011,7 +7133,7 @@
      {
          if((mnMatchesInliers<15 && mpAtlas->isImuInitialized())||(mnMatchesInliers<50 && !mpAtlas->isImuInitialized()))
          {
-@@ -3043,174 +2390,43 @@
+@@ -3043,174 +2491,43 @@
          else
              return true;
      }
@@ -5207,7 +7329,7 @@
  }
  
  void Tracking::CreateNewKeyFrame()
-@@ -3239,96 +2455,8 @@
+@@ -3239,96 +2556,8 @@
          Verbose::PrintMess("No last KF in KF creation!!", Verbose::VERBOSITY_NORMAL);
  
      // Reset preintegration from last KF (Create new object)
@@ -5304,7 +7426,7 @@
      }
  
  
-@@ -3389,8 +2517,7 @@
+@@ -3389,8 +2618,7 @@
      {
          ORBmatcher matcher(0.8);
          int th = 1;
@@ -5314,7 +7436,7 @@
          if(mpAtlas->isImuInitialized())
          {
              if(mpAtlas->GetCurrentMap()->GetIniertialBA2())
-@@ -3398,7 +2525,7 @@
+@@ -3398,7 +2626,7 @@
              else
                  th=6;
          }
@@ -5323,7 +7445,7 @@
          {
              th=10;
          }
-@@ -3582,7 +2709,7 @@
+@@ -3582,7 +2810,7 @@
      }
  
      // Add 10 last temporal KFs (mainly for IMU)
@@ -5332,7 +7454,579 @@
      {
          KeyFrame* tempKeyFrame = mCurrentFrame.mpLastKeyFrame;
  
-@@ -3809,8 +2936,7 @@
+@@ -3604,6 +2832,563 @@
+         mpReferenceKF = pKFmax;
+         mCurrentFrame.mpReferenceKF = mpReferenceKF;
+     }
++}
++
++void Tracking::RecordCurrentDynamics()
++{
++    auto& d=mMapReuseStatus.health;
++    // Never read the uninitialized velocity storage of a pre-IMU frame.
++    if(!mCurrentFrame.HasVelocity())return;
++    const auto v=mCurrentFrame.GetVelocity();const auto b=mCurrentFrame.mImuBias;
++    d.velocity_w={{v.x(),v.y(),v.z()}};
++    d.gyro_bias={{b.bwx,b.bwy,b.bwz}};d.accel_bias={{b.bax,b.bay,b.baz}};
++    d.dynamics_available=true;
++}
++
++void Tracking::RecordRecoveryFit(const ImuRecoveryResult& result)
++{
++    auto& d=mMapReuseStatus.health;
++    d.recovery_fit_position_rms_m=result.position_rms;
++    d.recovery_fit_rotation_rms_rad=result.rotation_rms;
++    d.recovery_fit_condition_number=result.condition_number;
++    d.recovery_fit_span_s=mRecoveryFitSpan;
++    if(result.valid){
++        d.recovery_fit_velocity_w={{result.velocity.x(),result.velocity.y(),result.velocity.z()}};
++        d.recovery_fit_gyro_bias={{result.bias.bwx,result.bias.bwy,result.bias.bwz}};
++        d.recovery_fit_accel_bias={{result.bias.bax,result.bias.bay,result.bias.baz}};
++    }
++}
++
++void Tracking::RecordVisualDiagnostics(const Frame& visual)
++{
++    auto& d=mMapReuseStatus.health;
++    if(!visual.isSet() || !mCurrentFrame.isSet() ||
++       !visual.GetPose().matrix().allFinite() || !mCurrentFrame.GetPose().matrix().allFinite())return;
++    std::set<int> cells,flowCells;
++    std::unordered_map<MapPoint*,cv::Point2f> previousPixels;
++    if(mLastFrame.isSet()){
++        for(int i=0;i<mLastFrame.N;++i)
++            if(mLastFrame.mvpMapPoints[i] && !mLastFrame.mvbOutlier[i])
++                previousPixels[mLastFrame.mvpMapPoints[i]]=mLastFrame.mvKeysUn[i].pt;
++    }
++    const double dt=mCurrentFrame.mTimeStamp-mLastFrame.mTimeStamp;
++    std::vector<double> flows;
++    double visualSse=0,fusedSse=0;int count=0;
++    for(int i=0;i<visual.N;++i){
++        MapPoint* point=visual.mvpMapPoints[i];
++        if(!point || point->isBad() || visual.mvbOutlier[i])continue;
++        const auto world=point->GetWorldPos();
++        const Eigen::Vector3f pv=visual.GetPose()*world,pf=mCurrentFrame.GetPose()*world;
++        if(!pv.allFinite()||!pf.allFinite())continue;
++        const Eigen::Vector2f uv=visual.mpCamera->project(pv),uf=visual.mpCamera->project(pf);
++        if(!uv.allFinite()||!uf.allFinite())continue;
++        const auto pixel=visual.mvKeysUn[i].pt;
++        const Eigen::Vector2f measurement(pixel.x,pixel.y);
++        visualSse+=(uv-measurement).squaredNorm();fusedSse+=(uf-measurement).squaredNorm();++count;
++        int x=std::max(0,std::min(3,int(4*pixel.x/std::max(1,mImGray.cols))));
++        int y=std::max(0,std::min(2,int(3*pixel.y/std::max(1,mImGray.rows))));
++        const int cell=y*4+x;cells.insert(cell);
++        const auto found=previousPixels.find(point);
++        if(found!=previousPixels.end() && dt>0 && dt<=0.25){
++            const cv::Point2f shift=pixel-found->second;
++            flows.push_back(std::sqrt(shift.x*shift.x+shift.y*shift.y)/dt);flowCells.insert(cell);
++        }
++    }
++    d.visual_inliers=count;d.visual_cells=cells.size();
++    if(count){d.visual_rms_px=std::sqrt(visualSse/count);d.fused_rms_px=std::sqrt(fusedSse/count);}
++    d.visual_translation_error_m=(visual.GetImuPosition()-mCurrentFrame.GetImuPosition()).norm();
++    d.visual_rotation_error_rad=Eigen::AngleAxisf(visual.GetPose().rotationMatrix()*
++                                               mCurrentFrame.GetPose().rotationMatrix().transpose()).angle();
++    if(!flows.empty()){
++        std::sort(flows.begin(),flows.end());
++        d.flow_median_px_s=flows[flows.size()/2];
++        d.flow_p90_px_s=flows[std::min(flows.size()-1,size_t(0.9*flows.size()))];
++        // A low-flow cluster in one corner is insufficient for static evidence.
++        d.flow_matches=flowCells.size()>=4?flows.size():0;
++    }
++}
++
++bool Tracking::CheckCurrentFrameHealth(const Frame& visual)
++{
++    auto& d=mMapReuseStatus.health;
++    d.map_updated=mbMapUpdated;
++    RecordCurrentDynamics();RecordVisualDiagnostics(visual);
++    d.pose_step_dt_s=mCurrentFrame.mTimeStamp-mLastFrame.mTimeStamp;
++    if(mLastFrame.isSet() && mCurrentFrame.isSet())
++        d.pose_step_m=(mCurrentFrame.GetImuPosition()-mLastFrame.GetImuPosition()).norm();
++    if(mCurrentFrame.isSet()){
++        const auto body=mCurrentFrame.GetImuPosition();
++        Map* map=mpAtlas->GetCurrentMap();
++        MeasurePublishedPoseStep(d,mOutputPoseBaseline,map?static_cast<long>(map->GetId()):-1,
++            mCurrentFrame.mnId,mCurrentFrame.mTimeStamp,{{body.x(),body.y(),body.z()}});
++    }
++    Eigen::Vector3d sumW=Eigen::Vector3d::Zero(),sumA=Eigen::Vector3d::Zero();
++    double sumW2=0,sumA2=0,first=0,last=0;bool regular=true;
++    {
++        std::unique_lock<std::mutex> lock(mMutexImuQueue);
++        for(const auto& sample:mRecoveryImu){
++            if(sample.t<mCurrentFrame.mTimeStamp-0.3 || sample.t>mCurrentFrame.mTimeStamp)continue;
++            if(!sample.a.allFinite()||!sample.w.allFinite()){regular=false;break;}
++            if(d.imu_window_samples && (sample.t<=last || sample.t-last>0.010))regular=false;
++            if(!d.imu_window_samples)first=sample.t;
++            last=sample.t;const Eigen::Vector3d a=sample.a.cast<double>(),w=sample.w.cast<double>();
++            sumW+=w;sumA+=a;sumW2+=w.squaredNorm();sumA2+=a.squaredNorm();++d.imu_window_samples;
++        }
++    }
++    if(regular && d.imu_window_samples>=100 && last-first>=0.19){
++        const double n=d.imu_window_samples;
++        const auto meanW=sumW/n,meanA=sumA/n;
++        d.imu_gyro_mean_norm=meanW.norm();d.imu_acc_mean_norm=meanA.norm();
++        d.imu_gyro_std=std::sqrt(std::max(0.0,sumW2/n-meanW.squaredNorm()));
++        d.imu_acc_std=std::sqrt(std::max(0.0,sumA2/n-meanA.squaredNorm()));
++    }
++    if(mpStationaryReference && mpStationaryReference->isBad()){
++        mStationarySince=-1;mpStationaryReference=nullptr;mStationaryEvidence=StationaryEvidenceState();
++    }
++    UpdateStationaryEvidence(d,mCurrentFrame.mTimeStamp,mStationaryEvidence);
++    if(d.stationary_candidate && mCurrentFrame.isSet()){
++        if(mStationarySince!=mStationaryEvidence.started_s)mStationarySince=-1;
++        if(mStationarySince<0){
++            mpStationaryReference=mpReferenceKF;
++            if(mpStationaryReference && !mpStationaryReference->isBad()){
++                mStationarySince=mStationaryEvidence.started_s;
++                // Store in a reference camera frame, so a map-coordinate update
++                // is applied to this anchor as well as the current state.
++                mStationaryOrigin=mpStationaryReference->GetPose()*mCurrentFrame.GetImuPosition();
++            }
++        }
++        if(mStationarySince>=0 && mpStationaryReference){
++            d.stationary_duration_s=mCurrentFrame.mTimeStamp-mStationarySince;
++            const Eigen::Vector3f origin=mpStationaryReference->GetPoseInverse()*mStationaryOrigin;
++            d.stationary_displacement_m=(mCurrentFrame.GetImuPosition()-origin).norm();
++        }
++    }else {mStationarySince=-1;mpStationaryReference=nullptr;}
++    const bool finite=mCurrentFrame.isSet() && mCurrentFrame.GetPose().matrix().allFinite();
++    return EvaluateTrackingHealth(d,finite);
++}
++
++MapReuseStatus Tracking::GetMapReuseStatus() const
++{
++    std::unique_lock<std::mutex> lock(mMutexMapReuseStatus);
++    return mMapReuseStatus;
++}
++
++void Tracking::RefreshMapReuseStatus()
++{
++    mMapReuseStatus.enabled=mbMapReuseEnabled;
++    if(mbMapRecoveryActive)return;
++    RecordCurrentDynamics();
++    Map* map=mpAtlas->GetCurrentMap();
++    mMapReuseStatus.map_id=map?static_cast<long>(map->GetId()):-1;
++    mMapReuseStatus.reference_keyframe_id=mpReferenceKF?static_cast<long>(mpReferenceKF->mnId):-1;
++    mMapReuseStatus.inliers=mnMatchesInliers;
++    mMapReuseStatus.visual_ready=mState==OK && mCurrentFrame.isSet();
++    mMapReuseStatus.inertial_ready=mMapReuseStatus.visual_ready && map && map->isImuInitialized() &&
++        (!mbMapReuseEnabled || (mMapReuseStatus.health.evaluated && mMapReuseStatus.health.accepted));
++    const std::string phase=mMapReuseStatus.inertial_ready?"TRACKING":"MAPPING";
++    if(phase!=mMapReuseStatus.phase && phase=="MAPPING" &&
++       mMapReuseStatus.reason.find("recovery timeout")==std::string::npos)
++        mMapReuseStatus.reason="current map/IMU initialization pending";
++    if(phase!=mMapReuseStatus.phase && phase=="TRACKING")
++        mMapReuseStatus.reason="current map inertial tracking ready";
++    mMapReuseStatus.phase=phase;
++}
++
++std::vector<Map*> Tracking::ReusableMaps() const
++{
++    auto maps=mpAtlas->GetAllMaps();
++    maps.erase(std::remove_if(maps.begin(),maps.end(),[](Map* map){return !Atlas::IsMatureMap(map);}),maps.end());
++    Map* current=mpAtlas->GetCurrentMap();
++    Map* preferred=mpRecoveryMap?mpRecoveryMap:current;
++    std::sort(maps.begin(),maps.end(),[preferred](Map* a,Map* b){
++        if(a==b)return false;
++        if(a==preferred)return true;
++        if(b==preferred)return false;
++        if(a->KeyFramesInMap()!=b->KeyFramesInMap())return a->KeyFramesInMap()>b->KeyFramesInMap();
++        return a->GetId()<b->GetId();
++    });
++    if(maps.size()>4)maps.resize(4);
++    return maps;
++}
++
++void Tracking::BeginMapRecovery(const std::string& reason)
++{
++    if(mbMapRecoveryActive)return;
++    mbMapRecoveryActive=true;mbMapRecoveryPaused=false;
++    mOutputPoseBaseline=OutputPoseBaseline();
++    mMapRecoveryStartTime=mCurrentFrame.mTimeStamp;
++    mMapRecoveryStartWall=RecoveryWallTime();
++    mvRecoveryPoses.clear();mvRecoveryHoldout.clear();mbRecoveryCandidate=false;
++    mbRecoveryVisualFrameValid=false;
++    mMapReuseStatus.recovery_window_resets=0;
++    mpRecoveryMap=nullptr;mpRecoveryReference=nullptr;mStationarySince=-1;mpStationaryReference=nullptr;mStationaryEvidence=StationaryEvidenceState();
++    mbVelocity=false;mbVO=false;
++    mState=RECENTLY_LOST;mLastProcessedState=RECENTLY_LOST;
++    mMapReuseStatus.phase="SEARCHING";mMapReuseStatus.reason=reason;
++    mMapReuseStatus.visual_ready=false;mMapReuseStatus.inertial_ready=false;
++    mMapReuseStatus.inliers=0;mMapReuseStatus.reference_keyframe_id=-1;
++    mMapReuseStatus.map_id=-1;
++    ++mMapReuseStatus.recovery_id;
++    mpLoopClosing->RequestPause();mpLocalMapper->RequestStop();
++}
++
++void Tracking::EndMapRecovery()
++{
++    mOutputPoseBaseline=OutputPoseBaseline();
++    if(mbMapRecoveryActive){
++        // Release before any reset's blocking RequestReset handshake.
++        mpLocalMapper->Release();
++        mpLoopClosing->ReleasePause();
++    }
++    mbMapRecoveryActive=false;mbMapRecoveryPaused=false;
++    mbRecoveryVisualFrameValid=false;
++    mpRecoveryMap=nullptr;mpRecoveryReference=nullptr;mvRecoveryPoses.clear();
++    mvRecoveryHoldout.clear();mbRecoveryCandidate=false;mStationarySince=-1;mpStationaryReference=nullptr;mStationaryEvidence=StationaryEvidenceState();
++}
++
++void Tracking::PublishRecoveryFrame()
++{
++    mState=RECENTLY_LOST;mLastProcessedState=RECENTLY_LOST;
++    mCurrentFrame.setIntegrated();
++    // Pending visual estimates are deliberately not appended to valid trajectory
++    // history, and the 3D pose stays at its last verified value.
++    mpFrameDrawer->Update(this);
++    std::unique_lock<std::mutex> lock(mMutexImuQueue);
++    while(mlQueueImuData.size()>1){
++        auto next=std::next(mlQueueImuData.begin());
++        if(next->t>mCurrentFrame.mTimeStamp)break;
++        mlQueueImuData.pop_front();
++    }
++}
++
++bool Tracking::RelocalizeInMap(Map* map, KeyFrame*& reference, int& inliers, double deadline)
++{
++    mCurrentFrame.ComputeBoW();
++    auto candidates=mpKeyFrameDB->DetectMapReuseCandidates(&mCurrentFrame,map,5);
++    ORBmatcher bowMatcher(0.75,true),projectionMatcher(0.9,true);
++    for(KeyFrame* kf:candidates){
++        if(RecoveryWallTime()>deadline)break;
++        if(kf->isBad() || kf->GetMap()!=map)continue;
++        std::vector<MapPoint*> matches;
++        if(bowMatcher.SearchByBoW(kf,mCurrentFrame,matches)<20)continue;
++        MLPnPsolver solver(mCurrentFrame,matches);
++        solver.SetRansacParameters(0.99,10,150,6,0.5,5.991);
++        bool exhausted=false;
++        while(!exhausted && RecoveryWallTime()<deadline){
++            std::vector<bool> inlierMask;int count=0;Eigen::Matrix4f pose;
++            if(!solver.iterate(5,exhausted,inlierMask,count,pose))continue;
++            if(!pose.allFinite())continue;
++            mCurrentFrame.SetPose(Sophus::SE3f(pose));
++            std::fill(mCurrentFrame.mvpMapPoints.begin(),mCurrentFrame.mvpMapPoints.end(),nullptr);
++            std::fill(mCurrentFrame.mvbOutlier.begin(),mCurrentFrame.mvbOutlier.end(),false);
++            std::set<MapPoint*> found;
++            for(size_t i=0;i<inlierMask.size();++i)if(inlierMask[i]){
++                mCurrentFrame.mvpMapPoints[i]=matches[i];found.insert(matches[i]);
++            }
++            int good=Optimizer::PoseOptimization(&mCurrentFrame);
++            for(int i=0;i<mCurrentFrame.N;++i)
++                if(mCurrentFrame.mvbOutlier[i])mCurrentFrame.mvpMapPoints[i]=nullptr;
++            if(good<50 && good>=15 && RecoveryWallTime()<deadline){
++                projectionMatcher.SearchByProjection(mCurrentFrame,kf,found,10,100);
++                good=Optimizer::PoseOptimization(&mCurrentFrame);
++            }
++            if(VerifyRecoveryVisualPose(map,inliers)){
++                reference=kf;return true;
++            }
++        }
++    }
++    return false;
++}
++
++bool Tracking::VerifyRecoveryVisualPose(Map* map, int& inliers)
++{
++    inliers=0;std::set<int> cells;std::set<MapPoint*> unique;
++    for(int i=0;i<mCurrentFrame.N;++i){
++        MapPoint* point=mCurrentFrame.mvpMapPoints[i];
++        if(!point)continue;
++        if(mCurrentFrame.mvbOutlier[i] || point->isBad() || point->GetMap()!=map ||
++           !unique.insert(point).second){
++            mCurrentFrame.mvpMapPoints[i]=nullptr;continue;
++        }
++        ++inliers;
++        const auto& pixel=mCurrentFrame.mvKeysUn[i].pt;
++        int x=std::max(0,std::min(3,int(4*pixel.x/std::max(1,mImGray.cols))));
++        int y=std::max(0,std::min(2,int(3*pixel.y/std::max(1,mImGray.rows))));
++        cells.insert(y*4+x);
++    }
++    return inliers>=50 && cells.size()>=4 && mCurrentFrame.isSet() &&
++        mCurrentFrame.GetPose().matrix().allFinite();
++}
++
++bool Tracking::TrackRecoveryLocalMap(Map* map, KeyFrame*& reference, int& inliers, double deadline)
++{
++    // Both mapping workers are paused, and the caller owns this map's update
++    // mutex. This snapshot is discarded on any unverified frame or map change.
++    if(!mbRecoveryVisualFrameValid || !mpRecoveryReference || mpRecoveryReference->isBad() ||
++       mpRecoveryReference->GetMap()!=map || !mRecoveryVisualFrame.isSet())return false;
++    const double dt=mCurrentFrame.mTimeStamp-mRecoveryVisualFrame.mTimeStamp;
++    if(dt<=0 || dt>0.25 || RecoveryWallTime()>deadline)return false;
++    mCurrentFrame.SetPose(mRecoveryVisualFrame.GetPose());
++    std::fill(mCurrentFrame.mvpMapPoints.begin(),mCurrentFrame.mvpMapPoints.end(),nullptr);
++    std::fill(mCurrentFrame.mvbOutlier.begin(),mCurrentFrame.mvbOutlier.end(),false);
++    for(size_t i=0;i<mRecoveryVisualFrame.mvpMapPoints.size();++i){
++        auto point=mRecoveryVisualFrame.mvpMapPoints[i];
++        if(point && (point->isBad() || point->GetMap()!=map))mRecoveryVisualFrame.mvpMapPoints[i]=nullptr;
++    }
++    ORBmatcher matcher(0.8,true);
++    matcher.SearchByProjection(mCurrentFrame,mRecoveryVisualFrame,15,true);
++    if(RecoveryWallTime()>deadline)return false;
++    Optimizer::PoseOptimization(&mCurrentFrame);
++    // Grow support from a bounded covisible neighborhood rather than repeating
++    // database retrieval/PnP for every training and holdout image.
++    std::set<MapPoint*> found;
++    for(int i=0;i<mCurrentFrame.N;++i){
++        if(mCurrentFrame.mvbOutlier[i])mCurrentFrame.mvpMapPoints[i]=nullptr;
++        else if(mCurrentFrame.mvpMapPoints[i])found.insert(mCurrentFrame.mvpMapPoints[i]);
++    }
++    std::vector<KeyFrame*> neighbors{mpRecoveryReference};
++    const auto covisible=mpRecoveryReference->GetBestCovisibilityKeyFrames(5);
++    neighbors.insert(neighbors.end(),covisible.begin(),covisible.end());
++    int added=0;
++    for(auto kf:neighbors){
++        if(RecoveryWallTime()>deadline)break;
++        if(!kf || kf->isBad() || kf->GetMap()!=map)continue;
++        added+=matcher.SearchByProjection(mCurrentFrame,kf,found,10,100);
++        for(auto point:mCurrentFrame.mvpMapPoints)if(point)found.insert(point);
++    }
++    if(added)Optimizer::PoseOptimization(&mCurrentFrame);
++    if(!VerifyRecoveryVisualPose(map,inliers))return false;
++    const auto oldPose=mRecoveryVisualFrame.GetPose();
++    const auto newPose=mCurrentFrame.GetPose();
++    // A sudden apparent step must use robust global PnP, not extend a local fit.
++    if((mCurrentFrame.GetImuPosition()-mRecoveryVisualFrame.GetImuPosition()).norm()>8.0*dt ||
++       Eigen::AngleAxisf(oldPose.rotationMatrix()*newPose.rotationMatrix().transpose()).angle()>12.0*dt)
++        return false;
++    reference=mpRecoveryReference;return true;
++}
++
++void Tracking::ClearRecoveryWindow()
++{
++    if(!mvRecoveryPoses.empty() || !mvRecoveryHoldout.empty() || mbRecoveryCandidate)
++        ++mMapReuseStatus.recovery_window_resets;
++    mvRecoveryPoses.clear();mvRecoveryHoldout.clear();mbRecoveryCandidate=false;
++}
++
++bool Tracking::ProcessMapRecovery()
++{
++    // Loop closing may release the mapper while finishing a previous merge/GBA,
++    // therefore re-request the stop and check both acknowledgments every frame.
++    mpLoopClosing->RequestPause();mpLocalMapper->RequestStop();
++    const double wallElapsed=RecoveryWallTime()-mMapRecoveryStartWall;
++    if(!mpLoopClosing->isPaused() || !mpLocalMapper->isStopped()){
++        mMapReuseStatus.recovery_method="WAITING";
++        mMapReuseStatus.reason="waiting for mapping/loop-closing safe boundary";
++        PublishRecoveryFrame();
++        if(wallElapsed>mMapRecoveryTimeout+5){
++            EndMapRecovery();
++            throw std::runtime_error("MAP_REUSE_WORKER_TIMEOUT: unable to pause mapping workers safely");
++        }
++        return false;
++    }
++    mbMapRecoveryPaused=true;
++    if(wallElapsed>mMapRecoveryTimeout ||
++       mCurrentFrame.mTimeStamp-mMapRecoveryStartTime>mMapRecoveryTimeout){
++        mMapReuseStatus.recovery_method="TIMEOUT";
++        // Retain every mature map; this creates an independent fallback map.
++        // Cooldown prevents a failed search from starving new-map initialization.
++        mMapRecoveryCooldownUntil=mCurrentFrame.mTimeStamp+5.0;
++        mMapRecoveryCooldownWall=RecoveryWallTime()+5.0;
++        mMapReuseStatus.reason="recovery timeout; retained maps and started new map";
++        PublishRecoveryFrame();
++        EndMapRecovery();
++        {
++            std::unique_lock<std::mutex> lock(mMutexImuQueue);
++            mlQueueImuData.clear();mvImuFromLastFrame.clear();
++        }
++        CreateMapInAtlas();
++        return false;
++    }
++    const double searchStart=RecoveryWallTime();
++    const double deadline=searchStart+mMapRecoveryBudgetMs/1000.0;
++    KeyFrame* reference=nullptr;Map* matchedMap=nullptr;int inliers=0;
++    const bool tryLocal=mbRecoveryVisualFrameValid && mpRecoveryMap && mpRecoveryReference;
++    if(tryLocal){
++        std::unique_lock<std::mutex> mapLock(mpRecoveryMap->mMutexMapUpdate);
++        // Reserve most of the soft budget for a same-frame global fallback.
++        const double localDeadline=searchStart+std::min(0.010,mMapRecoveryBudgetMs/4000.0);
++        if(Atlas::IsMatureMap(mpRecoveryMap) &&
++           TrackRecoveryLocalMap(mpRecoveryMap,reference,inliers,localDeadline)){
++            matchedMap=mpRecoveryMap;mMapReuseStatus.recovery_method="LOCAL";
++        }
++    }
++    if(!matchedMap){
++        mMapReuseStatus.recovery_method=tryLocal?"GLOBAL_FALLBACK":"GLOBAL";
++        mMapReuseStatus.recovery_global_attempted=true;
++        // A rejected local candidate must not contaminate a global candidate.
++        std::fill(mCurrentFrame.mvpMapPoints.begin(),mCurrentFrame.mvpMapPoints.end(),nullptr);
++        std::fill(mCurrentFrame.mvbOutlier.begin(),mCurrentFrame.mvbOutlier.end(),false);
++        // The budget is cooperative: an individual optimizer call can overrun.
++        // Still allow a short same-frame global attempt instead of repeatedly
++        // starving fallback after a costly local failure.
++        const double globalDeadline=std::max(deadline,RecoveryWallTime()+mMapRecoveryBudgetMs/4000.0);
++        for(Map* map:ReusableMaps()){
++            std::unique_lock<std::mutex> mapLock(map->mMutexMapUpdate);
++            if(Atlas::IsMatureMap(map) && RelocalizeInMap(map,reference,inliers,globalDeadline)){
++                matchedMap=map;break;
++            }
++            if(RecoveryWallTime()>globalDeadline)break;
++        }
++    }
++    mMapReuseStatus.recovery_search_ms=(RecoveryWallTime()-searchStart)*1000.0;
++    if(!matchedMap){
++        ClearRecoveryWindow();mbRecoveryVisualFrameValid=false;
++        mpRecoveryMap=nullptr;mpRecoveryReference=nullptr;
++        mMapReuseStatus.phase="SEARCHING";mMapReuseStatus.visual_ready=false;
++        mMapReuseStatus.map_id=-1;mMapReuseStatus.reference_keyframe_id=-1;
++        mMapReuseStatus.inliers=0;mMapReuseStatus.reason="no geometrically verified mature-map pose";
++        PublishRecoveryFrame();return false;
++    }
++    RecoveryPose pose{mCurrentFrame.mTimeStamp,mCurrentFrame.GetImuRotation().cast<double>(),
++                      mCurrentFrame.GetImuPosition().cast<double>()};
++    if(mpRecoveryMap!=matchedMap || (!mvRecoveryPoses.empty() &&
++       (pose.t<=mvRecoveryPoses.back().t || pose.t-mvRecoveryPoses.back().t>0.25))){
++        ClearRecoveryWindow();
++    }
++    if(!mvRecoveryPoses.empty()){
++        const auto& last=mvRecoveryPoses.back();
++        double dt=pose.t-last.t;
++        if((pose.pwb-last.pwb).norm()>8.0*dt ||
++           Eigen::AngleAxisd(last.Rwb.transpose()*pose.Rwb).angle()>12.0*dt){
++            ClearRecoveryWindow();
++            mMapReuseStatus.reason="visual pose jump; restarting fresh alignment window";
++        }
++    }
++    mpRecoveryMap=matchedMap;mpRecoveryReference=reference;
++    mRecoveryVisualFrame=Frame(mCurrentFrame);mbRecoveryVisualFrameValid=true;
++    // Frame's upstream copy shares these pointers. This visual snapshot must
++    // never consume or own an old optimizer/preintegration/previous-frame state.
++    mRecoveryVisualFrame.mpcpi=nullptr;mRecoveryVisualFrame.mpImuPreintegrated=nullptr;
++    mRecoveryVisualFrame.mpImuPreintegratedFrame=nullptr;mRecoveryVisualFrame.mpPrevFrame=nullptr;
++    mvRecoveryPoses.push_back(pose);
++    while(mvRecoveryPoses.size()>80 || pose.t-mvRecoveryPoses.front().t>2.5)
++        mvRecoveryPoses.erase(mvRecoveryPoses.begin());
++    mMapReuseStatus.map_id=matchedMap->GetId();
++    mMapReuseStatus.reference_keyframe_id=reference->mnId;
++    mMapReuseStatus.inliers=inliers;mMapReuseStatus.visual_ready=true;
++    mMapReuseStatus.inertial_ready=false;mMapReuseStatus.phase="ALIGNING_IMU";
++    mMapReuseStatus.reason="collecting fresh visual/IMU recovery window";
++    RecordVisualDiagnostics(mCurrentFrame);
++    std::deque<IMU::Point> imu;
++    {std::unique_lock<std::mutex> lock(mMutexImuQueue);imu=mRecoveryImu;}
++    if(mbRecoveryCandidate){
++        RecordRecoveryFit(mRecoveryCandidate);
++        if(pose.t>mRecoveryFitEnd.t)mvRecoveryHoldout.push_back(pose);
++        mMapReuseStatus.phase="VALIDATING_IMU";
++        mMapReuseStatus.reason="checking frozen recovery state against future visual/IMU data";
++        mMapReuseStatus.health.recovery_holdout_span_s=pose.t-mRecoveryFitEnd.t;
++        if(mvRecoveryHoldout.size()>=8 && pose.t-mRecoveryFitEnd.t>=0.6){
++            const auto check=ValidateImuRecovery(mRecoveryFitEnd,mRecoveryCandidate,mvRecoveryHoldout,imu,*mpImuCalib);
++            mMapReuseStatus.health.recovery_holdout_position_rms_m=check.position_rms;
++            mMapReuseStatus.health.recovery_holdout_rotation_rms_rad=check.rotation_rms;
++            mMapReuseStatus.reason=check.reason;
++            if(check.valid){
++                auto committed=mRecoveryCandidate;committed.velocity=check.velocity;committed.reason=check.reason;
++                // Propagation adds uncertainty; do not reuse the training-end
++                // velocity confidence unchanged at the end of the holdout.
++                const double dt=pose.t-mRecoveryFitEnd.t;
++                double maxBiasVariance=0;
++                for(int k=0;k<3;++k)maxBiasVariance=std::max(maxBiasVariance,1.0/committed.information(k+12,k+12));
++                for(int k=0;k<3;++k){
++                    double variance=1.0/committed.information(k+6,k+6)+dt*dt*maxBiasVariance+0.01;
++                    committed.information(k+6,k+6)=1.0/variance;
++                }
++                CommitMapRecovery(committed);return true;
++            }
++            // The holdout is not silently folded into the failed fit. Start a
++            // fresh training interval and keep outputs invalid in the meantime.
++            ClearRecoveryWindow();
++            mvRecoveryPoses.push_back(pose);
++        }
++    }else if(mvRecoveryPoses.size()>=12 && pose.t-mvRecoveryPoses.front().t>=1.2){
++        mRecoveryFitSpan=pose.t-mvRecoveryPoses.front().t;
++        const auto result=SolveImuRecovery(mvRecoveryPoses,imu,*mpImuCalib);
++        RecordRecoveryFit(result);mMapReuseStatus.reason=result.reason;
++        if(result.valid){
++            mRecoveryCandidate=result;mRecoveryFitEnd=pose;mvRecoveryHoldout.clear();mbRecoveryCandidate=true;
++            mMapReuseStatus.phase="VALIDATING_IMU";
++            mMapReuseStatus.reason="fit accepted provisionally; waiting for independent future-data validation";
++            mMapReuseStatus.health.recovery_holdout_span_s=0;
++        }
++    }
++    PublishRecoveryFrame();return false;
++}
++
++void Tracking::CommitMapRecovery(const ImuRecoveryResult& result)
++{
++    Map* map=mpRecoveryMap;
++    std::unique_lock<std::mutex> mapLock(map->mMutexMapUpdate);
++    if(!Atlas::IsMatureMap(map) || !mpRecoveryReference || mpRecoveryReference->isBad())
++        throw std::runtime_error("MAP_REUSE_COMMIT: map/reference changed while paused");
++    mpAtlas->ChangeMap(map);
++    const auto R=mCurrentFrame.GetImuRotation();const auto p=mCurrentFrame.GetImuPosition();
++    mCurrentFrame.SetNewBias(result.bias);mCurrentFrame.mPredBias=result.bias;
++    mCurrentFrame.SetImuPoseVelocity(R,p,result.velocity);
++    mCurrentFrame.mpImuPreintegrated=nullptr;
++    mCurrentFrame.mpImuPreintegratedFrame=nullptr;
++    mCurrentFrame.mpPrevFrame=nullptr;
++    // The new temporal root has no IMU edge to a previous recording/session.
++    KeyFrame* anchor=new KeyFrame(mCurrentFrame,map,mpKeyFrameDB);
++    anchor->mPrevKF=nullptr;anchor->mNextKF=nullptr;anchor->mpImuPreintegrated=nullptr;
++    anchor->bImu=true;anchor->SetNewBias(result.bias);anchor->SetVelocity(result.velocity);
++    anchor->SetRecoveryDynamicsPrior(result.velocity,result.bias,result.information.block<9,9>(6,6));
++    anchor->ComputeBoW();
++    for(size_t i=0;i<mCurrentFrame.mvpMapPoints.size();++i){
++        MapPoint* point=mCurrentFrame.mvpMapPoints[i];
++        if(point && !point->isBad()){
++            point->AddObservation(anchor,i);point->UpdateNormalAndDepth();point->ComputeDistinctiveDescriptors();
++        }
++    }
++    map->AddKeyFrame(anchor);anchor->UpdateConnections();mpKeyFrameDB->add(anchor);
++    // Release() discards pending mapping KFs, so this anchor is inserted directly
++    // above. Only subsequent frames enqueue new KFs through normal mapping.
++    mpLastKeyFrame=anchor;mpReferenceKF=anchor;
++    mnLastKeyFrameId=mCurrentFrame.mnId;mnLastRelocFrameId=mCurrentFrame.mnId;
++    mCurrentFrame.mpLastKeyFrame=anchor;mCurrentFrame.mpReferenceKF=anchor;
++    delete mpImuPreintegratedFromLastKF;
++    mpImuPreintegratedFromLastKF=new IMU::Preintegrated(result.bias,*mpImuCalib);
++    mCurrentFrame.mpImuPreintegrated=mpImuPreintegratedFromLastKF;
++    const Eigen::Vector3d bg(result.bias.bwx,result.bias.bwy,result.bias.bwz);
++    const Eigen::Vector3d ba(result.bias.bax,result.bias.bay,result.bias.baz);
++    // Last-frame priors are Tracking-owned (Frame copies share their pointers).
++    // Mapping is paused and no subsequent optimization may consume the old one.
++    if(mLastFrame.mpcpi && mLastFrame.mpcpi!=mCurrentFrame.mpcpi)delete mLastFrame.mpcpi;
++    if(mCurrentFrame.mpcpi)delete mCurrentFrame.mpcpi;
++    mLastFrame.mpcpi=nullptr;
++    mCurrentFrame.mpcpi=new ConstraintPoseImu(R.cast<double>(),p.cast<double>(),
++        result.velocity.cast<double>(),bg,ba,result.information);
++    mCurrentFrame.setIntegrated();mLastFrame=Frame(mCurrentFrame);
++    mLastBias=result.bias;mbVelocity=false;mbVO=false;mbCreatedMap=false;
++    mbReadyToInitializate=false;mnMatchesInliers=mMapReuseStatus.inliers;
++    mState=OK;mLastProcessedState=OK;
++    mvpLocalKeyFrames.clear();mvpLocalMapPoints.clear();UpdateLocalMap();
++    mlRelativeFramePoses.push_back(Sophus::SE3f());mlpReferences.push_back(anchor);
++    mlFrameTimes.push_back(mCurrentFrame.mTimeStamp);mlbLost.push_back(false);
++    {
++        std::unique_lock<std::mutex> lock(mMutexImuQueue);
++        while(mlQueueImuData.size()>1 && std::next(mlQueueImuData.begin())->t<=mCurrentFrame.mTimeStamp)
++            mlQueueImuData.pop_front();
++        mvImuFromLastFrame.clear();
++    }
++    mpLocalMapper->StartRecoveredChain();
++    mMapReuseStatus.phase="TRACKING";mMapReuseStatus.visual_ready=true;
++    mMapReuseStatus.inertial_ready=true;mMapReuseStatus.reason=result.reason;
++    mMapReuseStatus.health.evaluated=true;mMapReuseStatus.health.accepted=true;
++    mMapReuseStatus.health.reason="frozen recovery state passed future-data validation";
++    RecordCurrentDynamics();
++    mMapReuseStatus.reference_keyframe_id=anchor->mnId;
++    mpFrameDrawer->Update(this);mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
++    // Unlock before waking workers; the prior and temporal anchor are committed.
++    mapLock.unlock();EndMapRecovery();
+ }
+ 
+ bool Tracking::Relocalization()
+@@ -3778,6 +3563,7 @@
+ 
+ void Tracking::Reset(bool bLocMap)
+ {
++    EndMapRecovery();
+     Verbose::PrintMess("System Reseting", Verbose::VERBOSITY_NORMAL);
+ 
+     if(mpViewer)
+@@ -3809,8 +3595,7 @@
      // Clear Map (this erase MapPoints and KeyFrames)
      mpAtlas->clearAtlas();
      mpAtlas->CreateNewMap();
@@ -5342,6 +8036,116 @@
      mnInitialFrameId = 0;
  
      KeyFrame::nNextId = 0;
+@@ -3839,6 +3624,7 @@
+ 
+ void Tracking::ResetActiveMap(bool bLocMap)
+ {
++    EndMapRecovery();
+     Verbose::PrintMess("Active map Reseting", Verbose::VERBOSITY_NORMAL);
+     if(mpViewer)
+     {
+--- /dev/null
++++ b/src/TrackingHealth.cc
+@@ -0,0 +1,99 @@
++#include "TrackingHealth.h"
++#include <cmath>
++namespace ORB_SLAM3 {
++namespace {
++double Norm(const std::array<double,3>& a) {
++    double s=0;for(double x:a){if(!std::isfinite(x))return HealthUnknown();s+=x*x;}return std::sqrt(s);
++}
++}
++namespace {
++bool IsQuietVisualGyroEvidence(const TrackingHealthDiagnostics& d) {
++    return d.flow_matches>=40 && d.visual_cells>=4 && d.imu_window_samples>=100 &&
++        std::isfinite(d.flow_median_px_s) && d.flow_median_px_s<3.0 &&
++        std::isfinite(d.flow_p90_px_s) && d.flow_p90_px_s<12.0 &&
++        std::isfinite(d.imu_gyro_mean_norm) && d.imu_gyro_mean_norm<0.03 &&
++        std::isfinite(d.imu_gyro_std) && d.imu_gyro_std<0.02 &&
++        std::isfinite(d.imu_acc_mean_norm) && std::isfinite(d.imu_acc_std);
++}
++}
++bool IsStationaryEvidence(const TrackingHealthDiagnostics& d) {
++    // Image evidence is essential: quiet IMU alone cannot distinguish standstill
++    // from constant-velocity translation. This is only a consistency candidate.
++    return IsQuietVisualGyroEvidence(d) && std::abs(d.imu_acc_mean_norm-9.81)<0.5 && d.imu_acc_std<0.15;
++}
++void UpdateStationaryEvidence(TrackingHealthDiagnostics& d,double time,
++    StationaryEvidenceState& state,const TrackingHealthLimits& limits) {
++    d.stationary_candidate=false;d.stationary_evidence_held=false;
++    d.stationary_duration_s=HealthUnknown();
++    if(!std::isfinite(time) || (state.last_update_s>=0 &&
++       (time<=state.last_update_s || time-state.last_update_s>0.25))){
++        state=StationaryEvidenceState();
++        // Do not immediately reinterpret a gap/clock reversal as a continuation.
++        if(std::isfinite(time))state.last_update_s=time;
++        return;
++    }
++    if(IsStationaryEvidence(d)){
++        if(state.started_s<0)state.started_s=time;
++        state.last_full_s=time;
++        if(time-state.started_s>=limits.stationary_min_duration_s)state.confirmed=true;
++        d.stationary_candidate=true;
++    }else if(state.confirmed && IsQuietVisualGyroEvidence(d) && state.last_full_s>=0 &&
++             time-state.last_full_s<=limits.stationary_evidence_hold_s){
++        // Previously confirmed image/gyro evidence remains. An accelerometer
++        // step must not erase the old anchor and open another warm-up interval.
++        d.stationary_candidate=true;d.stationary_evidence_held=true;
++    }else state=StationaryEvidenceState();
++    state.last_update_s=time;
++    if(d.stationary_candidate)d.stationary_duration_s=time-state.started_s;
++}
++void MeasurePublishedPoseStep(TrackingHealthDiagnostics& d,const OutputPoseBaseline& previous,
++    long map_id,unsigned long frame_id,double time,const std::array<double,3>& body_position) {
++    d.output_pose_baseline=false;d.output_pose_step_m=HealthUnknown();d.output_pose_step_dt_s=HealthUnknown();
++    const double dt=time-previous.time;
++    if(!previous.available || previous.map_id!=map_id || frame_id!=previous.frame_id+1 ||
++       !std::isfinite(dt) || dt<=0 || dt>0.25)return;
++    d.output_pose_baseline=true;d.output_pose_step_dt_s=dt;
++    std::array<double,3> delta;
++    for(int k=0;k<3;++k)delta[k]=body_position[k]-previous.body_position[k];
++    d.output_pose_step_m=Norm(delta);
++}
++bool EvaluateTrackingHealth(TrackingHealthDiagnostics& d,bool finite_pose,const TrackingHealthLimits& l) {
++    d.evaluated=true;d.accepted=false;d.hard_fault=false;
++    auto fail=[&](const char* reason,bool hard=false){d.reason=reason;d.hard_fault=hard;return false;};
++    if(!finite_pose)return fail("health: nonfinite pose",true);
++    const double speed=Norm(d.velocity_w),bg=Norm(d.gyro_bias),ba=Norm(d.accel_bias);
++    if(!d.dynamics_available)return fail("health: velocity or bias unavailable");
++    if(!std::isfinite(speed)||!std::isfinite(bg)||!std::isfinite(ba))
++        return fail("health: nonfinite velocity or bias",true);
++    if(speed>l.max_speed_m_s)return fail("health: implausible body speed",true);
++    if(bg>l.max_gyro_bias_rad_s || ba>l.max_accel_bias_m_s2)
++        return fail("health: implausible IMU bias",true);
++    if(!std::isfinite(d.pose_step_dt_s)||d.pose_step_dt_s<=0||d.pose_step_dt_s>0.25)
++        return fail("health: invalid pose interval");
++    if(!std::isfinite(d.pose_step_m)||d.pose_step_m>l.pose_step_margin_m+l.max_pose_speed_m_s*d.pose_step_dt_s)
++        return fail(d.map_updated?"health: pose discontinuity across backend map update":
++                                 "health: implausible pose step",true);
++    if(d.output_pose_baseline &&
++       (!std::isfinite(d.output_pose_step_m)||!std::isfinite(d.output_pose_step_dt_s)||
++        d.output_pose_step_dt_s<=0 || d.output_pose_step_dt_s>0.25 ||
++        d.output_pose_step_m>l.pose_step_margin_m+l.max_pose_speed_m_s*d.output_pose_step_dt_s))
++        return fail(d.map_updated?"health: published pose discontinuity across backend map update":
++                                 "health: implausible published pose step",true);
++    if(d.visual_inliers<l.min_visual_inliers||d.visual_cells<l.min_visual_cells)
++        return fail("health: weak independent visual support");
++    // Finite pixel RMS values remain diagnostic only. Do not interrupt tracking
++    // solely because a visual/fused reprojection RMS exceeds a fixed pixel limit.
++    if(!std::isfinite(d.visual_rms_px)||!std::isfinite(d.fused_rms_px))
++        return fail("health: nonfinite reprojection residual");
++    if(!std::isfinite(d.visual_translation_error_m)||!std::isfinite(d.visual_rotation_error_rad)||
++       d.visual_translation_error_m>l.max_visual_translation_error_m ||
++       d.visual_rotation_error_rad>l.max_visual_rotation_error_rad)
++        return fail("health: visual/inertial pose disagreement",true);
++    if(d.stationary_candidate && std::isfinite(d.stationary_duration_s) &&
++       d.stationary_duration_s>=l.stationary_min_duration_s &&
++       (speed>l.stationary_max_speed_m_s ||
++        (std::isfinite(d.stationary_displacement_m)&&d.stationary_displacement_m>l.stationary_max_displacement_m)))
++        return fail("health: static image/IMU evidence conflicts with estimated motion",true);
++    d.accepted=true;d.reason="health checks passed";return true;
++}
++}
 --- a/src/Viewer.cc
 +++ b/src/Viewer.cc
 @@ -1,3 +1,4 @@
@@ -5349,6 +8153,26 @@
  /**
  * This file is part of ORB-SLAM3
  *
+@@ -27,7 +28,7 @@
+ 
+ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer, Tracking *pTracking, const string &strSettingPath, Settings* settings):
+     both(false), mpSystem(pSystem), mpFrameDrawer(pFrameDrawer),mpMapDrawer(pMapDrawer), mpTracker(pTracking),
+-    mbFinishRequested(false), mbFinished(true), mbStopped(true), mbStopRequested(false)
++    mbFinishRequested(false), mbFinished(false), mbStopped(true), mbStopRequested(false)
+ {
+     if(settings){
+         newParameterLoader(settings);
+@@ -161,8 +162,8 @@
+ 
+ void Viewer::Run()
+ {
+-    mbFinished = false;
+-    mbStopped = false;
++    // mbFinished starts false; completion is published under mMutexFinish.
++    Release();
+ 
+     pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768);
+ 
 @@ -211,11 +212,6 @@
      bool bStepByStep = false;
      bool bCameraView = true;
@@ -5361,3 +8185,21 @@
      float trackedImageScale = mpTracker->GetImageScale();
  
      cout << "Starting the Viewer" << endl;
+@@ -359,13 +355,11 @@
+             if(bLocalizationMode)
+                 mpSystem->DeactivateLocalizationMode();
+ 
+-            // Stop all threads
+-            mpSystem->Shutdown();
+-
+-            // Save camera trajectory
+-            mpSystem->SaveTrajectoryEuRoC("CameraTrajectory.txt");
+-            mpSystem->SaveKeyFrameTrajectoryEuRoC("KeyFrameTrajectory.txt");
++            // The input thread owns shutdown/serialization. Writing an Atlas
++            // here races adapters that exit as soon as isShutDown becomes true.
++            mpSystem->RequestShutdown();
+             menuStop = false;
++            break;
+         }
+ 
+         if(Stop())

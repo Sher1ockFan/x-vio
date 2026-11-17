@@ -27,6 +27,7 @@ CCACHE_DIR=/ccache ccache g++-11 -std=c++17 -O2 -march=armv8-a -include unistd.h
     '-Wl,-rpath,$ORIGIN/../lib' "-Wl,-rpath-link,$cv" "-Wl,-rpath-link,$pkg/lib" \
     -lORB_SLAM3 -lpangolin -lopencv_core -lOpenGL -lGLX -lGLU -lGLEW -lEGL -lX11 -pthread
 ln -s stock_viewer "$pkg/bin/orb_live_viewer"
+ln -s stock_viewer "$pkg/bin/orb_live_runner"
 camera_flags=()
 if [[ ${ORB_STOCK_HUB_CAPTURE:-0} == 1 ]]; then
     camera_flags+=(-DORB_HUB_CAPTURE)
@@ -35,7 +36,7 @@ gcc-11 -O3 -march=armv8-a "${camera_flags[@]}" "$input/orb_replay/camera_live.c"
 gcc-11 -O3 -march=armv8-a "${camera_flags[@]}" -DORB_CAMERA_SEQUENCE "$input/orb_replay/camera_live.c" -o "$pkg/bin/camera_umi"
 
 install -m 755 "$input/start.sh" "$input/check.sh" "$pkg/"
-install -m 644 "$input/playback.py" "$input/live_console.py" "$input/performance.py" "$input/README.md" "$input/viewer.cc" "$pkg/"
+install -m 644 "$input/playback.py" "$input/live_console.py" "$input/map_session.py" "$input/performance.py" "$input/status.py" "$input/README.md" "$input/viewer.cc" "$pkg/"
 install -m 644 "$input/orb_replay/"{live.py,umi.py,umi_quality.py} "$pkg/tools/orb_replay/"
 install -m 644 "$input/cam_imu_motion/"{imu.py,timing_core.py} "$pkg/tools/cam_imu_motion/"
 install -m 644 "$input/params/"{orb_trial.yaml,timing.json} "$pkg/params/"

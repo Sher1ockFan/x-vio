@@ -1,0 +1,169 @@
+BRIDGE_TIMING_ARTIFACTS=/tmp/vio-bridge-timing-royi3l6h
+Loading ORB vocabulary; progress in /tmp/vio-bridge-timing-royi3l6h/session/orb.log
+Estimating the IMU timer from 10 s of fresh serial data.
+LIVE: move the rig with both translation and rotation in a textured scene.
+Live 0.0s, sent 1 frames, superseded 0.
+Finishing the current frame and finalizing the session.
+Input closed; waiting for ORB to finish writing the session.
+Trial report: /tmp/vio-bridge-timing-royi3l6h/session/live.json
+live.json:
+{
+  "camera_shift_ns": 16881057,
+  "duration_requested_s": 0,
+  "duration_mode": "until_stopped",
+  "camera_mode": "full",
+  "input_image_size": [
+    1920,
+    1440
+  ],
+  "status": "STREAM_COMPLETED",
+  "streams": {
+    "frames_read": 122,
+    "frames_superseded": 8,
+    "frames_sent": 113,
+    "imu_read": 7072,
+    "imu_sent": 2002,
+    "max_frame_interval_s": 0.068308751,
+    "max_clock_median_ms": 0.066279,
+    "max_camera_anchors": 0,
+    "catchup_frames": 0,
+    "max_imu_queue": 543,
+    "clock_refits": 4,
+    "max_packet_write_s": 0.038293083001917694
+  },
+  "viewer": false,
+  "performance_logging": true,
+  "first_frame_ns": 47994406443859,
+  "last_frame_ns": 47998406928736,
+  "stop_signal": 2,
+  "orb_exit_code": 0,
+  "imu_clock_fit": {
+    "device_reference_us": 739688014,
+    "host_reference_raw_ns": 47984328732964,
+    "host_relative_intercept_ns": -12240.44319999218,
+    "host_ns_per_device_ns": 0.9999999638,
+    "apparent_rate_difference_ppm_over_trial": -0.036199999997599264,
+    "receipt_residual_ms": {
+      "n": 5001,
+      "min": -0.3409702867999077,
+      "p05": -0.16014780680084229,
+      "median": 0.0,
+      "p95": 0.03166724600028992,
+      "max": 6.796561461198807
+    },
+    "method": "Centered relative times. Median of secant slopes between 32 or fewer block medians separated by >=1/4 span, then median intercept. Residuals include serial/USB/read scheduling latency."
+  },
+  "last_imu_clock_update": {
+    "mapping": {
+      "device_reference_us": 753686014,
+      "host_reference_raw_ns": 47998326716781,
+      "host_relative_intercept_ns": 0,
+      "host_ns_per_device_ns": 0.9999873354000001
+    },
+    "target_phase_error_ns": -64725,
+    "window_anchors": 14,
+    "window_device_us": 13000000
+  }
+}
+
+orb.log:
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/vio-bridge-timing-royi3l6h/mono_imu_vio/params/orb_trial.yaml
+	-Loaded camera 1
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 448.291 447.867 961.057 717.512 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 1920 , 1440 ]
+	-Current image size: [ 960 , 720 ]
+	-Camera 1 parameters after resize: [  224.146 223.934 480.529 358.756 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.000116355
+	-Accelerometer noise: 0.000666667
+	-Gyro walk: 1e-06
+	-Accelerometer walk: 2e-05
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Initialization of Atlas from scratch 
+Creation of new map with id: 0
+Creation of new map with last KF id: 0
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+ORB_LIVE_READY
+Empty IMU measurements vector!!!
+STOCK frames=1 tracking_state=1
+STOCK frames=30 tracking_state=1
+STOCK frames=60 tracking_state=1
+STOCK frames=90 tracking_state=1
+STOCK_STREAM_COMPLETE frames=113
+Shutdown
+Local Mapping STOP
+
+camera.log:
+SIMULATED_CAMERA: static random texture; event=RAW now-25ms; no V4L2, exposure, DQBUF, or C gray extraction measured
+
+RECOVERY_TIMING_CONTRACT_PASS rows=113
+PER_FRAME_DIAGNOSTICS_CONTRACT_PASS columns=62 rows=113
+{
+  "result": "SIMULATED_SENSOR_HEADLESS_TIMING_SMOKE_OK",
+  "headless": true,
+  "stop_signal_test": true,
+  "artifact_directory": "/tmp/vio-bridge-timing-royi3l6h",
+  "session": "/tmp/vio-bridge-timing-royi3l6h/session",
+  "csv_rows": {
+    "camera_timing": 122,
+    "imu_timing": 7066,
+    "camera_read": 122,
+    "input_timing": 113,
+    "tracking_timing": 113
+  },
+  "native_x11_windows": [],
+  "full_matches": 113,
+  "tracking_state_counts": {
+    "1": 113
+  },
+  "initialized_tracking_rows": 0,
+  "core_sha256": "3a1ab16dc673807046f7be6b825b6999ad0d10a4532a73e9d740460b81e1e496",
+  "hardware_performance_validated": false,
+  "camera_csv_is_fixture": true,
+  "fixture": {
+    "samples_written": 7322,
+    "max_writer_lateness_ms": 7.029297,
+    "writer_errors": [],
+    "serial_open_raw_ns": 47983828270088,
+    "serial_close_raw_ns": 47998470727345,
+    "run_wall_seconds": 16.553356340999017
+  },
+  "analyzer_status": "MEASURED_WITH_WARNINGS",
+  "analyzer_warnings": [
+    "没有 tracking_state=2 且 imu_initialized_proxy=1 的帧；初始化后成功跟踪的频率和耗时不可评估。"
+  ]
+}

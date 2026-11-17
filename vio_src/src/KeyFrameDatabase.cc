@@ -23,6 +23,8 @@
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 
 #include<mutex>
+#include <algorithm>
+#include <map>
 
 using namespace std;
 
@@ -842,6 +844,41 @@ vector<KeyFrame*> KeyFrameDatabase::DetectRelocalizationCandidates(Frame *F, Map
     }
 
     return vpRelocCandidates;
+}
+
+std::vector<KeyFrame*> KeyFrameDatabase::DetectMapReuseCandidates(Frame* frame, Map* map, size_t limit)
+{
+    std::map<KeyFrame*,int> words;
+    {
+        std::unique_lock<std::mutex> lock(mMutex);
+        for(const auto& word:frame->mBowVec)
+            for(KeyFrame* kf:mvInvertedFile[word.first])
+                if(kf && kf->GetMap()==map && !kf->isBad())++words[kf];
+    }
+    int maximum=0;
+    for(const auto& item:words)maximum=std::max(maximum,item.second);
+    std::map<KeyFrame*,float> scores;
+    for(const auto& item:words)
+        if(item.second>0.8f*maximum)scores[item.first]=mpVoc->score(frame->mBowVec,item.first->mBowVec);
+    std::vector<std::pair<float,KeyFrame*>> ranked;
+    for(const auto& item:scores){
+        float accumulated=item.second;
+        for(KeyFrame* other:item.first->GetBestCovisibilityKeyFrames(10)){
+            auto found=scores.find(other);
+            if(found!=scores.end())accumulated+=found->second;
+        }
+        ranked.emplace_back(accumulated,item.first);
+    }
+    std::sort(ranked.begin(),ranked.end(),[](const std::pair<float,KeyFrame*>& a,
+                                           const std::pair<float,KeyFrame*>& b){
+        return a.first!=b.first?a.first>b.first:a.second->mnId<b.second->mnId;
+    });
+    std::vector<KeyFrame*> result;
+    for(const auto& item:ranked){
+        if(result.size()>=limit || item.first<0.75f*ranked.front().first)break;
+        result.push_back(item.second);
+    }
+    return result;
 }
 
 void KeyFrameDatabase::SetORBVocabulary(ORBVocabulary* pORBVoc)

@@ -124,7 +124,10 @@ public:
     bool isImuInitialized();
 
     // Function for garantee the correction of serialization of this object
-    void PreSave();
+    // Persistence snapshots are taken only after all mutation workers stop.
+    // matureOnly filters the serialized view without deleting live maps.
+    void PreSave(bool matureOnly = false);
+    static bool IsMatureMap(Map* map);
     void PostLoad();
 
     map<long unsigned int, KeyFrame*> GetAtlasKeyframes();

@@ -77,6 +77,8 @@ public:
 
     // Relocalization
     std::vector<KeyFrame*> DetectRelocalizationCandidates(Frame* F, Map* pMap);
+    // Query-local scores: safe to search several maps for the same frame ID.
+    std::vector<KeyFrame*> DetectMapReuseCandidates(Frame* F, Map* pMap, size_t limit=5);
 
     void PreSave();
     void PostLoad(map<long unsigned int, KeyFrame*> mpKFid);

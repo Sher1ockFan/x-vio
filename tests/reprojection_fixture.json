@@ -1,0 +1,272 @@
+{
+  "scope": "Seven de-identified logged health-gate inputs. This tests gate behavior, not image/IMU replay or trajectory accuracy.",
+  "source_log_sha256": "1a40befa0cb334e4eafa4b834e056ef5fcf808f1844940a45562c9060c669a91",
+  "rows": [
+    {
+      "source_frame": 245,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": false,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 185,
+        "visual_cells": 9,
+        "visual_rms_px": 2.76860303537,
+        "fused_rms_px": 8.56514778159,
+        "visual_translation_error_m": 0.0223493650556,
+        "visual_rotation_error_rad": 0.0106170820072,
+        "pose_step_m": 0.0227209869772,
+        "pose_step_dt_s": 0.0666650000003,
+        "output_pose_step_m": 0.0227209862897,
+        "output_pose_step_dt_s": 0.0666650000003,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          0.282883733511,
+          -0.0378371328115,
+          -0.139770433307
+        ],
+        "gyro_bias": [
+          -0.000169997554622,
+          -0.00110000069253,
+          0.000199952410185
+        ],
+        "accel_bias": [
+          -0.0479707084596,
+          -0.00892617274076,
+          0.00282944715582
+        ]
+      }
+    },
+    {
+      "source_frame": 1529,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": true,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 165,
+        "visual_cells": 9,
+        "visual_rms_px": 2.666059636,
+        "fused_rms_px": 8.81731360064,
+        "visual_translation_error_m": 0.0192868709564,
+        "visual_rotation_error_rad": 0.00848936662078,
+        "pose_step_m": 0.0313342325389,
+        "pose_step_dt_s": 0.0666650160001,
+        "output_pose_step_m": 0.0313342271877,
+        "output_pose_step_dt_s": 0.0666650160001,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          -0.324982583523,
+          -0.0189252626151,
+          -0.0311406217515
+        ],
+        "gyro_bias": [
+          -4.15219665229e-06,
+          0.000118894022307,
+          0.000773331266828
+        ],
+        "accel_bias": [
+          -0.0200497321784,
+          -0.00288851023652,
+          -0.000405261700507
+        ]
+      }
+    },
+    {
+      "source_frame": 1624,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": false,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 183,
+        "visual_cells": 12,
+        "visual_rms_px": 2.10287871702,
+        "fused_rms_px": 8.89717403162,
+        "visual_translation_error_m": 0.0262000802904,
+        "visual_rotation_error_rad": 0.00817836076021,
+        "pose_step_m": 0.0178281851113,
+        "pose_step_dt_s": 0.0666639520005,
+        "output_pose_step_m": 0.0178281884109,
+        "output_pose_step_dt_s": 0.0666639520005,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          0.258640289307,
+          -0.00550832832232,
+          -0.00876252446324
+        ],
+        "gyro_bias": [
+          -0.000451831787359,
+          -0.0015957421856,
+          0.00481143360958
+        ],
+        "accel_bias": [
+          0.000340077967849,
+          0.000335901539074,
+          -0.00802551675588
+        ]
+      }
+    },
+    {
+      "source_frame": 1787,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": true,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 237,
+        "visual_cells": 10,
+        "visual_rms_px": 2.16839871892,
+        "fused_rms_px": 8.62733041869,
+        "visual_translation_error_m": 0.017170548439,
+        "visual_rotation_error_rad": 0.00508562196046,
+        "pose_step_m": 0.0229236651212,
+        "pose_step_dt_s": 0.0666639359988,
+        "output_pose_step_m": 0.0229236750491,
+        "output_pose_step_dt_s": 0.0666639359988,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          -0.228268355131,
+          0.116783574224,
+          -0.0726623609662
+        ],
+        "gyro_bias": [
+          0.000104233236925,
+          0.000154719979037,
+          0.00100954994559
+        ],
+        "accel_bias": [
+          0.00942432694137,
+          -0.0245150532573,
+          0.00159715500195
+        ]
+      }
+    },
+    {
+      "source_frame": 2001,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": false,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 94,
+        "visual_cells": 8,
+        "visual_rms_px": 3.2460208214,
+        "fused_rms_px": 8.16365744883,
+        "visual_translation_error_m": 0.0165823902935,
+        "visual_rotation_error_rad": 0.00936108082533,
+        "pose_step_m": 0.0339205749333,
+        "pose_step_dt_s": 0.0333329839996,
+        "output_pose_step_m": 0.033920574745,
+        "output_pose_step_dt_s": 0.0333329839996,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          -0.863974690437,
+          -0.319939047098,
+          0.169936075807
+        ],
+        "gyro_bias": [
+          0.000221118330956,
+          0.000279677420622,
+          0.000569817377254
+        ],
+        "accel_bias": [
+          -0.00419028708711,
+          -0.00932050589472,
+          -0.000889559509233
+        ]
+      }
+    },
+    {
+      "source_frame": 2139,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": true,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 149,
+        "visual_cells": 12,
+        "visual_rms_px": 3.37745019957,
+        "fused_rms_px": 8.13531908649,
+        "visual_translation_error_m": 0.0140221407637,
+        "visual_rotation_error_rad": 0.0142277246341,
+        "pose_step_m": 0.0161947216839,
+        "pose_step_dt_s": 0.0666650479998,
+        "output_pose_step_m": 0.0161947274895,
+        "output_pose_step_dt_s": 0.0666650479998,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          -0.583700299263,
+          0.111846387386,
+          -0.10058093071
+        ],
+        "gyro_bias": [
+          -0.0025444352068,
+          -0.00549024296924,
+          0.000459808972664
+        ],
+        "accel_bias": [
+          0.00702935643494,
+          -0.0631020739675,
+          0.0276654660702
+        ]
+      }
+    },
+    {
+      "source_frame": 2224,
+      "finite_pose": true,
+      "old_reason": "health: excessive/nonfinite reprojection residual",
+      "diagnostics": {
+        "dynamics_available": true,
+        "map_updated": true,
+        "output_pose_baseline": true,
+        "stationary_candidate": false,
+        "visual_inliers": 204,
+        "visual_cells": 10,
+        "visual_rms_px": 2.42833483654,
+        "fused_rms_px": 9.50050506614,
+        "visual_translation_error_m": 0.0270671732724,
+        "visual_rotation_error_rad": 0.00728324567899,
+        "pose_step_m": 0.0270135719329,
+        "pose_step_dt_s": 0.0666650000003,
+        "output_pose_step_m": 0.0270135690892,
+        "output_pose_step_dt_s": 0.0666650000003,
+        "stationary_duration_s": null,
+        "stationary_displacement_m": null,
+        "velocity_w": [
+          -0.0844597220421,
+          0.111875981092,
+          -0.176510974765
+        ],
+        "gyro_bias": [
+          -0.00311881187372,
+          -0.00645754951984,
+          0.00225534313358
+        ],
+        "accel_bias": [
+          -0.0196203403175,
+          0.0109349461272,
+          -0.0219107531011
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+frame=245 accepted=1 reason=health checks passed
+frame=1529 accepted=1 reason=health checks passed
+frame=1624 accepted=1 reason=health checks passed
+frame=1787 accepted=1 reason=health checks passed
+frame=2001 accepted=1 reason=health checks passed
+frame=2139 accepted=1 reason=health checks passed
+frame=2224 accepted=1 reason=health checks passed
+{
+  "result": "REPROJECTION_LOGGED_GATE_PASS",
+  "expected_policy": "diagnostic",
+  "cases": 7,
+  "backend": "production_source",
+  "core_sha256": null,
+  "raw_image_imu_replay": false,
+  "hardware_accuracy_validated": false
+}

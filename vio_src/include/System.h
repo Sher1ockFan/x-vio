@@ -40,6 +40,7 @@
 #include "Viewer.h"
 #include "ImuTypes.h"
 #include "Settings.h"
+#include "MapReuseStatus.h"
 
 
 namespace ORB_SLAM3
@@ -123,6 +124,9 @@ public:
     // It waits until all threads have finished.
     // This function must be called before saving the trajectory.
     void Shutdown();
+    // Viewer requests shutdown; the frame/adapter thread performs the barrier
+    // and persistence so process exit cannot race a GUI-thread file write.
+    void RequestShutdown();
     bool isShutDown();
 
     // Save camera trajectory in the TUM RGB-D dataset format.
@@ -159,6 +163,7 @@ public:
     // Information from most recent processed frame
     // You can call this right after TrackMonocular.
     int GetTrackingState();
+    MapReuseStatus GetMapReuseStatus();
     std::vector<MapPoint*> GetTrackedMapPoints();
     std::vector<cv::KeyPoint> GetTrackedKeyPointsUn();
 
@@ -180,6 +185,7 @@ private:
 
     void SaveAtlas(int type);
     bool LoadAtlas(int type);
+    void WriteMapSaveStatus(const string& status, const string& reason, Map* selected = nullptr);
 
     string CalculateCheckSum(string filename, int type);
 
@@ -232,18 +238,25 @@ private:
 
     // Shutdown flag
     bool mbShutDown;
+    bool mbShutdownRequested = false;
+    std::timed_mutex mMutexTrack;
 
     // Tracking state
     int mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;
+    MapReuseStatus mMapReuseStatus;
 
     //
     string mStrLoadAtlasFromFile;
     string mStrSaveAtlasToFile;
 
     string mStrVocabularyFilePath;
+    string mCalibrationFingerprint;
+    bool mMapReuseEnabled = false;
+    bool mExactAtlasLoadPath = false;
+    bool mExactAtlasSavePath = false;
 
     Settings* settings_;
 };

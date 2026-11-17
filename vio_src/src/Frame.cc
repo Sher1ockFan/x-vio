@@ -122,10 +122,11 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extra
 
 
     N = mvKeys.size();
-    if(mvKeys.empty())
-        return;
-
-    UndistortKeyPoints();
+    // A fully occluded frame still needs a valid IMU mutex, dimensions and
+    // mono-only sentinel fields so tracking can report loss and recover safely.
+    // Only point undistortion is skipped when no features were detected.
+    if(!mvKeys.empty())
+        UndistortKeyPoints();
 
     // Set no stereo information
     mvuRight = vector<float>(N,-1);

@@ -11,3 +11,11 @@ structures used by keyframes, optimization and serialization remain.
 See the project root README and `provenance/` for build instructions and change
 records. The upstream authors' copyright and GPLv3 license remain in `LICENSE`
 and the source headers. This fork is not the unmodified upstream release.
+
+The mono_imu_vio map-reuse extension adds mature-map candidate search,
+multi-frame geometric verification, and fresh visual/IMU velocity and bias
+recovery. Only after these checks does a recovered segment become inertially
+ready. Saved Atlas files use a guarded versioned format with vocabulary and
+calibration checks. Worker shutdown is synchronized before atomic persistence.
+See `Tracking.cc`, `ImuRecovery.cc`, `System.cc`, `AtlasPersistence.h`, and the
+Jetson README for the state machine and persistence policy.

@@ -1,51 +1,101 @@
 {
-  "project": "mono_imu_vio",
-  "date": "2026-11-12",
   "status": "SOFTWARE_CHECKS_PASS",
+  "manifest_files_verified": 308,
+  "core_source_files": 270,
+  "shipped_core_source_files": 263,
+  "calibration_files_unchanged": true,
+  "elf_aarch64": [
+    "bin/camera_umi",
+    "bin/stock_viewer",
+    "bin/mono_inertial_euroc",
+    "bin/camera_live",
+    "lib/libpangolin.so",
+    "lib/libg2o.so",
+    "lib/libDBoW2.so",
+    "lib/libORB_SLAM3.so"
+  ],
+  "runtime_symlinks": {
+    "bin/orb_live_viewer": "stock_viewer",
+    "bin/orb_live_runner": "stock_viewer"
+  },
+  "packaged_scripts_docs_sources_match": true,
+  "atlas_format": "MONO_IMU_ATLAS_2",
+  "preserved_csv_schemas": {
+    "poses.csv": 16,
+    "recovery_events.csv": 10,
+    "state_diagnostics.csv": 62,
+    "tracking_timing.csv": 10
+  },
+  "recovery_timing_columns": 9,
+  "core_sha256": "9626c765009846bac161bc210531ea55426fcb21c148b033aa59dae932428479",
+  "source_manifest_sha256": "ef9292aabc7537e79d7f8f1cc4a52418a5a2fb78d16fd4e3ee123014f54b5590",
+  "archive_sha256": "8b85d97fa9fc11a80787856dd02138a37875811aea00d5961fe940c1f172ea29",
+  "archive_bytes": 58024460,
+  "changed_files": [
+    "ORB_SLAM3/include/TrackingHealth.h",
+    "ORB_SLAM3/src/TrackingHealth.cc",
+    "README.md",
+    "jetson/README.md",
+    "provenance/README.md",
+    "provenance/core_changes.patch",
+    "provenance/source_changes.json",
+    "source.sha256",
+    "tests/README.md",
+    "tests/check_reprojection_gate.py",
+    "tests/reprojection_fixture.json",
+    "tests/tracking_health_test.cc"
+  ],
+  "project": "mono_imu_vio",
+  "date": "2026-11-13",
   "modified_orb_slam3_core": true,
   "only_supported_sensor": "IMU_MONOCULAR",
   "base_commit": "4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4",
-  "archive": "mono_imu_vio.tar.gz",
-  "archive_sha256": "4c18916b4f65bd7a523f635d33157f3950a411797850494864c8a463a7e2b451",
-  "archive_bytes": 57767814,
-  "core_sha256": "7c932ebefc23d0b66ba118e6268625b880ad9e9480ee5091a3cc605e87fb44ff",
-  "source_manifest_sha256": "7b94be26af5e8bc5ff80ca2616d65c08e74fb9d14cdb0610e6c27da3cad157dc",
-  "target": "Linux aarch64 ARMv8-A; Ubuntu22.04; Jetson R36.5.0; OpenCV4.8.0 .so.408",
+  "docker_container": "orin-r365-dev",
+  "docker_image": "orin-jp6-cpu:22.04",
+  "target": "Linux ARMv8-A aarch64, Ubuntu22.04, Jetson R36.5.0, NVIDIA OpenCV4.8 .so.408",
+  "change": "Remove finite visual/fused pixel RMS magnitude rejection; keep residual logging, nonfinite rejection and all other gates.",
+  "removed_limit": "visual_rms_px/fused_rms_px > 8 pixels",
+  "default_reference": "maps/workspace_v2.osa",
   "checks": {
     "source_contract_cases": 7,
-    "quiet_console_cases": 9,
-    "keyframe_policy_equivalence_cases": 100000,
-    "byte_exact_gray_frames": 64,
-    "invalid_gray_lengths": 8,
-    "camera_protocol_and_timing_cases": 8,
-    "invalid_mode_constructor_rejections": 14,
-    "live_simulation_processed_frames": 109,
-    "live_timing_fully_matched_frames": 109,
-    "replay_processed_frames": 60,
-    "exported_images": 59,
-    "native_viewer_windows": "PASS",
-    "arm64_relocatable_dynamic_links": "PASS",
-    "package_manifest_files_verified": 299,
-    "core_source_files": 264,
-    "shipped_core_source_files": 257,
-    "calibration_files_unchanged": "PASS",
-    "neon_extractor_unchanged_from_name_test": "PASS"
+    "finite_large_RMS_does_not_independently_reject": "PASS",
+    "nonfinite_residual_and_other_health_gates_preserved": "PASS",
+    "source_logged_gate_inputs": 7,
+    "native_previous_package_rejects_same_logged_inputs": 7,
+    "native_new_package_accepts_same_logged_inputs": 7,
+    "native_atlas_load_save_recovery_occlusion_timeout_retry": "PASS",
+    "native_continuity_global_fallback_and_window_reset": "PASS",
+    "native_static_bias_step_and_map_jump": "PASS",
+    "headless_no_DISPLAY_no_Xvfb_SIGINT_and_timing": "PASS",
+    "python_syntax_files": 31,
+    "shell_syntax_files": 7,
+    "startup_status_timing_sensor_binaries_and_parameters_byte_identical": true
   },
-  "preserved_projects": {
-    "name_test": {
-      "unchanged": true,
-      "owned_files_checked": 36
-    },
-    "vio_nx": {
-      "unchanged": true,
-      "owned_files_checked": 35
-    }
+  "package_diff": {
+    "changed": [
+      "./README.md",
+      "./lib/libORB_SLAM3.so",
+      "./provenance/README.md",
+      "./provenance/core_changes.patch",
+      "./provenance/source_changes.json",
+      "./source.sha256",
+      "./source/ORB_SLAM3/include/TrackingHealth.h",
+      "./source/ORB_SLAM3/src/TrackingHealth.cc"
+    ],
+    "unchanged_startup_status_timing_sensors_parameters": true
   },
-  "hardware_performance_validated": false,
   "hardware_accuracy_validated": false,
+  "hardware_performance_validated": false,
+  "raw_image_imu_replay_performed": false,
+  "deployed_to_jetson": false,
+  "known_unfixed_issue": "The user-observed SIGSEGV (-11) during Shutdown is not fixed by this change. Synthetic lifecycle tests do not establish that the hardware-specific recorded failure is resolved.",
   "limitations": [
-    "Synthetic live/replay inputs contain no motion and do not initialize an inertial map.",
-    "Actual Jetson grayscale latency, sensor frequencies, tracking robustness and accuracy require hardware runs.",
-    "The inherited +16881057 ns time shift was calibrated on C; B physical timing remains to be independently validated."
-  ]
+    "Seven logged diagnostic records test the health decision only; no raw images/IMU were available to replay the full take.",
+    "Removing the RMS magnitude gate does not guarantee no tracking loss or accurate poses; native matching and other health/recovery gates still apply.",
+    "TrackingHealthLimits layout changed. Deploy the complete rebuilt package; do not mix independently compiled old header users with the new shared library.",
+    "Calibration and inherited +16881057 ns time shift are unchanged; B-channel physical timing remains unverified."
+  ],
+  "qa_logs": "qa/rms_gate/",
+  "rollback": "previous/before_rms_gate_removal/",
+  "previous_archive_sha256": "d38dee9d2056fef09c2d7c5ba945b9bf82438ccff830ff8d286d82f58fe1f818"
 }

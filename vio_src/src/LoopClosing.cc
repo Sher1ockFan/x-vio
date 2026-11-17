@@ -34,12 +34,13 @@ namespace ORB_SLAM3
 {
 
 LoopClosing::LoopClosing(Atlas *pAtlas, KeyFrameDatabase *pDB, ORBVocabulary *pVoc, const bool bFixScale, const bool bActiveLC):
-    mbResetRequested(false), mbResetActiveMapRequested(false), mbFinishRequested(false), mbFinished(true), mpAtlas(pAtlas),
+    mbResetRequested(false), mbResetActiveMapRequested(false), mbFinishRequested(false), mbFinished(false), mpAtlas(pAtlas),
     mpKeyFrameDB(pDB), mpORBVocabulary(pVoc), mpMatchedKF(NULL), mLastLoopKFid(0), mbRunningGBA(false), mbFinishedGBA(true),
     mbStopGBA(false), mpThreadGBA(NULL), mbFixScale(bFixScale), mnFullBAIdx(0), mnLoopNumCoincidences(0), mnMergeNumCoincidences(0),
     mbLoopDetected(false), mbMergeDetected(false), mnLoopNumNotFound(0), mnMergeNumNotFound(0), mbActiveLC(bActiveLC)
 {
     mnCovisibilityConsistencyTh = 3;
+    mpCurrentKF = nullptr;
     mpLastCurrentKF = static_cast<KeyFrame*>(NULL);
 
 #ifdef REGISTER_TIMES
@@ -90,10 +91,35 @@ void LoopClosing::SetLocalMapper(LocalMapping *pLocalMapper)
 
 void LoopClosing::Run()
 {
-    mbFinished =false;
-
+    // mbFinished starts false; all completion writes use mMutexFinish.
     while(1)
     {
+        if (CheckFinish()) break;
+        bool pauseRequested;
+        {
+            unique_lock<mutex> lock(mMutexPause);
+            pauseRequested = mbPauseRequested;
+        }
+        if (pauseRequested)
+        {
+            StopAndJoinGBA();
+            {
+                unique_lock<mutex> lock(mMutexPause);
+                mbPaused = mbPauseRequested;
+            }
+            while (!CheckFinish())
+            {
+                // A reset requested by Tracking must not deadlock while the
+                // loop worker is paused for recovery.
+                ResetIfRequested();
+                {
+                    unique_lock<mutex> lock(mMutexPause);
+                    if (!mbPauseRequested) { mbPaused = false; break; }
+                }
+                usleep(5000);
+            }
+            if (CheckFinish()) break;
+        }
 
         //NEW LOOP AND MERGE DETECTION ALGORITHM
         //----------------------------
@@ -303,6 +329,7 @@ void LoopClosing::Run()
         usleep(5000);
     }
 
+    StopAndJoinGBA();
     SetFinish();
 }
 
@@ -321,10 +348,6 @@ bool LoopClosing::CheckNewKeyFrames()
 
 bool LoopClosing::NewDetectCommonRegions()
 {
-    // To deactivate placerecognition. No loopclosing nor merging will be performed
-    if(!mbActiveLC)
-        return false;
-
     {
         unique_lock<mutex> lock(mMutexLoopQueue);
         mpCurrentKF = mlpLoopKeyFrameQueue.front();
@@ -334,6 +357,17 @@ bool LoopClosing::NewDetectCommonRegions()
         mpCurrentKF->mbCurrentPlaceRecognition = true;
 
         mpLastMap = mpCurrentKF->GetMap();
+    }
+
+    // Disabling loop/merge optimization must still consume the queue and index
+    // keyframes for relocalization. An early return before the dequeue left
+    // mpCurrentKF uninitialized and Run dereferenced it on the next iteration.
+    if(!mbActiveLC)
+    {
+        mpKeyFrameDB->add(mpCurrentKF);
+        mpCurrentKF->mbCurrentPlaceRecognition = false;
+        mpCurrentKF->SetErase();
+        return false;
     }
 
     if(mpLastMap->IsInertial() && !mpLastMap->GetIniertialBA2())
@@ -960,27 +994,13 @@ void LoopClosing::CorrectLoop()
 {
     //cout << "Loop detected!" << endl;
 
-    // Send a stop signal to Local Mapping
-    // Avoid new keyframes are inserted while correcting the loop
-    mpLocalMapper->RequestStop();
-    mpLocalMapper->EmptyQueue(); // Proccess keyframes in the queue
-
     // If a Global Bundle Adjustment is running, abort it
-    if(isRunningGBA())
-    {
-        cout << "Stoping Global Bundle Adjustment...";
-        unique_lock<mutex> lock(mMutexGBA);
-        mbStopGBA = true;
+    StopAndJoinGBA();
 
-        mnFullBAIdx++;
-
-        if(mpThreadGBA)
-        {
-            mpThreadGBA->detach();
-            delete mpThreadGBA;
-        }
-        cout << "  Done!!" << endl;
-    }
+    // A completing GBA may release Local Mapping; request its stop only after
+    // joining the GBA, otherwise that release can erase our stop request.
+    mpLocalMapper->RequestStop();
+    mpLocalMapper->EmptyQueue();
 
     // Wait until Local Mapping has effectively stopped
     while(!mpLocalMapper->isStopped())
@@ -1188,6 +1208,7 @@ void LoopClosing::CorrectLoop()
     // Launch a new thread to perform Global Bundle Adjustment (Only if few keyframes, if not it would take too much time)
     if(!pLoopMap->isImuInitialized() || (pLoopMap->KeyFramesInMap()<200 && mpAtlas->CountMaps()==1))
     {
+        unique_lock<mutex> lock(mMutexGBA);
         mbRunningGBA = true;
         mbFinishedGBA = false;
         mbStopGBA = false;
@@ -1223,20 +1244,8 @@ void LoopClosing::MergeLocal2()
 
     //cout << "Check Full Bundle Adjustment" << endl;
     // If a Global Bundle Adjustment is running, abort it
-    if(isRunningGBA())
-    {
-        unique_lock<mutex> lock(mMutexGBA);
-        mbStopGBA = true;
-
-        mnFullBAIdx++;
-
-        if(mpThreadGBA)
-        {
-            mpThreadGBA->detach();
-            delete mpThreadGBA;
-        }
-        bRelaunchBA = true;
-    }
+    bRelaunchBA = isRunningGBA();
+    StopAndJoinGBA();
 
 
     //cout << "Request Stop Local Mapping" << endl;
@@ -1701,6 +1710,11 @@ void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoop
 #endif
 
     const bool bImuInit = pActiveMap->isImuInitialized();
+    unsigned long idx;
+    {
+        unique_lock<mutex> lock(mMutexGBA);
+        idx = mnFullBAIdx;
+    }
 
     if(!bImuInit)
         Optimizer::GlobalBundleAdjustemnt(pActiveMap,10,&mbStopGBA,nLoopKF,false);
@@ -1719,7 +1733,6 @@ void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoop
     }
 #endif
 
-    int idx =  mnFullBAIdx;
     // Optimizer::GlobalBundleAdjustemnt(mpMap,10,&mbStopGBA,nLoopKF,false);
 
     // Update all MapPoints and KeyFrames
@@ -1728,11 +1741,17 @@ void LoopClosing::RunGlobalBundleAdjustment(Map* pActiveMap, unsigned long nLoop
     // We need to propagate the correction through the spanning tree
     {
         unique_lock<mutex> lock(mMutexGBA);
-        if(idx!=mnFullBAIdx)
+        if(idx!=mnFullBAIdx) {
+            mbFinishedGBA = true;
+            mbRunningGBA = false;
             return;
+        }
 
-        if(!bImuInit && pActiveMap->isImuInitialized())
+        if(!bImuInit && pActiveMap->isImuInitialized()) {
+            mbFinishedGBA = true;
+            mbRunningGBA = false;
             return;
+        }
 
         if(!mbStopGBA)
         {
@@ -1937,6 +1956,46 @@ void LoopClosing::RequestFinish()
     unique_lock<mutex> lock(mMutexFinish);
     // cout << "LC: Finish requested" << endl;
     mbFinishRequested = true;
+}
+
+void LoopClosing::RequestPause()
+{
+    unique_lock<mutex> lock(mMutexPause);
+    mbPauseRequested = true;
+}
+
+bool LoopClosing::isPaused()
+{
+    unique_lock<mutex> lock(mMutexPause);
+    return mbPaused;
+}
+
+void LoopClosing::ReleasePause()
+{
+    unique_lock<mutex> lock(mMutexPause);
+    mbPauseRequested = false;
+    mbPaused = false;
+}
+
+void LoopClosing::StopAndJoinGBA()
+{
+    // Only the loop worker owns/replaces this thread pointer. Never join under
+    // mMutexGBA: the worker takes that mutex to finish its bookkeeping.
+    {
+        unique_lock<mutex> lock(mMutexGBA);
+        mbStopGBA = true;
+        ++mnFullBAIdx;
+    }
+    if (mpThreadGBA) {
+        if (mpThreadGBA->joinable()) mpThreadGBA->join();
+        delete mpThreadGBA;
+        mpThreadGBA = nullptr;
+    }
+    {
+        unique_lock<mutex> lock(mMutexGBA);
+        mbRunningGBA = false;
+        mbFinishedGBA = true;
+    }
 }
 
 bool LoopClosing::CheckFinish()

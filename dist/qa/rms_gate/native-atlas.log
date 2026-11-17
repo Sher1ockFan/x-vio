@@ -1,0 +1,1695 @@
+NATIVE_ATLAS_QA_DIRECTORY /tmp/mono-imu-atlas-r1ozg607
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:74: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                          ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<3, Eigen::Matrix<double, 3, 1> >’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_sba.h:40:35:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<6, g2o::SE3Quat>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:59:33:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<6, g2o::SE3Quat, g2o::VertexSE3Expmap, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:83:24:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:114:35:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:146:41:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<7, g2o::Sim3>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:48:35:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<7, g2o::Sim3, g2o::VertexSim3Expmap, g2o::VertexSim3Expmap>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:99:27:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSim3Expmap>’:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:130:36:   required from here
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Converter.h:26,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:34,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Frame.h:29,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/KeyFrame.h:28,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/MapPoint.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/FrameDrawer.h:24,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Viewer.h:23,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/Tracking.h:27,
+                 from /tmp/mono-imu-atlas-r1ozg607/mono_imu_vio/source/ORB_SLAM3/include/System.h:32,
+                 from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:3:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc: In function ‘std::string Md5(const string&)’:
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc:32:28: warning: ‘int MD5_Init(MD5_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   32 |     MD5_CTX state; MD5_Init(&state); char bytes[65536];
+      |                    ~~~~~~~~^~~~~~~~
+In file included from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:49:27: note: declared here
+   49 | OSSL_DEPRECATEDIN_3_0 int MD5_Init(MD5_CTX *c);
+      |                           ^~~~~~~~
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc:33:68: warning: ‘int MD5_Update(MD5_CTX*, const void*, size_t)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   33 |     while(in.read(bytes,sizeof(bytes)) || in.gcount()>0) MD5_Update(&state,bytes,in.gcount());
+      |                                                          ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:50:27: note: declared here
+   50 | OSSL_DEPRECATEDIN_3_0 int MD5_Update(MD5_CTX *c, const void *data, size_t len);
+      |                           ^~~~~~~~~~
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc:34:40: warning: ‘int MD5_Final(unsigned char*, MD5_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   34 |     unsigned char digest[16]; MD5_Final(digest,&state);
+      |                               ~~~~~~~~~^~~~~~~~~~~~~~~
+In file included from /tmp/mono-rms-qa/tests/atlas_persistence_test.cc:8:
+/usr/include/openssl/md5.h:51:27: note: declared here
+   51 | OSSL_DEPRECATEDIN_3_0 int MD5_Final(unsigned char *md, MD5_CTX *c);
+      |                           ^~~~~~~~~
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc: In function ‘void CrashTrace(int)’:
+/tmp/mono-rms-qa/tests/atlas_persistence_test.cc:134:10: warning: ignoring return value of ‘ssize_t write(int, const void*, size_t)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  134 |     write(STDERR_FILENO,message,sizeof(message)-1);
+      |     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ATLAS_ATOMIC_FAILURE_PRESERVES_OLD_PASS
+Creation of new map with id: 0
+Creation of new map with last KF id: 0
+First KF:0; Map init KF:0
+Creation of new map with id: 1
+Stored map with ID: 0
+Creation of new map with last KF id: 12
+ATLAS_FIXTURE_ROUNDTRIP_PASS points=1100
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/cycle.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/cycle.osa
+SYSTEM_PERSISTENCE_PASS loadsave
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/requested.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/requested.osa
+SYSTEM_PERSISTENCE_PASS requested
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/recovery.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/cycle.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+RECOVERY_FRAME 0 SEARCHING waiting for mapping/loop-closing safe boundary
+Local Mapping STOP
+RECOVERY_FRAME 10 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 20 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 30 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 40 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+RECOVERY_FRAME 50 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_FRAME 60 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 70 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 80 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.7875177605411559e-06 gyro_delta=9.901967316604127e-07 accel_delta=1.0818629212216112e-05 cost_before=0.025398090481758118 cost_after=2.2538317807629937e-06
+RECOVERY_FRAME 90 TRACKING fresh visual-inertial alignment and future-data validation accepted
+Fail to track local map!
+RECOVERY_FRAME 100 SEARCHING health: weak independent visual support
+Local Mapping STOP
+RECOVERY_FRAME 110 SEARCHING no geometrically verified mature-map pose
+RECOVERY_FRAME 120 SEARCHING no geometrically verified mature-map pose
+RECOVERY_FRAME 130 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 140 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 150 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 160 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 170 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+RECOVERY_FRAME 180 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_FRAME 190 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 200 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 210 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=4.8718211632092623e-06 gyro_delta=7.6040887146008611e-07 accel_delta=1.0281563837334359e-05 cost_before=0.015426908619701862 cost_after=3.2012533210945548e-06
+RECOVERY_FRAME 220 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=5.1511794570915013e-10 gyro_delta=3.7720899376942653e-08 accel_delta=2.0816862971613414e-08 cost_before=4.285322120267665e-06 cost_after=3.7133420391910477e-06
+RECOVERY_FRAME 230 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 240 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=7.5530799614584575e-10 gyro_delta=3.7581177486053139e-08 accel_delta=3.5746659724177452e-08 cost_before=5.2258437790442258e-06 cost_after=4.4391481424099766e-06
+RECOVERY_RESULT search=1 align=1 ready=1 frames=113 max_translation=1.5077724810907966e-06 occluded_not_ready=1 recovered_again=1 local_frames=111 global_frames=26
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/recovered.osa
+SYSTEM_PERSISTENCE_PASS recover
+FRESH_TEMPORAL_ROOTS_PRESERVED 3
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/continuity.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+CONTINUITY_FRAME 0 SEARCHING method=WAITING global=0 inliers=0 resets=0
+Local Mapping STOP
+CONTINUITY_FRAME 1 ALIGNING_IMU method=GLOBAL global=1 inliers=1076 resets=0
+CONTINUITY_FRAME 2 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 3 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 4 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 5 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 6 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 7 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 8 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 9 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 10 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 11 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 12 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 13 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 14 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 15 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 16 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 17 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 18 ALIGNING_IMU method=GLOBAL_FALLBACK global=1 inliers=166 resets=0
+CONTINUITY_FRAME 19 ALIGNING_IMU method=GLOBAL_FALLBACK global=1 inliers=1076 resets=0
+CONTINUITY_FRAME 20 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 21 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 22 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 23 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 24 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 25 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 26 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 27 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 28 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 29 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 30 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 31 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 32 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 33 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 34 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=0
+CONTINUITY_FRAME 35 ALIGNING_IMU method=GLOBAL_FALLBACK global=1 inliers=1076 resets=1
+CONTINUITY_FRAME 36 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 37 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 38 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 39 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 40 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 41 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 42 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 43 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 44 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 60 ALIGNING_IMU method=LOCAL global=0 inliers=1100 resets=1
+Change to map with id: 0
+Local Mapping RELEASE
+CONTINUITY_FRAME 90 TRACKING method=LOCAL global=0 inliers=1100 resets=1
+CONTINUITY_FRAME 120 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.1183547414341705e-06 gyro_delta=1.1081265776918455e-06 accel_delta=1.0444218095158216e-05 cost_before=0.031330768018960953 cost_after=2.2501478724734625e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.8879987782235671e-07 gyro_delta=5.0950412298273105e-08 accel_delta=4.4294018234354041e-07 cost_before=3.3976868962781737e-06 cost_after=1.9504605006659403e-06
+CONTINUITY_FRAME 150 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.4478116897677879e-09 gyro_delta=2.7262792801449886e-08 accel_delta=3.0036015064948263e-08 cost_before=3.7127711038920097e-06 cost_after=2.7357134513295023e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.6122452725861551e-09 gyro_delta=1.6608892828122112e-08 accel_delta=4.1193214497161203e-08 cost_before=4.3616587390715722e-06 cost_after=3.2693928915250581e-06
+CONTINUITY_FRAME 180 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.5802421029152158e-07 gyro_delta=2.2192439141387403e-08 accel_delta=4.3187021795436082e-06 cost_before=7.8167522588046268e-06 cost_after=2.707002295210259e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2208857636335231e-07 gyro_delta=2.0574135647116995e-08 accel_delta=5.7728345561969447e-07 cost_before=6.4462005866516847e-06 cost_after=3.2091134016809519e-06
+CONTINUITY_FRAME 210 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.9180640887848524e-10 gyro_delta=4.0978534961558412e-09 accel_delta=2.3411549816388883e-08 cost_before=6.8971212385804392e-06 cost_after=3.978555014327867e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=7.9525586320138394e-10 gyro_delta=2.3321636761064486e-09 accel_delta=2.4111244994655449e-08 cost_before=6.7374871832726058e-06 cost_after=4.1890448301273864e-06
+CONTINUITY_FRAME 240 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.8719499312837579e-10 gyro_delta=2.502639500897394e-09 accel_delta=2.6506618491566834e-08 cost_before=7.0242626861727331e-06 cost_after=4.3361960706533864e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.2933097954602742e-10 gyro_delta=2.6608777026711987e-09 accel_delta=3.0185924723301602e-08 cost_before=7.4711997513077222e-06 cost_after=4.577850631903857e-06
+CONTINUITY_FRAME 270 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.5354203866789861e-10 gyro_delta=2.7104575718989969e-09 accel_delta=3.3192903909793195e-08 cost_before=7.9441142588621005e-06 cost_after=4.7811226977501065e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.6509680402008115e-10 gyro_delta=2.4201848360563878e-09 accel_delta=3.5379759096703802e-08 cost_before=8.3802024164469913e-06 cost_after=4.9845871217257809e-06
+CONTINUITY_FRAME 300 TRACKING method=NONE global=0 inliers=1100 resets=1
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.7740866136662796e-10 gyro_delta=2.29523214050368e-09 accel_delta=3.7308077315276708e-08 cost_before=8.8526458057458512e-06 cost_after=5.1950732995464932e-06
+Shutdown
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.8446008089262164e-10 gyro_delta=2.0980541856899362e-09 accel_delta=3.8444156312448795e-08 cost_before=9.3428261607186869e-06 cost_after=5.367194717109669e-06
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/continuity.osa
+CONTINUITY_RESULT local=86 global=4 fallback=3 same_frame_reacquired=1 gap_restarted=1 ready=1
+SYSTEM_PERSISTENCE_PASS continuity
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/stationary.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+HEALTH_FRAME stationary 0 SEARCHING accepted=0 hard_fault=0 reason=
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.7875177605411559e-06 gyro_delta=9.901967316604127e-07 accel_delta=1.0818629212216112e-05 cost_before=0.025398090481758118 cost_after=2.2538317807629937e-06
+HEALTH_FRAME stationary 100 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=3.5645255997557597e-10 gyro_delta=3.833288984604819e-08 accel_delta=1.889533221164782e-08 cost_before=3.4303022857784526e-06 cost_after=2.7843921088788193e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.9843207446735462e-07 gyro_delta=3.7536559863208784e-08 accel_delta=1.7069052588172639e-06 cost_before=4.4171397348691244e-06 cost_after=2.4663243038958171e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.1497046591495635e-07 gyro_delta=3.0728887360098684e-08 accel_delta=1.5545067463767251e-06 cost_before=5.0519697651907336e-06 cost_after=2.6803147648024606e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.6318016428127706e-07 gyro_delta=1.4808388227751421e-08 accel_delta=1.6194554972868699e-06 cost_before=5.6855906223063357e-06 cost_after=3.0698979571752716e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.4284811602149042e-07 gyro_delta=8.7772283471911136e-09 accel_delta=1.1702632211211462e-06 cost_before=6.301819666987285e-06 cost_after=3.1556303383695194e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0829842299135447e-09 gyro_delta=3.1699626594422039e-09 accel_delta=2.6283615722923597e-08 cost_before=6.7020214373769704e-06 cost_after=4.1391585909877904e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1724379749901738e-09 gyro_delta=2.2771675738102446e-09 accel_delta=2.575111123255887e-08 cost_before=7.3231008173024748e-06 cost_after=4.4614216676563956e-06
+HEALTH_FRAME stationary 200 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2307881074554927e-09 gyro_delta=2.1826050463420632e-09 accel_delta=2.8435546652024064e-08 cost_before=7.6139122029417194e-06 cost_after=4.6270620259747375e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1512227433475802e-09 gyro_delta=1.942138703485355e-09 accel_delta=3.33119429695704e-08 cost_before=7.9330466178362258e-06 cost_after=4.846951924264431e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.013237155618481e-09 gyro_delta=1.9694287737455354e-09 accel_delta=3.7264598193794403e-08 cost_before=8.3823642853531055e-06 cost_after=5.1241026994830463e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0351260468022148e-09 gyro_delta=1.7553627375522578e-09 accel_delta=3.9846643035728917e-08 cost_before=8.8925044110510498e-06 cost_after=5.3212152124615386e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0607509166615433e-09 gyro_delta=1.6796578676127185e-09 accel_delta=4.2048208181192048e-08 cost_before=9.416651664650999e-06 cost_after=5.5924556363606825e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0843248157824217e-09 gyro_delta=1.5760784128934827e-09 accel_delta=4.4491435293510331e-08 cost_before=9.9397811936796643e-06 cost_after=5.8002765399578493e-06
+HEALTH_FRAME stationary 300 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1046185461474361e-09 gyro_delta=1.5296449332821709e-09 accel_delta=4.5651912025942054e-08 cost_before=1.0498843948880676e-05 cost_after=6.0194461184437387e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1325327500075702e-09 gyro_delta=1.4248645200471942e-09 accel_delta=4.7032312648058364e-08 cost_before=1.0999929145327769e-05 cost_after=6.2609469750896096e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1559688401147726e-09 gyro_delta=1.3427861508647138e-09 accel_delta=4.8497589638372899e-08 cost_before=1.1522758541104849e-05 cost_after=6.4348819250881206e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1763227283704655e-09 gyro_delta=1.3183045577711212e-09 accel_delta=4.9699686171190111e-08 cost_before=1.2005320968455635e-05 cost_after=6.6778889049601275e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1943392067104289e-09 gyro_delta=1.0879886350617948e-09 accel_delta=5.0822302107682564e-08 cost_before=1.2640788554563187e-05 cost_after=6.9067514232301619e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2058919127005446e-09 gyro_delta=9.9535124685215866e-10 accel_delta=5.1151447734838351e-08 cost_before=1.3308073903317563e-05 cost_after=7.2135885602619965e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2166456906271611e-09 gyro_delta=1.1180835617485511e-09 accel_delta=5.1330053238700943e-08 cost_before=1.3914800547354389e-05 cost_after=7.496177659049863e-06
+HEALTH_FRAME stationary 400 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2292108047292883e-09 gyro_delta=1.0790795726684992e-09 accel_delta=5.1897811551973131e-08 cost_before=1.4635358638770413e-05 cost_after=7.8234052125480957e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.1513211805428956e-08 gyro_delta=1.5116718577060917e-09 accel_delta=5.6174822464205152e-08 cost_before=1.5830455595278181e-05 cost_after=8.7038297351682559e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0508416487776943e-07 gyro_delta=1.2267596395056143e-09 accel_delta=5.944545413575675e-08 cost_before=1.9805054762400687e-05 cost_after=1.2762781807396095e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=7.4578874687607584e-08 gyro_delta=1.1219478552557705e-09 accel_delta=5.8244486060429347e-08 cost_before=2.0409264834597707e-05 cost_after=1.3399298950389493e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.7081916691577359e-08 gyro_delta=1.3159611109457328e-09 accel_delta=5.9884396626055792e-08 cost_before=3.3465748856542632e-05 cost_after=2.6282687031198293e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.697897105971421e-08 gyro_delta=1.2501397458606196e-09 accel_delta=5.9001321887080321e-08 cost_before=3.4021282772300765e-05 cost_after=2.6548110326984897e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=0.00018939417101773677 gyro_delta=4.9142174364584868e-09 accel_delta=3.3742423447117369e-06 cost_before=0.00011639070726232603 cost_after=2.2230593458516523e-05
+HEALTH_FRAME stationary 500 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=3.4990419757004853e-05 gyro_delta=2.1628785582795041e-09 accel_delta=2.6001825662140221e-06 cost_before=0.00024549974477849901 cost_after=3.2606585591565818e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.723730750639834e-05 gyro_delta=8.758202996276544e-09 accel_delta=1.4722256038242353e-05 cost_before=0.00026943287230096757 cost_after=0.00014812509471084923
+RECOVERY_ROOT_BA kf=12 velocity_delta=0.00011784698368225702 gyro_delta=2.0733101216308164e-08 accel_delta=2.3857321506048369e-05 cost_before=0.0030321490485221148 cost_after=0.00082979653961956501
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0978806511781662e-07 gyro_delta=1.0725200200430635e-08 accel_delta=1.3443110320639116e-06 cost_before=0.0008788023260422051 cost_after=0.00082957709673792124
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.8278114788047769e-06 gyro_delta=1.8475499897095048e-08 accel_delta=6.6701389599695853e-06 cost_before=0.0011847075074911118 cost_after=0.0010910200653597713
+RECOVERY_ROOT_BA kf=12 velocity_delta=6.7478825692366729e-06 gyro_delta=1.8179314192834576e-08 accel_delta=6.0426461883605038e-06 cost_before=0.0016872588312253356 cost_after=0.0015052946982905269
+HEALTH_FRAME stationary 600 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.4413061498647614e-06 gyro_delta=1.8864997895931054e-08 accel_delta=5.7560206950034134e-06 cost_before=0.0026491554453969002 cost_after=0.002163067227229476
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.4792973916923219e-05 gyro_delta=1.4406310156842308e-08 accel_delta=3.3359506022553439e-05 cost_before=0.0021157851442694664 cost_after=0.0010752577800303698
+HEALTH_FRAME stationary 700 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 800 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 900 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 1000 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 1100 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 1200 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+HEALTH_FRAME stationary 1300 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/stationary.osa
+LONG_STATIC_HEALTH_RESULT mode=stationary ready=1 stationary=1 valid=1344 hard_faults=0 max_translation=5.994820185151184e-06 tail_ready=1
+SYSTEM_PERSISTENCE_PASS stationary
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/biasstep.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+HEALTH_FRAME biasstep 0 SEARCHING accepted=0 hard_fault=0 reason=
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.7875177605411559e-06 gyro_delta=9.901967316604127e-07 accel_delta=1.0818629212216112e-05 cost_before=0.025398090481758118 cost_after=2.2538317807629937e-06
+HEALTH_FRAME biasstep 100 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=3.5645255997557597e-10 gyro_delta=3.833288984604819e-08 accel_delta=1.889533221164782e-08 cost_before=3.4303022857784526e-06 cost_after=2.7843921088788193e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.9843207445021814e-07 gyro_delta=3.753655981009424e-08 accel_delta=1.7069052587027311e-06 cost_before=4.4171397348691244e-06 cost_after=2.4663243038958171e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.149704659018019e-07 gyro_delta=3.0728887267333389e-08 accel_delta=1.5545067467392423e-06 cost_before=5.0519697651907336e-06 cost_after=2.6803147648024606e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.631801641792832e-07 gyro_delta=1.4808388166243021e-08 accel_delta=1.6194554968103171e-06 cost_before=5.6855906223063357e-06 cost_after=3.0698979571752716e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.4284811605687509e-07 gyro_delta=8.7772283602790449e-09 accel_delta=1.1702632204643619e-06 cost_before=6.301819666987285e-06 cost_after=3.1556303383695194e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0829842299100565e-09 gyro_delta=3.1699626719199699e-09 accel_delta=2.6283615730270996e-08 cost_before=6.7020214373769704e-06 cost_after=4.1391585909877904e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1724379749901738e-09 gyro_delta=2.2771675738102446e-09 accel_delta=2.575111123255887e-08 cost_before=7.3231008173024748e-06 cost_after=4.4614216676563956e-06
+HEALTH_FRAME biasstep 200 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2307881074554927e-09 gyro_delta=2.1826050463420632e-09 accel_delta=2.8435546652024064e-08 cost_before=7.6139122029417194e-06 cost_after=4.6270620259747375e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1512227433475802e-09 gyro_delta=1.942138703485355e-09 accel_delta=3.33119429695704e-08 cost_before=7.9330466178362258e-06 cost_after=4.846951924264431e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.013237155618481e-09 gyro_delta=1.9694287737455354e-09 accel_delta=3.7264598193794403e-08 cost_before=8.3823642853531055e-06 cost_after=5.1241026994830463e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0351260468022148e-09 gyro_delta=1.7553627375522578e-09 accel_delta=3.9846643035728917e-08 cost_before=8.8925044110510498e-06 cost_after=5.3212152124615386e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0607509166615433e-09 gyro_delta=1.6796578676127185e-09 accel_delta=4.2048208181192048e-08 cost_before=9.416651664650999e-06 cost_after=5.5924556363606825e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.0843248157824217e-09 gyro_delta=1.5760784128934827e-09 accel_delta=4.4491435293510331e-08 cost_before=9.9397811936796643e-06 cost_after=5.8002765399578493e-06
+HEALTH_FRAME biasstep 300 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1046185461741637e-09 gyro_delta=1.5296449371340783e-09 accel_delta=4.5651912022633444e-08 cost_before=1.0498843948880676e-05 cost_after=6.0194461184437387e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1325327500918028e-09 gyro_delta=1.4248645295744918e-09 accel_delta=4.7032312646649497e-08 cost_before=1.0999929145327769e-05 cost_after=6.2609469750896096e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1559688407089292e-09 gyro_delta=1.3427861615176228e-09 accel_delta=4.8497589637029591e-08 cost_before=1.1522758541104849e-05 cost_after=6.4348819250881206e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1763227285131016e-09 gyro_delta=1.3183045586393224e-09 accel_delta=4.96996861697871e-08 cost_before=1.2005320968455635e-05 cost_after=6.6778889049601275e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1943392075395467e-09 gyro_delta=1.0879886319588013e-09 accel_delta=5.0822302114939016e-08 cost_before=1.2640788554563187e-05 cost_after=6.9067514232301619e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2058919126016672e-09 gyro_delta=9.9535125615692374e-10 accel_delta=5.1151447730683846e-08 cost_before=1.3308073903317563e-05 cost_after=7.2135885602619965e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2166456909296966e-09 gyro_delta=1.1180835733079113e-09 accel_delta=5.1330053227241917e-08 cost_before=1.3914800547354389e-05 cost_after=7.496177659049863e-06
+HEALTH_FRAME biasstep 400 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.2292675823518488e-09 gyro_delta=1.112136951507409e-09 accel_delta=5.1663238615535766e-08 cost_before=1.4506485058518592e-05 cost_after=7.787624781485647e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.1513211484235637e-08 gyro_delta=1.4881525183136655e-09 accel_delta=5.6265855059776054e-08 cost_before=1.577027614985127e-05 cost_after=8.7150938270497136e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.050840339544896e-07 gyro_delta=1.2310823479034878e-09 accel_delta=5.9491080178245781e-08 cost_before=1.983150104933884e-05 cost_after=1.2766836334776599e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=7.4578762631933145e-08 gyro_delta=1.0887085761184227e-09 accel_delta=5.8223708456569048e-08 cost_before=2.0421291992533952e-05 cost_after=1.3406718608166557e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.7081976856136756e-08 gyro_delta=1.3062049768518566e-09 accel_delta=5.9874687964604377e-08 cost_before=3.3468219044152647e-05 cost_after=2.6315849027014337e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.6979053123161748e-08 gyro_delta=1.2784788680583102e-09 accel_delta=5.9011096169267235e-08 cost_before=3.4023218177026138e-05 cost_after=2.6545016226009466e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=0.00018939631940972571 gyro_delta=4.9354379690030798e-09 accel_delta=3.3736593823331214e-06 cost_before=0.00011639221338555217 cost_after=2.2224270651349798e-05
+HEALTH_FRAME biasstep 500 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=3.4988262921551356e-05 gyro_delta=2.2438559227123572e-09 accel_delta=2.6022796854507108e-06 cost_before=0.00024540486629121006 cost_after=3.2583102438366041e-05
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.6395665155951644e-05 gyro_delta=9.2888171967608328e-09 accel_delta=1.47242737009061e-05 cost_before=0.00027000778936780989 cost_after=0.00014882776304148138
+RECOVERY_ROOT_BA kf=12 velocity_delta=0.00011700863864574638 gyro_delta=1.9659884031247924e-08 accel_delta=2.3853211331843186e-05 cost_before=0.0030320007354021072 cost_after=0.00082987122004851699
+RECOVERY_ROOT_BA kf=12 velocity_delta=8.786669354599573e-08 gyro_delta=1.1155729589832699e-08 accel_delta=1.3406706677235181e-06 cost_before=0.00087883981177583337 cost_after=0.00082927732728421688
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.843219192787658e-06 gyro_delta=1.833448389223304e-08 accel_delta=6.6769596372527773e-06 cost_before=0.0011852409224957228 cost_after=0.0010914609301835299
+RECOVERY_ROOT_BA kf=12 velocity_delta=6.7235952300032858e-06 gyro_delta=1.0495744289493966e-08 accel_delta=6.0316342785686412e-06 cost_before=0.0016882545314729214 cost_after=0.0015058822464197874
+HEALTH_FRAME biasstep 600 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.4525361537803148e-06 gyro_delta=1.9757701337315576e-08 accel_delta=5.7694779426806988e-06 cost_before=0.0026498250663280487 cost_after=0.0021626946981996298
+Fail to track local map!
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.0333688795260424e-05 gyro_delta=1.1326498550744494e-06 accel_delta=1.6379908576242634e-05 cost_before=0.030950943008065224 cost_after=7.333535177167505e-05
+HEALTH_FRAME biasstep 700 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.4411668648982489e-06 gyro_delta=4.7598476685752567e-08 accel_delta=1.0122186091228739e-05 cost_before=7.1783251769375056e-05 cost_after=6.9639136199839413e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.8809033614692849e-07 gyro_delta=6.2713938266673555e-08 accel_delta=2.3551602679987225e-06 cost_before=7.1814589318819344e-05 cost_after=6.9454923504963517e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=6.3249126851671918e-07 gyro_delta=4.9872624863722301e-08 accel_delta=2.5909416334896687e-06 cost_before=7.1807284257374704e-05 cost_after=6.9448957219719887e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.2561826920417623e-08 gyro_delta=1.3050965845235349e-08 accel_delta=3.4922501503119223e-07 cost_before=7.1835638664197177e-05 cost_after=6.9468311266973615e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=4.973142573396918e-07 gyro_delta=1.9872384973709865e-08 accel_delta=8.8676130053763694e-07 cost_before=7.2417016781400889e-05 cost_after=6.8972003646194935e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=2.1861534368350069e-07 gyro_delta=2.0611853040185141e-08 accel_delta=7.3706840419641238e-07 cost_before=7.3006107413675636e-05 cost_after=6.9261834141798317e-05
+HEALTH_FRAME biasstep 800 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=49 velocity_delta=6.3311628888932364e-08 gyro_delta=1.2654001931992998e-08 accel_delta=6.0653236240225363e-07 cost_before=7.3530522058717906e-05 cost_after=6.9253313995432109e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.5758521376894699e-07 gyro_delta=1.4434393726809931e-08 accel_delta=5.2700942352705649e-07 cost_before=7.3725481342989951e-05 cost_after=6.8682624259963632e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=9.8938142864789042e-08 gyro_delta=1.0155581937850348e-08 accel_delta=3.3911002286195221e-07 cost_before=7.3795650678221136e-05 cost_after=6.9173045631032437e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=3.8908395260365699e-10 gyro_delta=6.7101464176795528e-10 accel_delta=1.5824965373105185e-08 cost_before=7.3922688898164779e-05 cost_after=7.076418842189014e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.0063541185859923e-07 gyro_delta=4.1848003594078626e-09 accel_delta=5.2742742947477827e-07 cost_before=7.5541589467320591e-05 cost_after=6.9637440901715308e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=1.1334044288367393e-07 gyro_delta=9.1722619839181135e-09 accel_delta=3.3012435848572419e-07 cost_before=7.5473690230865031e-05 cost_after=6.974769348744303e-05
+RECOVERY_ROOT_BA kf=49 velocity_delta=6.7306888103245355e-10 gyro_delta=1.810191497944178e-09 accel_delta=1.2659116028038187e-08 cost_before=7.5939737143926322e-05 cost_after=7.0959067670628428e-05
+HEALTH_FRAME biasstep 900 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+Fail to track local map!
+RECOVERY_ROOT_BA kf=49 velocity_delta=0.00031932690085237884 gyro_delta=1.615711545983173e-05 accel_delta=0.0010173322716226355 cost_before=3.55853271484375 cost_after=0.78073990345001221
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=66 velocity_delta=0.00013932896389488045 gyro_delta=6.3033319034546994e-07 accel_delta=0.00013349620859160605 cost_before=0.12797185778617859 cost_after=0.11870906502008438
+HEALTH_FRAME biasstep 1000 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=66 velocity_delta=6.1839110424407013e-06 gyro_delta=1.8863766386021148e-07 accel_delta=0.00016215165743436912 cost_before=0.11780112236738205 cost_after=0.11533363163471222
+RECOVERY_ROOT_BA kf=66 velocity_delta=2.3737713584836433e-05 gyro_delta=1.1807934031313642e-07 accel_delta=2.4710140072454634e-05 cost_before=0.11297576874494553 cost_after=0.11089210957288742
+RECOVERY_ROOT_BA kf=66 velocity_delta=2.028308752584419e-06 gyro_delta=6.9658409716017586e-08 accel_delta=5.366944697550131e-06 cost_before=0.11089270561933517 cost_after=0.10907322913408279
+RECOVERY_ROOT_BA kf=66 velocity_delta=7.8161954984484372e-07 gyro_delta=6.7284887700163043e-08 accel_delta=2.0642186224038082e-06 cost_before=0.10906823724508286 cost_after=0.10735049098730087
+RECOVERY_ROOT_BA kf=66 velocity_delta=4.0993954048875051e-07 gyro_delta=1.1351523681831296e-07 accel_delta=9.9772138223193186e-07 cost_before=0.10735830664634705 cost_after=0.10574592649936676
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.7576877333212894e-07 gyro_delta=4.0154251057193551e-08 accel_delta=7.5533917725125e-07 cost_before=0.10574624687433243 cost_after=0.10421988368034363
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.1186045546764825e-07 gyro_delta=3.5084621484700252e-08 accel_delta=7.0379030899775e-07 cost_before=0.10422064363956451 cost_after=0.10278639197349548
+HEALTH_FRAME biasstep 1100 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.7823097662384347e-07 gyro_delta=3.0539133663710982e-08 accel_delta=3.6988275716349178e-07 cost_before=0.10278630256652832 cost_after=0.10143186897039413
+RECOVERY_ROOT_BA kf=66 velocity_delta=2.2485131594663747e-07 gyro_delta=2.7394163631499596e-08 accel_delta=7.2006241591607474e-07 cost_before=0.1014360785484314 cost_after=0.10014620423316956
+RECOVERY_ROOT_BA kf=66 velocity_delta=5.1051054098420506e-08 gyro_delta=6.1287721414564295e-08 accel_delta=4.175950401142534e-07 cost_before=0.10014660656452179 cost_after=0.098920218646526337
+RECOVERY_ROOT_BA kf=66 velocity_delta=7.6168865292140008e-07 gyro_delta=7.7518369152537195e-08 accel_delta=1.6953218320512948e-07 cost_before=0.098920218646526337 cost_after=0.097751118242740631
+RECOVERY_ROOT_BA kf=66 velocity_delta=9.5177964320132816e-08 gyro_delta=2.2424327713627685e-08 accel_delta=3.1904413324778455e-07 cost_before=0.097756572067737579 cost_after=0.096640020608901978
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.5172883516203717e-07 gyro_delta=2.0171449456677873e-08 accel_delta=5.1795997655352548e-07 cost_before=0.09664522111415863 cost_after=0.095570415258407593
+HEALTH_FRAME biasstep 1200 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=66 velocity_delta=7.1149449733593648e-08 gyro_delta=5.0517525506808982e-08 accel_delta=2.0811839908089178e-07 cost_before=0.095572613179683685 cost_after=0.094551004469394684
+RECOVERY_ROOT_BA kf=66 velocity_delta=8.5952446551637001e-08 gyro_delta=1.6861921218491067e-08 accel_delta=3.4822995539757856e-07 cost_before=0.094553716480731964 cost_after=0.093572169542312622
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.8360266456211701e-07 gyro_delta=1.5607017778623824e-08 accel_delta=2.570886146076331e-07 cost_before=0.093578502535820007 cost_after=0.09264577180147171
+RECOVERY_ROOT_BA kf=66 velocity_delta=5.3075085178593239e-08 gyro_delta=3.749908006832931e-08 accel_delta=3.1207668679348693e-07 cost_before=0.092644758522510529 cost_after=0.091744579374790192
+RECOVERY_ROOT_BA kf=66 velocity_delta=8.014699287742753e-07 gyro_delta=1.5196478936357828e-08 accel_delta=1.2780092036509536e-07 cost_before=0.091750063002109528 cost_after=0.090878017246723175
+RECOVERY_ROOT_BA kf=66 velocity_delta=3.2615050372677643e-08 gyro_delta=1.4434148851191518e-08 accel_delta=1.8163071532608097e-07 cost_before=0.090883247554302216 cost_after=0.090044684708118439
+RECOVERY_ROOT_BA kf=66 velocity_delta=4.0799812139316241e-08 gyro_delta=1.317278263551725e-08 accel_delta=2.9541221551438253e-07 cost_before=0.090049751102924347 cost_after=0.089238971471786499
+HEALTH_FRAME biasstep 1300 TRACKING accepted=1 hard_fault=0 reason=health checks passed
+RECOVERY_ROOT_BA kf=66 velocity_delta=1.0143951925003163e-07 gyro_delta=2.868499070415433e-08 accel_delta=1.2287276457215986e-07 cost_before=0.089246422052383423 cost_after=0.088463447988033295
+RECOVERY_ROOT_BA kf=66 velocity_delta=0.00010545350833619335 gyro_delta=2.2152986405056974e-08 accel_delta=7.771863026383538e-07 cost_before=0.088467605412006378 cost_after=0.087704382836818695
+RECOVERY_ROOT_BA kf=66 velocity_delta=9.3790017826757318e-05 gyro_delta=2.7757306177652564e-08 accel_delta=4.6307417099775628e-07 cost_before=0.087709054350852966 cost_after=0.086973264813423157
+RECOVERY_ROOT_BA kf=66 velocity_delta=2.3678088318568593e-05 gyro_delta=2.7412573810003425e-08 accel_delta=8.2507399977020096e-08 cost_before=0.086987443268299103 cost_after=0.086280427873134613
+RECOVERY_ROOT_BA kf=66 velocity_delta=0.00028651914698982276 gyro_delta=2.6675543233785256e-08 accel_delta=9.8566077889972633e-08 cost_before=0.086308829486370087 cost_after=0.085624843835830688
+RECOVERY_ROOT_BA kf=66 velocity_delta=8.8627632807270408e-08 gyro_delta=2.5411935766266197e-08 accel_delta=1.9601291459456432e-07 cost_before=0.085631854832172394 cost_after=0.084967434406280518
+Shutdown
+RECOVERY_ROOT_BA kf=66 velocity_delta=2.1501093824795419e-05 gyro_delta=2.6023986088342867e-08 accel_delta=6.1527725069569592e-07 cost_before=0.085062243044376373 cost_after=0.084331512451171875
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/biasstep.osa
+LONG_STATIC_HEALTH_RESULT mode=biasstep ready=1 stationary=1 valid=1231 hard_faults=2 max_translation=0.010553051717579365 tail_ready=1
+SYSTEM_PERSISTENCE_PASS biasstep
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/mapjump.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Local Mapping STOP
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.7875177608987419e-06 gyro_delta=9.9019673197827685e-07 accel_delta=1.0818629220098189e-05 cost_before=0.025398090481758118 cost_after=2.2538317807629937e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=3.5645254231430989e-10 gyro_delta=3.8332889902934505e-08 accel_delta=1.889533216508581e-08 cost_before=3.4303022857784526e-06 cost_after=2.7843921088788193e-06
+Fail to track local map!
+Local Mapping STOP
+OUTPUT_DISCONTINUITY_REJECTED internal=2.9036202704446623e-06 output=9.0000030419323718 reason=health: published pose discontinuity across backend map update
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.222767605842204e-05 gyro_delta=5.826464965862794e-07 accel_delta=1.3755560498356512e-05 cost_before=0.0092225354164838791 cost_after=7.0938544922682922e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=4.7128111034182324e-07 gyro_delta=6.8879881040167716e-08 accel_delta=9.3796308340204793e-06 cost_before=5.5653988965786994e-05 cost_after=7.3322908065165393e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=2.025155092993352e-07 gyro_delta=2.4646047391206239e-08 accel_delta=2.3168996373954361e-06 cost_before=7.133970211725682e-05 cost_after=7.3854203037626576e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.9989484002712632e-07 gyro_delta=1.8010043655332008e-08 accel_delta=1.5266111468033355e-06 cost_before=8.9885877969209105e-05 cost_after=7.6394453571992926e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=1.9349782424932915e-07 gyro_delta=1.5563411116656802e-08 accel_delta=9.678796665359347e-07 cost_before=0.00010509012645343319 cost_after=7.337494935200084e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=2.2689414934572632e-07 gyro_delta=8.1973451405546088e-09 accel_delta=7.1755960150226164e-07 cost_before=0.00011875991913257167 cost_after=7.1666463554720394e-06
+RECOVERY_ROOT_BA kf=16 velocity_delta=4.7313760725440588e-07 gyro_delta=7.0280526962603053e-09 accel_delta=6.8329230559029591e-07 cost_before=0.00013369566295295954 cost_after=7.0664914346707519e-06
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/mapjump.osa
+WHOLE_MAP_OUTPUT_DISCONTINUITY_GUARD_PASS
+SYSTEM_PERSISTENCE_PASS mapjump
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/old_format.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/old_format.osa
+MAP_E_LOAD: Atlas v1 lacks recovered-root uncertainty; use a new v2 reference map
+ATLAS_LOAD_GUARD_PASS
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/disabled_loop.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+RECOVERY_FRAME 0 SEARCHING waiting for mapping/loop-closing safe boundary
+Local Mapping STOP
+RECOVERY_FRAME 10 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 20 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 30 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 40 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+RECOVERY_FRAME 50 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_FRAME 60 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 70 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 80 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.7875177608987419e-06 gyro_delta=9.9019673197827685e-07 accel_delta=1.0818629220098189e-05 cost_before=0.025398090481758118 cost_after=2.2538317807629937e-06
+RECOVERY_FRAME 90 TRACKING fresh visual-inertial alignment and future-data validation accepted
+Fail to track local map!
+RECOVERY_FRAME 100 SEARCHING health: weak independent visual support
+Local Mapping STOP
+RECOVERY_FRAME 110 SEARCHING no geometrically verified mature-map pose
+RECOVERY_FRAME 120 SEARCHING no geometrically verified mature-map pose
+RECOVERY_FRAME 130 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 140 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 150 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 160 ALIGNING_IMU collecting fresh visual/IMU recovery window
+RECOVERY_FRAME 170 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+RECOVERY_FRAME 180 VALIDATING_IMU checking frozen recovery state against future visual/IMU data
+Change to map with id: 0
+Local Mapping RELEASE
+RECOVERY_FRAME 190 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 200 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 210 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=4.8718211638542068e-06 gyro_delta=7.6040887137622339e-07 accel_delta=1.0281563840659977e-05 cost_before=0.015426908619701862 cost_after=3.2012533210945548e-06
+RECOVERY_FRAME 220 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=5.1511794570915013e-10 gyro_delta=3.7720899376942653e-08 accel_delta=2.0816862971613414e-08 cost_before=4.285322120267665e-06 cost_after=3.7133420391910477e-06
+RECOVERY_FRAME 230 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_FRAME 240 TRACKING fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=15 velocity_delta=7.5530799614584575e-10 gyro_delta=3.7581177486053139e-08 accel_delta=3.5746659724177452e-08 cost_before=5.2258437790442258e-06 cost_after=4.4391481424099766e-06
+RECOVERY_RESULT search=1 align=1 ready=1 frames=113 max_translation=1.5077724810907966e-06 occluded_not_ready=1 recovered_again=1 local_frames=111 global_frames=26
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/disabled_loop.osa
+SYSTEM_PERSISTENCE_PASS recover
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/timeout.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+TIMEOUT_FRAME 0 SEARCHING map=-1 waiting for mapping/loop-closing safe boundary
+Local Mapping STOP
+TIMEOUT_FRAME 30 SEARCHING map=-1 no geometrically verified mature-map pose
+TIMEOUT_FRAME 60 SEARCHING map=-1 no geometrically verified mature-map pose
+TIMEOUT_FRAME 90 SEARCHING map=-1 no geometrically verified mature-map pose
+Local Mapping RELEASE
+Creation of new map with id: 2
+Stored map with ID: 0
+Creation of new map with last KF id: 12
+TIMEOUT_FRAME 120 MAPPING map=2 recovery timeout; retained maps and started new map
+TIMEOUT_FRAME 150 MAPPING map=2 recovery timeout; retained maps and started new map
+TIMEOUT_FRAME 180 MAPPING map=2 recovery timeout; retained maps and started new map
+TIMEOUT_FRAME 210 MAPPING map=2 recovery timeout; retained maps and started new map
+TIMEOUT_FRAME 240 MAPPING map=2 recovery timeout; retained maps and started new map
+Local Mapping STOP
+TIMEOUT_FRAME 270 ALIGNING_IMU map=0 collecting fresh visual/IMU recovery window
+Change to map with id: 0
+Local Mapping RELEASE
+TIMEOUT_FRAME 300 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=4.5495184248955774e-06 gyro_delta=9.4573273764439478e-07 accel_delta=1.0334910630392366e-05 cost_before=0.023568388074636459 cost_after=1.9409283140703337e-06
+TIMEOUT_FRAME 330 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=5.6683580986075813e-10 gyro_delta=4.0183815258920517e-08 accel_delta=2.0329557710145215e-08 cost_before=3.1909473818814149e-06 cost_after=2.5065648969757603e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=7.8595393354079603e-10 gyro_delta=3.787759040775256e-08 accel_delta=3.3571905896190019e-08 cost_before=4.0460927266394719e-06 cost_after=3.194413693563547e-06
+TIMEOUT_FRAME 360 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=9.4261634280364579e-10 gyro_delta=2.3108883517825629e-08 accel_delta=4.4231778964830399e-08 cost_before=4.6474747250613291e-06 cost_after=3.7918423458904726e-06
+TIMEOUT_FRAME 390 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.1740106089106982e-09 gyro_delta=1.3257378594607099e-08 accel_delta=5.2293100941215867e-08 cost_before=5.2960394896217622e-06 cost_after=4.3437908061605413e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.4608067743064904e-09 gyro_delta=1.1297662118197928e-08 accel_delta=5.8654378856454983e-08 cost_before=5.933658940193709e-06 cost_after=4.925528173771454e-06
+TIMEOUT_FRAME 420 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=1.7482466446453369e-09 gyro_delta=9.7220817253852504e-09 accel_delta=6.4582169786884059e-08 cost_before=6.6892962422571145e-06 cost_after=5.5608343245694414e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.0017951728233044e-09 gyro_delta=7.454718502652774e-09 accel_delta=6.9206137608086314e-08 cost_before=7.399132755381288e-06 cost_after=6.1575328800245188e-06
+TIMEOUT_FRAME 450 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.2251251369145076e-09 gyro_delta=5.5072964505577732e-09 accel_delta=7.2780433200786754e-08 cost_before=7.9865512816468254e-06 cost_after=6.658121037617093e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.4104844837314339e-09 gyro_delta=4.4711434120313728e-09 accel_delta=7.5665500522292344e-08 cost_before=8.5932033471181057e-06 cost_after=7.1423360168409999e-06
+TIMEOUT_FRAME 480 TRACKING map=0 fresh visual-inertial alignment and future-data validation accepted
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.5726090571328392e-09 gyro_delta=3.8588700263884793e-09 accel_delta=7.8114318965713284e-08 cost_before=9.2097543529234827e-06 cost_after=7.6070655268267728e-06
+RECOVERY_ROOT_BA kf=12 velocity_delta=2.695441026206205e-09 gyro_delta=3.2310176170735368e-09 accel_delta=7.9993897723509079e-08 cost_before=9.81444009084953e-06 cost_after=8.057242666836828e-06
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/timeout.osa
+TIMEOUT_RETRY_RESULT search=1 fallback=1 fallback_map=2 retry=1 restored_old=1
+SYSTEM_PERSISTENCE_PASS timeout
+FRESH_TEMPORAL_ROOTS_PRESERVED 2
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/second.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/recovered.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=20; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Shutdown
+Local Mapping STOP
+MAP_SAVED /tmp/mono-imu-atlas-r1ozg607/second.osa
+SYSTEM_PERSISTENCE_PASS loadsave
+FRESH_TEMPORAL_ROOTS_PRESERVED 3
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/unwritable.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+Change to map with id: 0
+MAP_REFERENCE_LOADED id=0 keyframes=12; current velocity/bias still require recovery
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Shutdown
+Local Mapping STOP
+MAP_E_SAVE: MAP_E_SAVE: mkstemp: No such file or directory
+ATLAS_SAVE_FAILURE_PROPAGATES_PASS
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/empty.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Initialization of Atlas from scratch 
+Creation of new map with id: 0
+Creation of new map with last KF id: 0
+Seq. Name: 
+There are 1 cameras in the atlas
+Camera 0 is fisheye
+Shutdown
+Local Mapping STOP
+MAP_SAVE_SKIPPED: no mature map; existing reference is unchanged
+SYSTEM_PERSISTENCE_PASS empty
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/changed.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 401 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/fixture.osa
+MAP_E_LOAD: MAP_E_LOAD: camera/IMU calibration or extractor settings differ
+ATLAS_LOAD_GUARD_PASS
+
+ORB-SLAM3 Copyright (C) 2017-2020 Carlos Campos, Richard Elvira, Juan J. Gómez, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+ORB-SLAM2 Copyright (C) 2014-2016 Raúl Mur-Artal, José M.M. Montiel and Juan D. Tardós, University of Zaragoza.
+This program comes with ABSOLUTELY NO WARRANTY;
+This is free software, and you are welcome to redistribute it
+under certain conditions. See LICENSE.txt.
+
+mono_imu_vio: modified single-camera inertial fork of ORB-SLAM3
+Input sensor was set to: Monocular-Inertial
+Loading settings from /tmp/mono-imu-atlas-r1ozg607/damaged.yaml
+	-Loaded camera 1
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+	-Loaded image info
+IMU.InsertKFsWhenLost optional parameter does not exist...
+	-Loaded IMU calibration
+	-Loaded ORB settings
+Viewer.imageViewScale optional parameter does not exist...
+	-Loaded viewer settings
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+	-Loaded Atlas settings
+System.thFarPoints optional parameter does not exist...
+	-Loaded misc parameters
+----------------------------------
+SLAM settings: 
+	-Camera 1 parameters (Kannala-Brandt): [ 149.43 149.289 320.352 239.171 0.218364 -0.059334 0.00848545 -0.000888852 ]
+	-Original image size: [ 640 , 480 ]
+	-Current image size: [ 640 , 480 ]
+	-Sequence FPS: 30
+	-Gyro noise: 0.001
+	-Accelerometer noise: 0.01
+	-Gyro walk: 1e-05
+	-Accelerometer walk: 0.0001
+	-IMU frequency: 500
+	-Features per image: 1500
+	-ORB scale factor: 1.2
+	-ORB number of scales: 8
+	-Initial FAST threshold: 20
+	-Min FAST threshold: 7
+
+
+Loading ORB Vocabulary. This could take a while...
+Vocabulary loaded!
+
+Load File
+Initialization of Atlas from file: /tmp/mono-imu-atlas-r1ozg607/truncated.osa
+MAP_E_LOAD: input stream error
+ATLAS_LOAD_GUARD_PASS
+NATIVE_ATLAS_PERSISTENCE_AND_RECOVERY_PASS

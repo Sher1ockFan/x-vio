@@ -1,0 +1,40 @@
+PASS parser real_marker
+PASS parser marker_split_prefix
+PASS parser marker_split_after_64_bytes
+PASS parser marker_bytewise
+PASS parser marker_waits_for_newline
+PASS parser duplicate_deduplicated
+PASS parser planned_only
+PASS parser native_load_attempt_only
+PASS parser ready_is_not_map_success
+PASS parser malformed_markers
+PASS parser overlong_line_suffix_is_not_marker
+PASS parser overlong_line_then_real_marker
+PASS parser exit_before_ready
+PASS parser timeout_incomplete_record
+MAP_STARTUP_TEST_PASS parser_cases=14 prepare_cases=4
+PASS startup_fail
+PASS startup_zero
+PASS success
+PASS runtime_fail
+PASS signal_fail
+PASS report_fail
+PASS startup_map
+PASS startup_permission
+PASS startup_camera
+PASS startup_orb
+PASS map_message_loaded
+PASS map_message_fresh
+PASS map_message_off
+PASS map_success
+PASS map_fail
+PASS map_runtime_failure
+PASS running
+PASS startup_wait
+PASS non_live_help_and_missing_helper
+PASS actual_shell_misspelled_display
+PASS actual_shell_valid_display_not_overridden
+PASS startup_runs_path_failure
+PASS viewer_request_caller_shutdown_contract
+PASS startup_classifier_cases 14
+LIVE_CONSOLE_TEST_PASS original_cases=13 additional_subprocess_cases=10 classifier_cases=14

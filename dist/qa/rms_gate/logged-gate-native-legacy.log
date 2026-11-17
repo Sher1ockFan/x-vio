@@ -1,0 +1,16 @@
+frame=245 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=1529 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=1624 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=1787 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=2001 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=2139 accepted=0 reason=health: excessive/nonfinite reprojection residual
+frame=2224 accepted=0 reason=health: excessive/nonfinite reprojection residual
+{
+  "result": "REPROJECTION_LOGGED_GATE_PASS",
+  "expected_policy": "legacy",
+  "cases": 7,
+  "backend": "packaged_native_core",
+  "core_sha256": "3a1ab16dc673807046f7be6b825b6999ad0d10a4532a73e9d740460b81e1e496",
+  "raw_image_imu_replay": false,
+  "hardware_accuracy_validated": false
+}
