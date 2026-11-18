@@ -8,7 +8,7 @@
 
 | 目录 | 用途 |
 | --- | --- |
-| `ORB_SLAM3/` | 精简后的算法源码、依赖与词典；包含本次核心修改 |
+| `vio_src/` | 精简后的算法源码、依赖与词典；包含本次核心修改 |
 | `adapter/` | 单路相机、IMU、时间映射、性能计时及算法调用 |
 | `params/` | 原 `fit_05` 参数，数值不变 |
 | `docker/` | ARM64 编译、打包与动态链接检查 |
@@ -28,15 +28,15 @@ ORB_CONTAINER=orin-r365-dev bash build.sh
 
 使用已有 Ubuntu 22.04 ARM64 容器及 `/build/orb-kit` 下的 NVIDIA OpenCV 4.8.0、Pangolin，编译缓存与原版项目隔离在 `/build/mono-imu-vio`，不会从原版缓存直接拿 `libORB_SLAM3.so`。源码清单校验通过后才编译；包输出为 `dist/mono_imu_vio.tar.gz`。
 
-以后修改 `ORB_SLAM3/` 后先运行 `python3 tools/update_manifest.py` 更新当前源码清单，再构建。该命令不会修改 `provenance/upstream.sha256` 的官方基线。编译适配层无需更新核心清单。
+以后修改 `vio_src/` 后先运行 `python3 tools/update_manifest.py` 更新当前源码清单，再构建。该命令不会修改 `provenance/upstream.sha256` 的官方基线。编译适配层无需更新核心清单。
 
 Jetson 安装、启动、测试和回放步骤见 [使用说明](jetson/README.md)。实机速度需比较 `performance.txt` 中灰度提取中位数/P95及算法处理频率；Docker 模拟测试不能代表 Jetson 的真实提速或轨迹精度。
 
 ## 代码阅读顺序
 
-`jetson/start.sh` → `adapter/orb_replay/live.py`（同步与批次）→ `adapter/viewer.cc`（调用 `TrackMonocular`）→ `ORB_SLAM3/src/System.cc` → `Tracking.cc` → `LocalMapping.cc` / `LoopClosing.cc` / `Optimizer.cc`。
+`jetson/start.sh` → `adapter/orb_replay/live.py`（同步与批次）→ `adapter/viewer.cc`（调用 `TrackMonocular`）→ `vio_src/src/System.cc` → `Tracking.cc` → `LocalMapping.cc` / `LoopClosing.cc` / `Optimizer.cc`。
 
-提交 Git 可执行 `git add .`；构建目录与运行数据已忽略。保留 [ORB-SLAM3 GPLv3 许可证](ORB_SLAM3/LICENSE) 和依赖许可证，发布修改版时同时提供对应源码。
+提交 Git 可执行 `git add .`；构建目录与运行数据已忽略。保留 [ORB-SLAM3 GPLv3 许可证](vio_src/LICENSE) 和依赖许可证，发布修改版时同时提供对应源码。
 
 ## 旧地图优先与持久化
 

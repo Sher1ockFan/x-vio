@@ -8,7 +8,7 @@ import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-CORE = ROOT / "ORB_SLAM3"
+CORE = ROOT / "vio_src"
 
 
 def read(relative):
@@ -31,7 +31,7 @@ def constructor_args(source, classname):
 
 class MonocularInertialContract(unittest.TestCase):
     def test_only_supported_sensor_is_monocular_inertial(self):
-        header = cpp_code(read("ORB_SLAM3/include/System.h"))
+        header = cpp_code(read("vio_src/include/System.h"))
         enum = re.search(r'\benum\s+eSensor\s*\{([^}]+)\}', header)
         self.assertIsNotNone(enum)
         entries = [x.strip() for x in enum[1].split(',') if x.strip()]
@@ -40,9 +40,9 @@ class MonocularInertialContract(unittest.TestCase):
 
     def test_no_unsupported_input_api(self):
         for filename in ("System.h", "Tracking.h"):
-            code = cpp_code(read("ORB_SLAM3/include/" + filename))
+            code = cpp_code(read("vio_src/include/" + filename))
             self.assertNotRegex(code, r'\b(?:Track|GrabImage)(?:Stereo|RGBD)\s*\(')
-        header = cpp_code(read("ORB_SLAM3/include/System.h"))
+        header = cpp_code(read("vio_src/include/System.h"))
         tracking = re.search(r'\bTrackMonocular\s*\(([^;]+)\)\s*;', header)
         self.assertIsNotNone(tracking)
         self.assertIn("IMU::Point", tracking[1])
@@ -51,13 +51,13 @@ class MonocularInertialContract(unittest.TestCase):
         self.assertNotRegex(tracking[1], r'vImuMeas\s*=')
 
     def test_no_stereo_or_depth_frame_constructors(self):
-        header = cpp_code(read("ORB_SLAM3/include/Frame.h"))
+        header = cpp_code(read("vio_src/include/Frame.h"))
         for forbidden in ("imRight", "imDepth", "ComputeStereoMatches",
                           "ComputeStereoFromRGBD", "ComputeStereoFishEyeMatches"):
             self.assertNotRegex(header, r'\b' + forbidden + r'\b')
 
     def test_only_mono_inertial_dataset_executable(self):
-        cmake = re.sub(r'#[^\n]*', '', read("ORB_SLAM3/CMakeLists.txt"))
+        cmake = re.sub(r'#[^\n]*', '', read("vio_src/CMakeLists.txt"))
         targets = re.findall(r'\badd_executable\s*\(\s*([^\s)]+)', cmake, re.I)
         self.assertEqual(targets, ["mono_inertial_euroc"])
         self.assertTrue((CORE / "Examples/Monocular-Inertial/mono_inertial_euroc.cc").is_file())
@@ -68,7 +68,7 @@ class MonocularInertialContract(unittest.TestCase):
                 self.assertNotIn(directory.name, forbidden)
 
     def test_mono_inertial_worker_semantics_preserved(self):
-        source = cpp_code(read("ORB_SLAM3/src/System.cc"))
+        source = cpp_code(read("vio_src/src/System.cc"))
         local = constructor_args(source, "LocalMapping")
         loop = constructor_args(source, "LoopClosing")
         # In the original IMU_MONOCULAR mode both mapping flags and the loop

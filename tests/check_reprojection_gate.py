@@ -115,8 +115,8 @@ def main():
                        '-Wl,-rpath,' + str(package / 'lib'), '-Wl,-rpath-link,' + str(package / 'lib'),
                        '-Wl,-rpath-link,' + str(cv), '-lORB_SLAM3', '-pthread']
         else:
-            command = [compiler, '-std=c++11', '-O2', '-I' + str(ROOT / 'ORB_SLAM3/include'),
-                       str(ROOT / 'ORB_SLAM3/src/TrackingHealth.cc'), str(test), '-o', str(binary)]
+            command = [compiler, '-std=c++11', '-O2', '-I' + str(ROOT / 'vio_src/include'),
+                       str(ROOT / 'vio_src/src/TrackingHealth.cc'), str(test), '-o', str(binary)]
         subprocess.run(command, check=True, env=env)
         subprocess.run([str(binary)], check=True, env=env, timeout=30)
     print(json.dumps({'result': 'REPROJECTION_LOGGED_GATE_PASS', 'expected_policy': args.expect,

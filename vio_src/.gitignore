@@ -1,0 +1,9 @@
+build/
+lib/
+cmake-build-*/
+Thirdparty/*/build/
+Thirdparty/*/lib/
+Thirdparty/g2o/config.h
+Vocabulary/ORBvoc.txt
+Examples/Monocular-Inertial/mono_inertial_euroc
+*.txt.user

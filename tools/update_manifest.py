@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Record the current core sources; run after intentional ORB_SLAM3 edits."""
+"""Record the current core sources; run after intentional vio_src edits."""
 import hashlib
 from pathlib import Path
 root = Path(__file__).resolve().parents[1]
-source = root / "ORB_SLAM3"
+source = root / "vio_src"
 lines = []
 for p in sorted(source.rglob("*")):
     if not p.is_file(): continue
