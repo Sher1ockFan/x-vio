@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>三维位姿回放</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="formats.js"></script>
+  <script defer src="examples.js"></script>
+  <script defer src="player.js"></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <h1>三维位姿回放</h1>
+      <label class="track-field">轨迹
+        <select id="tracks">
+          <option value="half">960 × 768 · 等比缩放</option>
+          <option value="full">1920 × 1536 · 原分辨率</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="viewer" aria-label="三维回放与时间轴">
+      <div class="stage">
+        <canvas id="scene" tabindex="0" aria-label="三维轨迹，可拖动旋转、滚轮缩放，也可用方向键旋转"></canvas>
+        <div class="scene-labels">
+          <output id="segment"></output>
+          <button type="button" id="reset-view">重置视角</button>
+        </div>
+        <p class="view-hint">拖动旋转 · 滚轮缩放</p>
+      </div>
+
+      <div class="controls">
+        <div class="timeline">
+          <div class="time-label">
+            <label for="position">录制时间</label>
+            <output id="clock" for="position"></output>
+          </div>
+          <div class="seek">
+            <canvas id="coverage" aria-hidden="true"></canvas>
+            <input type="range" id="position" min="0" max="1" value="0" step="any">
+          </div>
+        </div>
+        <div class="transport">
+          <button type="button" id="play" class="primary">播放</button>
+          <button type="button" id="restart">回到起点</button>
+          <label class="speed-field">倍速
+            <select id="speed">
+              <option value="0.25">0.25×</option>
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="2">2×</option>
+              <option value="4">4×</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="readouts" aria-label="当前帧数据">
+      <dl><dt>位姿状态</dt><dd id="validity"></dd></dl>
+      <dl><dt>帧索引</dt><dd id="frame"></dd></dl>
+      <dl><dt>位置（m）</dt><dd id="coordinates"></dd></dl>
+    </section>
+
+    <section class="import" aria-label="导入外部轨迹">
+      <label>输入格式
+        <select id="format">
+          <option value="auto">自动识别 poses.csv</option>
+          <option value="csv">ORB 位姿 CSV（ns）</option>
+          <option value="tum">八列 TXT（秒）</option>
+          <option value="ns">八列 TXT（纳秒）</option>
+        </select>
+      </label>
+      <label>导入轨迹
+        <input type="file" id="file" accept=".csv,.txt,.tum,.traj,.log">
+      </label>
+      <p id="import-status" role="status" hidden></p>
+    </section>
+  </main>
+</body>
+</html>
