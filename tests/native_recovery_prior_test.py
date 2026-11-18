@@ -23,7 +23,9 @@ with tempfile.TemporaryDirectory(prefix="recovery-prior-") as tmp:
             assert not Path(member.name).is_absolute() and ".." not in Path(member.name).parts
         tar.extractall(root)
     package=root/"mono_imu_vio"
-    source=package/"source/ORB_SLAM3"
+    source=package/"source/vio_src"
+    if not source.is_dir():
+        source=package/"source/ORB_SLAM3"
     shutil.copy2(build/"source/Thirdparty/g2o/config.h",source/"Thirdparty/g2o/config.h")
     env={**os.environ,"LD_LIBRARY_PATH":f"{package}/lib:{cv}"}
     binary=root/"prior_test"

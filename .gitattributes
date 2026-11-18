@@ -1,0 +1,3 @@
+vio_src/** -text
+source.sha256 text eol=lf
+provenance/** -text

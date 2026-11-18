@@ -15,6 +15,8 @@ bash "$kit/check.sh"
 
 宿主机须为 Ubuntu 22.04 ARM64 / Jetson Linux R36.5，并满足剩余系统图形库和 `python3-numpy` 依赖。本副本使用 OpenCV 4.5.4 编译；所需 OpenCV 4.5、Boost serialization、GLU 运行库及许可证随包放在私有目录。动态链接是否完整以 `check.sh` 为准，不修改宿主机 OpenCV。软件检查成功不证明采集或标定有效。`live-headless` 不创建窗口、不要求 DISPLAY，但当前程序仍链接图形运行库。
 
+包内可阅读的核心源码位于 `source/vio_src/`，采集与算法入口源码位于 `source/adapter/`。完整可编译工程的核心源码目录为 `vio_src/`。
+
 ## 相机与新标定
 
 ```bash

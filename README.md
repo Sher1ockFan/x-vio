@@ -39,10 +39,10 @@ ORB_CONTAINER=orin-r365-dev bash build.sh
 
 | 目录 | 用途 |
 | --- | --- |
-| `ORB_SLAM3/` | 基于官方提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4` 的单目惯性核心和 Omni-radtan |
+| `vio_src/` | 基于官方提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4` 的单目惯性核心和 Omni-radtan |
 | `adapter/` | 硬件采样、时间同步、灰度提取和算法入口 |
 | `jetson/` | Jetson 启动、录制、回放、状态和轨迹工具 |
 | `docker/` | ARM64 编译、依赖检查、打包 |
 | `tests/`、`provenance/` | 软件测试和源码记录 |
 
-见 [源码来源与修改记录](provenance/README.md) 与 [GPLv3 许可证](ORB_SLAM3/LICENSE)。发布二进制时须按许可证提供对应源码。
+见 [源码来源与修改记录](provenance/README.md) 与 [GPLv3 许可证](vio_src/LICENSE)。发布二进制时须按许可证提供对应源码。

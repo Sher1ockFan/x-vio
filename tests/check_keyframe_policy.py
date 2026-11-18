@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 
 root=Path(__file__).resolve().parents[1]
-source=(root/'ORB_SLAM3/src/Tracking.cc').read_text()
+source=(root/'vio_src/src/Tracking.cc').read_text()
 start=source.index('bool Tracking::NeedNewKeyFrame()')
 opening=source.index('{',start)
 # Locate structural braces while skipping comments and quoted literals.

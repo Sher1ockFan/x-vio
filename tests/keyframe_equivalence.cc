@@ -1,5 +1,5 @@
 // Regression harness with original and specialized ORB-SLAM3 NeedNewKeyFrame bodies.
-// Original portions copyright ORB-SLAM3 authors; GPLv3, see ../ORB_SLAM3/LICENSE.
+// Original portions copyright ORB-SLAM3 authors; GPLv3, see ../vio_src/LICENSE.
 #include <vector>
 #include <random>
 #include <iostream>

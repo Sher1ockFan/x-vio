@@ -9,7 +9,7 @@ docker=$(command -v docker || printf '%s\n' /Applications/Docker.app/Contents/Re
 scratch=$(mktemp -d)
 trap 'rm -r -- "$scratch"' EXIT
 manifest=$here/source.sha256
-(cd "$here/ORB_SLAM3"; shasum -a 256 --quiet -c "$manifest")
+(cd "$here/vio_src"; shasum -a 256 --quiet -c "$manifest")
 root=/build/mono-vio-60/work
 mkdir -p "$scratch/input/"{orb_replay,cam_imu_motion,params,source,provenance}
 cp "$manifest" "$scratch/input/source.sha256"
@@ -21,7 +21,7 @@ cp "$here/adapter/orb_replay/"{live.py,umi.py,umi_quality.py,camera_live.c,camer
 cp "$here/adapter/cam_imu_motion/"{imu.py,timing_core.py} "$scratch/input/cam_imu_motion/"
 cp -R "$here/params/." "$scratch/input/params/"
 cut -c67- "$manifest" |
-    COPYFILE_DISABLE=1 tar --no-xattrs -C "$here/ORB_SLAM3" -cf - -T - |
+    COPYFILE_DISABLE=1 tar --no-xattrs -C "$here/vio_src" -cf - -T - |
     tar -C "$scratch/input/source" -xf -
 if [[ $("$docker" inspect --format '{{.State.Status}}' "$container") != running ]]; then
     "$docker" start "$container" >/dev/null

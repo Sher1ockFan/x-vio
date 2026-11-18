@@ -50,10 +50,11 @@ def package_root(path, temporary):
     with tarfile.open(path, 'r|gz') as tar:
         for member in tar:
             p = PurePosixPath(member.name)
-            if p.is_absolute() or '..' in p.parts or not p.parts or p.parts[0] != 'mono_imu_vio':
+            if p.is_absolute() or '..' in p.parts or not p.parts or p.parts[0] not in ('mono_vio_60', 'mono_imu_vio'):
                 raise ValueError('Unsafe package path: ' + member.name)
-            rel = p.relative_to('mono_imu_vio')
-            wanted = str(rel) == 'source/ORB_SLAM3/include/TrackingHealth.h' or (
+            rel = p.relative_to(p.parts[0])
+            wanted = str(rel) in ('source/vio_src/include/TrackingHealth.h',
+                                  'source/ORB_SLAM3/include/TrackingHealth.h') or (
                 len(rel.parts) == 2 and rel.parts[0] == 'lib' and rel.name.endswith('.so'))
             if wanted:
                 if not member.isfile():
@@ -110,13 +111,16 @@ def main():
             core_digest = hashlib.sha256(core.read_bytes()).hexdigest()
             cv = Path(os.environ.get('MONO_IMU_OPENCV_LIB', '/build/orb-kit/opencv-4.8.0/usr/lib'))
             env['LD_LIBRARY_PATH'] = str(package / 'lib') + ':' + str(cv) + ':' + env.get('LD_LIBRARY_PATH', '')
-            command = [compiler, '-std=c++11', '-O2', '-I' + str(package / 'source/ORB_SLAM3/include'),
+            include = package / 'source/vio_src/include'
+            if not include.is_dir():
+                include = package / 'source/ORB_SLAM3/include'
+            command = [compiler, '-std=c++11', '-O2', '-I' + str(include),
                        str(test), '-o', str(binary), '-L' + str(package / 'lib'),
                        '-Wl,-rpath,' + str(package / 'lib'), '-Wl,-rpath-link,' + str(package / 'lib'),
                        '-Wl,-rpath-link,' + str(cv), '-lORB_SLAM3', '-pthread']
         else:
-            command = [compiler, '-std=c++11', '-O2', '-I' + str(ROOT / 'ORB_SLAM3/include'),
-                       str(ROOT / 'ORB_SLAM3/src/TrackingHealth.cc'), str(test), '-o', str(binary)]
+            command = [compiler, '-std=c++11', '-O2', '-I' + str(ROOT / 'vio_src/include'),
+                       str(ROOT / 'vio_src/src/TrackingHealth.cc'), str(test), '-o', str(binary)]
         subprocess.run(command, check=True, env=env)
         subprocess.run([str(binary)], check=True, env=env, timeout=30)
     print(json.dumps({'result': 'REPROJECTION_LOGGED_GATE_PASS', 'expected_policy': args.expect,

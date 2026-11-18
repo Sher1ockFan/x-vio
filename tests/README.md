@@ -26,6 +26,8 @@ python3 tests/native_camera_profile_test.py --gray-only
 
 ## 可复用的既有检查
 
+本地核心源码目录为 `vio_src/`，新安装包中的子集路径为 `source/vio_src/`。
+
 在工程根目录可执行不依赖实机的终端、状态与核心策略检查：
 
 ```bash
