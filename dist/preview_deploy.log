@@ -1,6 +1,0 @@
-MONO_VIO_60_RUNTIME_CHECK_OK (software only; new-camera calibration and streaming not verified)
-  bash start.sh record-view NEW_TAKE Record with a camera-only preview
-Calibration candidate: 使用当前相机的 Omni-radtan 内参和联合标定结果；保留全分辨率，独立精度复验已跳过。
-Camera profile: /dev/video0; 1920x1536 UYVY; crop top=0 bottom=0; output=1920x1536; requested_fps=60 (not measured).
-INSTALL=/home/pnd/Documents/mono_vio_60
-BACKUP=/home/pnd/Documents/mono_vio_60/.preview_previous.Rueow6

@@ -1,6 +1,0 @@
-{
-  "bin/stock_viewer": "fdf231039757e45e24160456db0babca9f3d289f27eb7cf7abdae3ff5098cb20",
-  "bin/camera_live": "22e83b77ab41e922db71c21e0390285fe29a594d38419b72337ab8beef601dae",
-  "bin/camera_umi": "e209385bbe6b89363b31e0eb021ae80bcbd872e2208bd495f82f733fb88f0381",
-  "lib/libORB_SLAM3.so": "a6c59fe878276ee6e746738c1f0bf27e142070f8e29842c379fb481978d69de6"
-}
