@@ -136,6 +136,10 @@ Tracking::Tracking(System *pSys, ORBVocabulary* pVoc, FrameDrawer *pFrameDrawer,
         {
             std::cout << " is fisheye" << std::endl;
         }
+        else if(pCam->GetType() == GeometricCamera::CAM_OMNI)
+        {
+            std::cout << " is Omni-radtan" << std::endl;
+        }
         else
         {
             std::cout << " is unknown" << std::endl;

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "camera_id": "jl-isx031-m3a-replace-with-camera-serial",
+  "rig_id": "new-nx-rig-replace-with-assembly-id",
+  "device": "/dev/video0",
+  "expected_card": "vi-output, jl_gmsl 10-003a",
+  "expected_bus": null,
+  "raw_width": 1920,
+  "raw_height": 1536,
+  "crop_top": 0,
+  "crop_bottom": 0,
+  "requested_fps": 60,
+  "pixel_format": "UYVY",
+  "timestamp_domain": "cntvct",
+  "description": "Candidate layout from read-only device tree inspection. Actual geometry, metadata location and 60 fps NOT measured. No automatic first-row crop. CNTVCT provisionally inherited with old fit_05 calibration for a user-authorized trial.",
+  "timestamp_domain_verification": "borrowed_old_driver_assumption_not_verified_on_new_driver"
+}

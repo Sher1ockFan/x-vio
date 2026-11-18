@@ -1,0 +1,17 @@
+{
+  "units": "seconds unless a field is explicitly labelled ns or us",
+  "time_convention": "t_image_on_imu_basis = t_camera_mapped_to_RAW + timeshift_cam_imu",
+  "timeshift_cam_imu_seconds": 0.016881056522098987,
+  "timeshift_cam_imu_rounded_ns": 16881057,
+  "imu_mapping": "host_reference_raw_ns + round(host_relative_intercept_ns + host_ns_per_device_ns * ((timer_us_unwrapped_in_epoch - device_reference_us) * 1000))",
+  "spatial_convention": "cam_imu.yaml: T_cam_imu maps IMU to camera; orb_trial.yaml: IMU.T_b_c1 is its inverse and maps camera to IMU. Translation metres.",
+  "source_fit": "fit_05",
+  "source_recording": "run_03",
+  "source_report_sha256": "6929713d4f1f65542b99011a39a8e876d790166e48157627d1702e0e0cec0ece",
+  "source_camchain_sha256": "a3269f500197a4a1a48fd9566488fcd9571d3433cdd9e39a0c3ba3822c5287fb",
+  "calibration_status": "borrowed_fit05_trial_unvalidated",
+  "camera_profile_sha256": "20cf9bcdbcbf032d7a05f09088a5a088e93185a1cf150ed53f28a898193426bc",
+  "calibration_validated_for_current_rig": false,
+  "camera_mapping": "Provisionally interpret jl_gmsl driver timestamps as CNTVCT, inherited from the old driver; map to host MONOTONIC_RAW using current-run clock samples. Domain and timestamp event not verified on the new camera.",
+  "validity": "User-authorized trial only: all fit_05 calibration parameters belong to the old camera/rig. Refit clock mappings every session, apply residual camera shift once, and do not reuse old capture anchors. Not an accuracy acceptance configuration."
+}

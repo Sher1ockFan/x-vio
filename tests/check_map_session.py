@@ -9,6 +9,7 @@ import shutil
 import stat
 import tempfile
 from unittest.mock import patch
+from test_camera_profile import write_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("map_session", ROOT / "jetson/map_session.py")
@@ -34,8 +35,7 @@ with tempfile.TemporaryDirectory(prefix="map-session-test-") as tmp:
         count += 1
         folder = root / "runs" / ("live_" + str(count))
         folder.mkdir(parents=True)
-        shutil.copy2(ROOT / "params/orb_trial.yaml", folder / "settings.yaml")
-        shutil.copy2(ROOT / "params/timing.json", folder / "timing.json")
+        write_snapshot(folder)
         environment = {"VIO_MAP_MODE": mode, "VIO_MAP_FILE": str(reference or root / "maps/workspace_v2.osa")}
         with patch.dict(os.environ, environment):
             plan = module.prepare(root, folder)
@@ -71,8 +71,7 @@ with tempfile.TemporaryDirectory(prefix="map-session-test-") as tmp:
     legacy.write_bytes(b"preserve previous reference for diagnosis")
     default_run = root / "runs/live_default"
     default_run.mkdir(parents=True)
-    shutil.copy2(ROOT / "params/orb_trial.yaml", default_run / "settings.yaml")
-    shutil.copy2(ROOT / "params/timing.json", default_run / "timing.json")
+    write_snapshot(default_run)
     default_env = dict(os.environ)
     default_env.pop("VIO_MAP_FILE", None)
     default_env["VIO_MAP_MODE"] = "auto"
@@ -86,7 +85,7 @@ with tempfile.TemporaryDirectory(prefix="map-session-test-") as tmp:
     reference = Path(plan["reference"])
     assert plan["load"] == "" and not reference.exists()
     assert "MapReuse.Enabled: 1" in (folder / "settings.yaml").read_text()
-    assert "MapReuse." not in (ROOT / "params/orb_trial.yaml").read_text()
+    assert "MapReuse." not in (ROOT / "params/orb_trial.template.yaml").read_text()
     # First clean mature save becomes the reference with a timing/calibration guard.
     core_saved(session)
     assert module.finalize(session, 0)["status"] == "REFERENCE_PUBLISHED"
@@ -161,10 +160,11 @@ with tempfile.TemporaryDirectory(prefix="map-session-test-") as tmp:
     # Display/extractor settings do not invalidate maps; physical calibration does.
     cfg = folder2 / "settings.yaml"
     before = module.calibration(cfg, folder2 / "timing.json")[0]
+    cfg.write_text(cfg.read_text() + "\nViewer.ViewpointF: 500.0\nORBextractor.nFeatures: 1500\n")
     cfg.write_text(cfg.read_text().replace("Viewer.ViewpointF: 500.0", "Viewer.ViewpointF: 600.0")
                    .replace("ORBextractor.nFeatures: 1500", "ORBextractor.nFeatures: 2000"))
     assert module.calibration(cfg, folder2 / "timing.json")[0] == before
-    cfg.write_text(cfg.read_text().replace("Camera1.fx: 448.29128603612367", "Camera1.fx: 440"))
+    cfg.write_text(cfg.read_text().replace("Camera1.fx: 4.0", "Camera1.fx: 4.4"))
     changed = module.calibration(cfg, folder2 / "timing.json")[0]
     expect_error(lambda: module.validate_reference(reference, changed), "MAP_E_CALIBRATION")
     clock = folder2 / "timing.json"
@@ -229,9 +229,9 @@ with tempfile.TemporaryDirectory(prefix="map-session-test-") as tmp:
     for legacy in ("System.LoadAtlasFromFile", "System.SaveAtlasToFile"):
         legacy_run = root / legacy
         legacy_run.mkdir()
-        text = (ROOT / "params/orb_trial.yaml").read_text()
+        write_snapshot(legacy_run)
+        text = (legacy_run / "settings.yaml").read_text()
         (legacy_run / "settings.yaml").write_text(text + '\n' + legacy + ': "old"\n')
-        shutil.copy2(ROOT / "params/timing.json", legacy_run / "timing.json")
         with patch.dict(os.environ, {"VIO_MAP_MODE": "off"}):
             expect_error(lambda: module.prepare(root, legacy_run), "MAP_E_CONFIG")
     # Corruption and absent manifests fail before native tracking starts.

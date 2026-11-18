@@ -838,18 +838,19 @@ float KeyFrame::ComputeSceneMedianDepth(const int q)
 
     vector<float> vDepths;
     vDepths.reserve(N);
-    Eigen::Matrix<float,1,3> Rcw2 = Rcw.row(2);
-    float zcw = tcw(2);
-    for(int i=0; i<N; i++) {
-        if(mvpMapPoints[i])
-        {
-            MapPoint* pMP = mvpMapPoints[i];
-            Eigen::Vector3f x3Dw = pMP->GetWorldPos();
-            float z = Rcw2.dot(x3Dw) + zcw;
-            vDepths.push_back(z);
-        }
+    const bool useRange = mpCamera->GetType() == GeometricCamera::CAM_OMNI;
+    for(MapPoint* pMP : vpMapPoints)
+    {
+        if(!pMP)
+            continue;
+        const Eigen::Vector3f x3Dw = pMP->GetWorldPos();
+        const float depth = useRange ? (Rcw*x3Dw + tcw).norm() : Rcw.row(2).dot(x3Dw) + tcw.z();
+        if(std::isfinite(depth))
+            vDepths.push_back(depth);
     }
 
+    if(vDepths.empty())
+        return -1.0f;
     sort(vDepths.begin(),vDepths.end());
 
     return vDepths[(vDepths.size()-1)/q];

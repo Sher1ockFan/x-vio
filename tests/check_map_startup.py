@@ -12,6 +12,7 @@ import re
 import shutil
 import tempfile
 from unittest.mock import patch
+from test_camera_profile import write_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 source = ROOT / 'adapter/orb_replay/live.py'
@@ -121,8 +122,7 @@ with tempfile.TemporaryDirectory(prefix='vio-map-startup-') as directory:
     def prepare(mode, suffix):
         folder = root / 'runs' / suffix
         folder.mkdir(parents=True)
-        shutil.copy2(ROOT / 'params/orb_trial.yaml', folder / 'settings.yaml')
-        shutil.copy2(ROOT / 'params/timing.json', folder / 'timing.json')
+        write_snapshot(folder)
         output = io.StringIO()
         with patch.dict(os.environ, {'VIO_MAP_MODE': mode, 'VIO_MAP_FILE': str(reference)}), redirect_stdout(output):
             plan = module.prepare(root, folder)

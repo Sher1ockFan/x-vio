@@ -78,6 +78,7 @@ src/TrackingHealth.cc
 src/G2oTypes.cc
 src/CameraModels/Pinhole.cpp
 src/CameraModels/KannalaBrandt8.cpp
+src/CameraModels/OmniRadtan.cpp
 src/OptimizableTypes.cpp
 src/MLPnPsolver.cpp
 src/GeometricTools.cc
@@ -109,6 +110,7 @@ include/G2oTypes.h
 include/CameraModels/GeometricCamera.h
 include/CameraModels/Pinhole.h
 include/CameraModels/KannalaBrandt8.h
+include/CameraModels/OmniRadtan.h
 include/OptimizableTypes.h
 include/MLPnPsolver.h
 include/GeometricTools.h

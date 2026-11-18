@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-17",
+  "status": "borrowed_unvalidated",
+  "source": "params/legacy_fit05/orb_trial.yaml",
+  "source_sha256": "eadeb22e7e1bffc05cd6cad84a4da28b4be2a80c8f43dc0f3e33688fa52b3acd",
+  "destination": "params/orb_trial.yaml",
+  "user_requested": true,
+  "source_input_size": [
+    1920,
+    1440
+  ],
+  "current_candidate_input_size": [
+    1920,
+    1536
+  ],
+  "requested_fps": 60,
+  "native_processing_size": [
+    960,
+    768
+  ],
+  "parameter_transform": "None. Original ORB settings values copied exactly; no new-lens/crop model inferred. Native half-size processing occurs once at runtime.",
+  "copied_keys": {
+    "Camera.type": "\"KannalaBrandt8\"",
+    "Camera1.fx": "448.29128603612367",
+    "Camera1.fy": "447.8671862373578",
+    "Camera1.cx": "961.0571170986485",
+    "Camera1.cy": "717.5117388590763",
+    "Camera1.k1": "0.21836372495045944",
+    "Camera1.k2": "-0.05933403743095892",
+    "Camera1.k3": "0.008485453727516598",
+    "Camera1.k4": "-0.0008888521529517888"
+  },
+  "extrinsics_copied": false,
+  "imu_parameters_copied": false,
+  "time_shift_copied": false,
+  "calibrated_on_current_camera": false
+}

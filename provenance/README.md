@@ -1,6 +1,6 @@
 # 源码来源与修改范围
 
-本工程是 ORB-SLAM3 的单目惯性修改版，基于官方提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4`。它不是未经修改的官方版本。完整可编译工程位于 Mac 的 `Documents/vio_ws/mono_imu_vio`；Jetson 安装包中的 `source/` 是便于阅读的源码子集。
+本工程是 ORB-SLAM3 的单目惯性修改版，基于官方提交 `4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4`。它不是未经修改的官方版本。当前完整可编译工程位于 Mac 的 `Documents/vio_ws/mono_vio_60`；Jetson 安装包中的 `source/` 是便于阅读的源码子集。
 
 三份记录各自的用途：
 
@@ -47,3 +47,11 @@
 ## 2026-11-13：移除固定像素 RMS 拒绝门槛
 
 按用户要求，`TrackingHealth` 移除有限视觉/融合重投影 RMS 大于 8 像素时的拒绝条件及对应阈值字段；继续记录原始残差，保留 NaN/Inf 与其他异常拒绝。相机/IMU 参数、地图恢复与序列化、频率延迟测试、无窗口/状态查询、LIVE 后静默和启动提示均不变。该改动不修复既有 Shutdown 段错误，也不等同于实机精度或完整原始序列回放验证。
+
+## 60 fps 版本的 Omni-radtan 接入
+
+此前的补丁和比较文件记录继承的单目惯性版本。当前构建源码以工程根目录的 `source.sha256` 为准，本次核心的增量文件及其前后哈希写在 `omni_60_changes.json`。
+
+- `CameraModels/OmniRadtan` 实现 Kalibr 投影、反投影、导数和球面视线的两视图初始化。帧、局部建图、特征匹配、重定位、回环及优化使用与模型一致的视线和可见性判断。
+- `Settings` 和 `Atlas` 支持载入及保存 Omni-radtan。使用独立的默认地图路径，标定指纹参与地图兼容检查。
+- 默认标定来自新机 `calibrate_nx/fit/fit_03`，相机保留 1920×1536，采集层启用 Tegra 60 fps 控制。原始 Kalibr 文件和活动配置随包提供。

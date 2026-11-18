@@ -76,14 +76,15 @@ namespace ORB_SLAM3 {
                     if(i >= F.mvKeysUn.size()) continue;
                     const cv::KeyPoint &kp = F.mvKeysUn[i];
 
+                    bearingVector_t bearing = mpCamera->unprojectEig(kp.pt).cast<double>();
+                    if(!bearing.allFinite())
+                        continue;
+                    if(mpCamera->GetType() != GeometricCamera::CAM_OMNI)
+                        bearing /= bearing.z();
+
                     mvP2D.push_back(kp.pt);
                     mvSigma2.push_back(F.mvLevelSigma2[kp.octave]);
-
-                    //Bearing vector should be normalized
-                    cv::Point3f cv_br = mpCamera->unproject(kp.pt);
-                    cv_br /= cv_br.z;
-                    bearingVector_t br(cv_br.x,cv_br.y,cv_br.z);
-                    mvBearingVecs.push_back(br);
+                    mvBearingVecs.push_back(bearing);
 
                     //3D coordinates
                     Eigen::Matrix<float,3,1> posEig = pMP -> GetWorldPos();
@@ -246,6 +247,9 @@ namespace ORB_SLAM3 {
 	        nMinInliers=minSet;
 	    mRansacMinInliers = nMinInliers;
 
+	    if(N < mRansacMinInliers)
+	        return;
+
 	    if(mRansacEpsilon<(float)mRansacMinInliers/N)
 	        mRansacEpsilon=(float)mRansacMinInliers/N;
 
@@ -277,11 +281,18 @@ namespace ORB_SLAM3 {
             float yc = mRi[1][0]*P3Dw.x+mRi[1][1]*P3Dw.y+mRi[1][2]*P3Dw.z+mti[1];
             float zc = mRi[2][0]*P3Dw.x+mRi[2][1]*P3Dw.y+mRi[2][2]*P3Dw.z+mti[2];
 
-            cv::Point3f P3Dc(xc,yc,zc);
-            cv::Point2f uv = mpCamera->project(P3Dc);
+            const Eigen::Vector3f P3Dc(xc,yc,zc);
+            if(mpCamera->GetType() == GeometricCamera::CAM_OMNI &&
+               (!mpCamera->isVisible(P3Dc.cast<double>()) ||
+                P3Dc.cast<double>().dot(mvBearingVecs[i]) <= 0.0))
+            {
+                mvbInliersi[i] = false;
+                continue;
+            }
+            const Eigen::Vector2f uv = mpCamera->project(P3Dc);
 
-            float distX = P2D.x-uv.x;
-            float distY = P2D.y-uv.y;
+            float distX = P2D.x-uv.x();
+            float distY = P2D.y-uv.y();
 
             float error2 = distX*distX+distY*distY;
 

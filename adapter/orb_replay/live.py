@@ -25,11 +25,9 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "cam_imu_motion"))
 import imu
 import timing_core
+from camera_profile import PROFILE_NAME, camera_env, load_profile, validate_calibration
 
 NS = 1_000_000_000
-IMAGE_WIDTH = 1920
-IMAGE_HEIGHT = 1440
-PIXELS = IMAGE_WIDTH * IMAGE_HEIGHT
 WARMUP_US = 10_000_000
 CLOCK_BLOCK = 500  # About one second at the configured IMU rate.
 CAMERA_ANCHOR_NS = NS // 4
@@ -180,7 +178,8 @@ def timing_raw_ns():
 
 
 class Streams:
-    def __init__(self):
+    def __init__(self, image_pixels=None):
+        self.image_pixels = image_pixels
         self.condition = threading.Condition()
         self.timing = None
         self.packet_timing = None
@@ -392,6 +391,8 @@ def read_imu(s):
 
 
 def read_camera(s, pipe):
+    if type(s.image_pixels) is not int or s.image_pixels <= 0:
+        raise ValueError("VIO_E_CONFIG: Missing camera snapshot image dimensions.")
     previous = 0
     while not s.stop.is_set():
         header = pipe.read(8)
@@ -401,8 +402,8 @@ def read_camera(s, pipe):
         if stamp <= previous:
             raise ValueError("Nonmonotonic camera timestamp.")
         previous = stamp
-        pixels = pipe.read(PIXELS)
-        if len(pixels) != PIXELS:
+        pixels = pipe.read(s.image_pixels)
+        if len(pixels) != s.image_pixels:
             raise EOFError("Incomplete grayscale frame from camera helper.")
         if s.timing:
             s.timing.write("camera_read", (stamp, timing_raw_ns()))
@@ -546,12 +547,21 @@ def monitor_runner(s, child):
 
 
 def run(args, out, shift):
-    feeds = Streams()
+    if args.yaml.parent != args.timing.parent:
+        raise ValueError("VIO_E_CONFIG: Settings, timing and camera profile must share one snapshot directory.")
+    profile = load_profile(args.yaml.parent / PROFILE_NAME)
+    layout = validate_calibration(args.yaml, args.timing, profile)
+    if shift != layout["camera_shift_ns"]:
+        raise ValueError("VIO_E_CONFIG: Live camera shift differs from its calibration snapshot.")
+    feeds = Streams(layout["pixels"])
     cam = orb = None
     threads = []
     report = {"camera_shift_ns": shift, "duration_requested_s": args.seconds,
               "duration_mode": "until_stopped" if args.seconds == 0 else "timed",
-              "camera_mode": "full", "input_image_size": [IMAGE_WIDTH, IMAGE_HEIGHT],
+              "camera_mode": "profile", "input_image_size": [layout["width"], layout["height"]],
+              "camera_profile": profile, "camera_profile_sha256": layout["profile_sha256"],
+              "calibration_status": layout["calibration_status"],
+              "calibration_validated_for_current_rig": layout["calibration_validated_for_current_rig"],
               "status": "INCOMPLETE", "streams": feeds.stats, "viewer": args.viewer}
     stop_signal = None
     streaming = False
@@ -593,7 +603,7 @@ def run(args, out, shift):
             with feeds.condition:
                 feeds.wait(lambda: feeds.model is not None, 18, "IMU clock startup timed out.")
             cam = subprocess.Popen([args.bindir / "camera_live"], stdout=subprocess.PIPE,
-                                   stderr=cam_log, cwd=out, start_new_session=True)
+                                   stderr=cam_log, cwd=out, start_new_session=True, env=camera_env(profile))
             start(read_camera, cam.stdout)
             fd = orb.stdin.fileno()
             os.set_blocking(fd, False)
@@ -684,12 +694,9 @@ def run(args, out, shift):
 
 
 def camera_shift(path):
-    timing = json.loads(path.read_text())
-    shift = timing["timeshift_cam_imu_rounded_ns"]
-    if (type(shift) is not int or abs(shift) >= NS or
-            shift != round(timing["timeshift_cam_imu_seconds"] * NS)):
-        raise ValueError("Inconsistent camera shift in timing JSON.")
-    return shift
+    path = Path(path)
+    profile = load_profile(path.parent / PROFILE_NAME)
+    return validate_calibration(path.parent / "settings.yaml", path, profile)["camera_shift_ns"]
 
 
 def main():
@@ -714,7 +721,10 @@ def main():
     for p in (args.vocabulary, args.yaml, args.timing):
         if not p.is_file():
             ap.error(f"Missing file: {p}")
-    shift = camera_shift(args.timing)
+    if args.yaml.parent != args.timing.parent:
+        ap.error("Settings, timing and camera profile must share one snapshot directory.")
+    profile = load_profile(args.yaml.parent / PROFILE_NAME)
+    shift = validate_calibration(args.yaml, args.timing, profile)["camera_shift_ns"]
     args.out.mkdir(mode=0o700, exist_ok=False)
     print("New live output:", args.out, flush=True)
     if args.seconds == 0:

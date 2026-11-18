@@ -70,6 +70,22 @@ namespace ORB_SLAM3 {
 
         virtual Eigen::Matrix<double,2,3> projectJac(const Eigen::Vector3d& v3D) = 0;
 
+        virtual bool isVisible(const Eigen::Vector3d& point) const
+        {
+            return point.allFinite() && point.z() > 0.0;
+        }
+
+        Eigen::Vector2d reprojectionError(const Eigen::Vector2d& observation,
+                                          const Eigen::Vector3d& point)
+        {
+            const Eigen::Vector2d projected = project(point);
+            // An invalid Omni projection must be rejected as an outlier without
+            // inserting NaNs into an optimization step.
+            if(mnType == CAM_OMNI && !projected.allFinite())
+                return Eigen::Vector2d::Constant(1000.0);
+            return observation - projected;
+        }
+
         virtual bool ReconstructWithTwoViews(const std::vector<cv::KeyPoint>& vKeys1, const std::vector<cv::KeyPoint>& vKeys2, const std::vector<int> &vMatches12,
                                              Sophus::SE3f &T21, std::vector<cv::Point3f> &vP3D, std::vector<bool> &vbTriangulated) = 0;
 
@@ -94,6 +110,7 @@ namespace ORB_SLAM3 {
 
         const static unsigned int CAM_PINHOLE = 0;
         const static unsigned int CAM_FISHEYE = 1;
+        const static unsigned int CAM_OMNI = 2;
 
         static long unsigned int nNextId;
 

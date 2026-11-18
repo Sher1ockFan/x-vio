@@ -14,7 +14,7 @@ import traceback
 
 LIVE = "LIVE: move the rig with both translation and rotation in a textured scene."
 STARTUP_PREFIXES = (
-    "/dev/gmsl/B: ",
+    "Camera profile: ",
     "Trial calibration: ",
     "New live output: ",
     "Continuous tracking. ",
@@ -76,15 +76,15 @@ def classify_startup_failure(lines, session=None, error=None):
         if component:
             tail = log_tail(Path(session) / (component + ".log"))
             for line in reversed(tail):
-                match = re.search(r"\b(MAP_E_[A-Z_]+):\s*(.+)", line)
+                match = re.search(r"\b((?:VIO|MAP)_E_[A-Z_]+):\s*(.+)", line)
                 if match:
                     return match.group(1), short_detail(match.group(2))
             fatal = [line for line in tail if re.search(
-                r"VIDIOC_.*:|Invalid camera|unexpected.*(?:format|size)|"
+                r"VIO_E_[A-Z_]+:|VIDIOC_.*:|Invalid camera|unexpected.*(?:format|size)|"
                 r"unexpected GMSL identity|^Expected .* GMSL camera|Short MMAP buffer|"
                 r"Camera stalled|Unexpected camera clock|Unexpected buffer count|"
                 r"No reliable host clock bracket|No gray buffer|"
-                r"^(?:inspect camera|set 30 fps|map/queue camera|camera output pipe|write camera timing|camera_timing.csv).*:|"
+                r"^(?:inspect camera|set camera fps|map/queue camera|camera output pipe|write camera timing|camera_timing.csv).*:|"
                 r"(?:error|failed|cannot|could not|unable) .*|Permission denied|"
                 r"No such (?:file|device)|undefined symbol|what\(\):|"
                 r"(?:GLX|X11|Pangolin|Gtk).*?(?:error|failed|cannot)", line, re.I)
@@ -101,6 +101,8 @@ def classify_startup_failure(lines, session=None, error=None):
         return "VIO_E_DISPLAY", reason
     if component == "camera":
         return "VIO_E_CAMERA", reason
+    if re.search(r"missing.*(?:camera.*calibr|timing.*calibr)|calibration is required", low):
+        return "VIO_E_CALIBRATION", reason
     if "no such file or directory" in low or "filenotfounderror" in low or low.startswith("missing "):
         return "VIO_E_PATH", reason
     if any(x in low for x in ("read_imu:", "imu timer", "imu packet", "serial device", "serial port", "ahrs", "accelerometer/gyro", "ttyusb")):

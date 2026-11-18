@@ -23,21 +23,26 @@ fi
 usage() {
     cat <<'EOF'
 Usage:
-  bash start.sh live [SECONDS]       B port, 1920x1440 capture and native viewer
+  bash start.sh live [SECONDS]       Configured jl_gmsl camera and native viewer
                                     Omit SECONDS or use 0 to run until Ctrl+C
   bash start.sh live-headless [SECONDS] Same sensors/maps/timing without GUI or DISPLAY
+  bash start.sh profile             Show selected camera profile; no device access
   bash start.sh status [OPTIONS]     Read-only session state; use --help for options
-  bash start.sh record NEW_TAKE      Record B-port camera + IMU packets
-  bash start.sh record-view NEW_TAKE Record with independent native preview
+  bash start.sh record NEW_TAKE      Record configured camera + IMU packets
+  bash start.sh record-view NEW_TAKE Record with a camera-only preview
   bash start.sh replay TAKE          Replay a complete take in the native viewer
   bash start.sh recover TAKE         Verify a previously interrupted take
   bash start.sh mark TAKE            Mark A/B/A holds while recording
   bash start.sh trajectory TAKE      Export native trajectory and check marked holds
 
+Configuration: VIO_CAMERA_PROFILE selects the camera JSON; VIO_SETTINGS and
+               VIO_TIMING_FILE select calibration parameters.
+               Default: full-resolution Omni-radtan calibration candidate from the current rig.
 Live maps: VIO_MAP_MODE=auto|new|off (default auto).
-           VIO_MAP_FILE defaults to PACKAGE/maps/workspace_v2.osa.
+           VIO_MAP_FILE defaults to PACKAGE/maps/workspace_omni_60.osa for the Omni candidate,
+           workspace_trial.osa for borrowed trials, or workspace_v2.osa for validated calibration.
            Existing reference maps are never overwritten automatically.
-           Record/replay are fresh sessions and do not use the live reference.
+           Replay starts its own map. Recording saves camera and IMU packets.
 EOF
 }
 fail() { printf '%s\n' "$*" >&2; exit 1; }
@@ -49,6 +54,11 @@ case "$mode" in
         printf '%s\n' 'VIO_E_ARGUMENT: Usage: bash start.sh live|live-headless [SECONDS]; use a nonnegative integer, omit it or use 0 to run until Ctrl+C.' >&2
         exit 2
     } ;;
+    profile)
+        [[ $# -eq 1 ]] || { usage >&2; exit 2; }
+        root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+        exec python3 "$root/camera_config.py" describe "${VIO_CAMERA_PROFILE:-$root/params/camera_profile.json}"
+        ;;
     status)
         root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
         shift
@@ -64,8 +74,9 @@ esac
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 tools="$root/tools/orb_replay"
 bin="$root/bin"
-cfg="$root/params/orb_trial.yaml"
-timing="$root/params/timing.json"
+cfg=${VIO_SETTINGS:-"$root/params/orb_trial.yaml"}
+timing=${VIO_TIMING_FILE:-"$root/params/timing.json"}
+profile=${VIO_CAMERA_PROFILE:-"$root/params/camera_profile.json"}
 export PYTHONDONTWRITEBYTECODE=1
 export LD_LIBRARY_PATH="$root/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
@@ -80,16 +91,34 @@ case "$mode" in
         if command -v xdpyinfo >/dev/null; then
             timeout 8s xdpyinfo >/dev/null 2>&1 || fail_code VIO_E_DISPLAY "Cannot access X11 display $DISPLAY; check the desktop login and X11 access permissions."
         fi
+        ;;
+esac
+
+case "$mode" in
+    live|replay)
         [[ -x "$bin/stock_viewer" ]] || fail_code VIO_E_PATH "Missing or non-executable file: $bin/stock_viewer"
         vocab=${ORB_VOCABULARY:-"$root/Vocabulary/ORBvoc.txt"}
         [[ -r $vocab && -s $vocab ]] || fail_code VIO_E_PATH "Missing, empty or unreadable ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
         ;;
+    live-headless)
+        vocab=${ORB_VOCABULARY:-"$root/Vocabulary/ORBvoc.txt"}
+        [[ -r $vocab && -s $vocab ]] || fail_code VIO_E_PATH "Missing, empty or unreadable ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
+        ;;
+    record-view)
+        [[ -x "$bin/camera_preview" ]] || fail_code VIO_E_PATH "Missing or non-executable file: $bin/camera_preview"
+        ;;
 esac
 
-if [[ $mode == live-headless ]]; then
-    vocab=${ORB_VOCABULARY:-"$root/Vocabulary/ORBvoc.txt"}
-    [[ -r $vocab && -s $vocab ]] || fail_code VIO_E_PATH "Missing, empty or unreadable ORB vocabulary: $vocab. Set ORB_VOCABULARY to ORBvoc.txt."
-fi
+case "$mode" in
+    live|live-headless|record|record-view)
+        [[ -f $profile && -r $profile ]] || fail_code VIO_E_CAMERA_CONFIG "Missing camera profile: $profile. Select params/camera_video0.json or camera_video1.json with VIO_CAMERA_PROFILE after confirming the physical camera."
+        # Report all missing fields together before accessing either sensor.
+        python3 "$root/camera_config.py" validate "$profile" "$cfg" "$timing"
+        camera=$(python3 "$root/camera_config.py" device "$profile")
+        [[ -c $camera ]] || fail_code VIO_E_CAMERA "Camera device not found: $camera. Check the selected jl_gmsl node and camera connection."
+        [[ -r $camera && -w $camera ]] || fail_code VIO_E_PERMISSION "Camera is not readable/writable by $(id -un): $camera."
+        ;;
+esac
 
 case "$mode" in
     live|live-headless)
@@ -105,17 +134,12 @@ case "$mode" in
         for parameter in "$cfg" "$timing"; do
             [[ -f "$parameter" && -r "$parameter" ]] || fail_code VIO_E_CONFIG "Missing or unreadable parameter file: $parameter"
         done
-        camera=/dev/gmsl/B
-        [[ -c $camera ]] || fail_code VIO_E_CAMERA "Camera device not found: $camera. Check the B-port connection, device link and GMSL driver."
-        [[ -r $camera && -w $camera ]] ||
-            fail_code VIO_E_PERMISSION "Camera is not readable/writable by $(id -un): $camera. Check the video group/device permissions."
-        printf '%s\n' "$camera: 1920x1441 UYVY; crop top row to 1920x1440; ORB input resize to 960x720." \
-            'Trial calibration: fit_05 and camera–IMU time shift inherited from channel C.'
         runs=${ORB_HUB_RUNS:-"$root/runs"}
         mkdir -p -- "$runs"
         run=$(mktemp -d -- "$runs/live_XXXXXX")
         cp -- "$cfg" "$run/settings.yaml"
         cp -- "$timing" "$run/timing.json"
+        cp -- "$profile" "$run/camera_profile.json"
         python3 "$root/map_session.py" prepare "$root" "$run"
         exec python3 -u "$tools/live.py" "$bin" "$vocab" "$run/settings.yaml" "$run/timing.json" \
             "$run/session" "${viewer_args[@]}" --seconds "${2:-0}"
@@ -128,11 +152,12 @@ case "$mode" in
         take=$(cd -- "$2" && pwd -P)
         cp -- "$cfg" "$take/settings.yaml"
         cp -- "$timing" "$take/timing.json"
+        cp -- "$profile" "$take/camera_profile.json"
         printf 'Recording to %s. Press Ctrl+C once to seal the recording. Progress: %s/record.log\n' "$take" "$take"
         if [[ $mode == record ]]; then
             exec python3 -u "$tools/umi.py" record "$take" "$bin/camera_umi" >"$take/record.log" 2>&1
         fi
-        exec python3 -u "$root/playback.py" record-view "$take" "$bin/stock_viewer" "$vocab" "$bin/camera_umi"
+        exec python3 -u "$root/playback.py" record-view "$take" "$bin/camera_preview" "$bin/camera_umi"
         ;;
     replay)
         exec python3 -u "$root/playback.py" replay "$2" "$bin/stock_viewer" "$vocab"

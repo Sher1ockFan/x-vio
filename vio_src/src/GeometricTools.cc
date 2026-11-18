@@ -46,11 +46,33 @@ Eigen::Matrix3f GeometricTools::ComputeF12(KeyFrame* &pKF1, KeyFrame* &pKF2)
 
 bool GeometricTools::Triangulate(Eigen::Vector3f &x_c1, Eigen::Vector3f &x_c2,Eigen::Matrix<float,3,4> &Tc1w ,Eigen::Matrix<float,3,4> &Tc2w , Eigen::Vector3f &x3D)
 {
+    if(!x_c1.allFinite() || !x_c2.allFinite() || x_c1.isZero() || x_c2.isZero())
+        return false;
+
     Eigen::Matrix4f A;
-    A.block<1,4>(0,0) = x_c1(0) * Tc1w.block<1,4>(2,0) - Tc1w.block<1,4>(0,0);
-    A.block<1,4>(1,0) = x_c1(1) * Tc1w.block<1,4>(2,0) - Tc1w.block<1,4>(1,0);
-    A.block<1,4>(2,0) = x_c2(0) * Tc2w.block<1,4>(2,0) - Tc2w.block<1,4>(0,0);
-    A.block<1,4>(3,0) = x_c2(1) * Tc2w.block<1,4>(2,0) - Tc2w.block<1,4>(1,0);
+    const auto addRayConstraints = [&A](const Eigen::Vector3f& ray,
+                                        const Eigen::Matrix<float,3,4>& pose, int row)
+    {
+        // Keep the existing homogeneous-coordinate equations for legacy cameras.
+        if(ray.z() == 1.0f)
+        {
+            A.row(row) = ray.x() * pose.row(2) - pose.row(0);
+            A.row(row + 1) = ray.y() * pose.row(2) - pose.row(1);
+            return;
+        }
+
+        // An oriented bearing may be on or past the optical horizon. Use two
+        // orthogonal constraints instead of dividing by the optical-axis component.
+        const Eigen::Vector3f bearing = ray.normalized();
+        const Eigen::Vector3f tangent = bearing.unitOrthogonal();
+        A.row(row) = tangent.transpose() * pose;
+        A.row(row + 1) = bearing.cross(tangent).transpose() * pose;
+    };
+    addRayConstraints(x_c1, Tc1w, 0);
+    addRayConstraints(x_c2, Tc2w, 2);
+
+    if(!A.allFinite())
+        return false;
 
     Eigen::JacobiSVD<Eigen::Matrix4f> svd(A, Eigen::ComputeFullV);
 
@@ -62,7 +84,7 @@ bool GeometricTools::Triangulate(Eigen::Vector3f &x_c1, Eigen::Vector3f &x_c2,Ei
     // Euclidean coordinates
     x3D = x3Dh.head(3)/x3Dh(3);
 
-    return true;
+    return x3D.allFinite();
 }
 
 } //namespace ORB_SLAM

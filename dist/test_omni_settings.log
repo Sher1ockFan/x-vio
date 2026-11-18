@@ -1,0 +1,1037 @@
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:74: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                          ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:82: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                                  ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<3, Eigen::Matrix<double, 3, 1> >’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_sba.h:40:35:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<6, g2o::SE3Quat>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:59:33:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<6, g2o::SE3Quat, g2o::VertexSE3Expmap, g2o::VertexSE3Expmap>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:83:24:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:114:35:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:146:41:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<7, g2o::Sim3>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:48:35:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<7, g2o::Sim3, g2o::VertexSim3Expmap, g2o::VertexSim3Expmap>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:99:27:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, g2o::VertexSim3Expmap>’:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h:130:36:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/include/G2oTypes.h:25,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:6:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/core/base_multi_edge.h:69:54: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   69 |       typedef Eigen::Map<MatrixXd, MatrixXd::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                      ^~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<6, ORB_SLAM3::ImuCamPose>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:130:32:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<4, ORB_SLAM3::ImuCamPose>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:155:36:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<2, ORB_SLAM3::GDirection>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:274:32:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<1, double>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:296:33:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:37,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h: In instantiation of ‘class g2o::BaseVertex<1, ORB_SLAM3::InvDepthPoint>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:321:36:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_vertex.h:62:72: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   62 |     typedef Eigen::Map<Matrix<double, D, D>, Matrix<double,D,D>::Flags & AlignedBit ? Aligned : Unaligned >  HessianBlockType;
+      |                                                                  ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, ORB_SLAM3::VertexPose>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:342:30:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, g2o::VertexSBAPointXYZ, ORB_SLAM3::VertexPose>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:425:32:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, ORB_SLAM3::VertexGyroBias, ORB_SLAM3::VertexGyroBias>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:635:32:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<3, Eigen::Matrix<double, 3, 1>, ORB_SLAM3::VertexAccBias, ORB_SLAM3::VertexAccBias>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:671:31:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<6, Eigen::Matrix<double, 6, 1, 0, 6, 1>, ORB_SLAM3::VertexPose4DoF, ORB_SLAM3::VertexPose4DoF>’:
+/build/mono-vio-60/work/source/include/G2oTypes.h:817:30:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h: In instantiation of ‘class g2o::BaseBinaryEdge<2, Eigen::Matrix<double, 2, 1>, g2o::VertexSBAPointXYZ, ORB_SLAM3::VertexSim3Expmap>’:
+/build/mono-vio-60/work/source/include/OptimizableTypes.h:175:41:   required from here
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:59:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   59 |       typedef Eigen::Map<Matrix<double, Di, Dj>, Matrix<double, Di, Dj>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+In file included from /build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h:38,
+                 from /build/mono-vio-60/work/source/include/Converter.h:26,
+                 from /build/mono-vio-60/work/source/include/Frame.h:34,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/build/mono-vio-60/work/source/Thirdparty/g2o/g2o/types/../core/base_binary_edge.h:60:80: warning: ‘Eigen::AlignedBit’ is deprecated [-Wdeprecated-declarations]
+   60 |       typedef Eigen::Map<Matrix<double, Dj, Di>, Matrix<double, Dj, Di>::Flags & AlignedBit ? Aligned : Unaligned > HessianBlockTransposedType;
+      |                                                                          ~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/eigen3/Eigen/Core:161,
+                 from /usr/include/eigen3/Eigen/LU:11,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/so2.hpp:12,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/se2.hpp:7,
+                 from /build/mono-vio-60/work/source/Thirdparty/Sophus/sophus/geometry.hpp:7,
+                 from /build/mono-vio-60/work/source/include/Frame.h:29,
+                 from /build/mono-vio-60/work/source/include/KeyFrame.h:28,
+                 from /build/mono-vio-60/work/source/include/MapPoint.h:23,
+                 from /build/mono-vio-60/work/source/include/FrameDrawer.h:24,
+                 from /build/mono-vio-60/work/source/include/Viewer.h:23,
+                 from /build/mono-vio-60/work/source/include/Tracking.h:27,
+                 from /build/mono-vio-60/work/source/include/System.h:32,
+                 from /tmp/tmp.sZZljTldTl/tests/native_omni_settings_test.cc:2:
+/usr/include/eigen3/Eigen/src/Core/util/Constants.h:167:37: note: declared here
+  167 | EIGEN_DEPRECATED const unsigned int AlignedBit = 0x80;
+      |                                     ^~~~~~~~~~
+Camera.newHeight optional parameter does not exist...
+Camera.newWidth optional parameter does not exist...
+IMU.InsertKFsWhenLost optional parameter does not exist...
+Viewer.imageViewScale optional parameter does not exist...
+System.LoadAtlasFromFile optional parameter does not exist...
+System.SaveAtlasToFile optional parameter does not exist...
+System.thFarPoints optional parameter does not exist...
+Loading settings from /tmp/tmp.sZZljTldTl/params/orb_trial.yaml
+	-Loaded camera 1
+	-Loaded image info
+	-Loaded IMU calibration
+	-Loaded ORB settings
+	-Loaded viewer settings
+	-Loaded Atlas settings
+	-Loaded misc parameters
+----------------------------------
+Creation of new map with id: 0
+Creation of new map with last KF id: 0
+Creation of new map with id: 1
+Creation of new map with last KF id: 0
+OMNI_SETTINGS_1920x1536_VISIBILITY_JACOBIAN_TRIANGULATION_OPTIMIZER_ATLAS_PASS

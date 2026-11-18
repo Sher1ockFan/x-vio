@@ -1,0 +1,67 @@
+{
+  "status": "CANDIDATE_FOR_REVIEW",
+  "T_cam_imu": [
+    [
+      0.9997519629431524,
+      0.02013098348424117,
+      -0.009526599355047988,
+      0.002852504005461098
+    ],
+    [
+      -0.00961582966096581,
+      0.004340344678592352,
+      -0.9999443470653769,
+      0.01970014951872998
+    ],
+    [
+      -0.020088514411117652,
+      0.9997879299691655,
+      0.004532844220364769,
+      -0.01944371015186133
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "timeshift_cam_imu_seconds": 0.014502237951455254,
+  "camera_sha256": "7e55a777fd677d86213c1dee2f268c09f039306cd75d3688c313f34e6996b9fe",
+  "intrinsics_validation_sha256": "d1f3b9d6427e3535b04e253a3e005bcdd961b38fe5c7b8d0627126b7926c5747",
+  "camera_clock_mapping": {
+    "domain": "CNTVCT",
+    "selection": "unique_plausible_mapping",
+    "physically_verified": false,
+    "method": "Independent RAW brackets around each domain read. Piecewise-linear RAW-minus-domain offset within measured span, nearest endpoint offset outside. RAW candidate uses identity. No correction is applied to the original timestamps.",
+    "residual_camera_imu_shift_applied_ns": 0,
+    "interpretation": "Selected current-run mapping, not proof of exposure timestamp event or physical synchronization; Kalibr estimates residual time offset."
+  },
+  "selection_evidence_status": "INDEPENDENT_VALIDATION_SKIPPED_BY_USER",
+  "model_selection_provisional": true,
+  "provisional": true,
+  "intrinsics_independent_validation_performed": false,
+  "user_requested_skip_independent_validation": true,
+  "accuracy_accepted_automatically": false,
+  "approved_for_orb": false,
+  "intrinsics_evaluated_frame_count": 0,
+  "time_convention": "t_imu = t_cam + timeshift_cam_imu on the two exported clock mappings",
+  "residuals": {
+    "Reprojection error (cam0) [px]": {
+      "mean": 0.8086849584201068,
+      "median": 0.606974405556837,
+      "std": 0.668745929765531
+    },
+    "Gyroscope error (imu0) [rad/s]": {
+      "mean": 0.003636731638703143,
+      "median": 0.002193129405817335,
+      "std": 0.012921386171220935
+    },
+    "Accelerometer error (imu0) [m/s^2]": {
+      "mean": 0.02338929651966974,
+      "median": 0.014698477544033712,
+      "std": 0.071935684910097
+    }
+  },
+  "noise_status": "datasheet proxy densities and provisional bias random walks; see notes.txt"
+}

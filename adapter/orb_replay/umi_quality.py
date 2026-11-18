@@ -11,6 +11,7 @@ import tempfile
 from typing import NamedTuple
 
 import numpy as np
+from camera_profile import PROFILE_NAME, load_snapshot
 
 
 class Frame(NamedTuple):
@@ -79,7 +80,16 @@ def load_frames(folder):
 
 
 def checked_frames(folder, cap):
-    for name in ("settings.yaml", "timing.json", "frames.csv"):
+    _, layout = load_snapshot(folder)
+    if (cap.get("image_format"), cap.get("width"), cap.get("height"), cap.get("clock")) != (
+            "mono8", layout["width"], layout["height"], "CLOCK_MONOTONIC_RAW"):
+        raise ValueError("Capture image format/dimensions differ from its camera profile snapshot.")
+    if cap.get("camera_profile_sha256") != layout["profile_sha256"]:
+        raise ValueError("Capture camera profile fingerprint differs from its snapshot.")
+    if cap.get("camera_shift_ns") != layout["camera_shift_ns"]:
+        raise ValueError("Capture camera shift differs from its calibration snapshot.")
+    image_pixels = layout["pixels"]
+    for name in ("settings.yaml", "timing.json", PROFILE_NAME, "frames.csv"):
         if file_sha256(folder / name) != cap["sha256"][name]:
             raise ValueError(f"{name} differs from its recorded checksum.")
     with (folder / "frames.csv").open(newline="") as file:
@@ -95,7 +105,7 @@ def checked_frames(folder, cap):
     for i, f in enumerate(frames):
         if (f.frame_idx != i or f.offset != offset or not 0 <= f.sequence < 2**32 or
                 f.camera_raw_ns <= 0 or f.camera_ns - f.camera_raw_ns != cap["camera_shift_ns"] or
-                not 1 <= f.imu_count <= 1000 or not 1920*1440 < f.size <= 1920*1440 + 256*(f.imu_count+1)):
+                not 1 <= f.imu_count <= 1000 or not image_pixels < f.size <= image_pixels + 256*(f.imu_count+1)):
             raise ValueError(f"Invalid source index at frame {i}.")
         if i:
             gap = (f.sequence - frames[i-1].sequence - 1) % 2**32

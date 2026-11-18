@@ -10,16 +10,16 @@ scratch=$(mktemp -d)
 trap 'rm -r -- "$scratch"' EXIT
 manifest=$here/source.sha256
 (cd "$here/ORB_SLAM3"; shasum -a 256 --quiet -c "$manifest")
-root=/build/mono-imu-vio/work
+root=/build/mono-vio-60/work
 mkdir -p "$scratch/input/"{orb_replay,cam_imu_motion,params,source,provenance}
 cp "$manifest" "$scratch/input/source.sha256"
 cp "$here/provenance/"* "$scratch/input/provenance/"
 cp "$here/docker/"{compile.sh,package.sh,extra.sh,runtime.py} "$scratch/input/"
-cp "$here/adapter/viewer.cc" "$scratch/input/"
-cp "$here/jetson/"{start.sh,check.sh,README.md,playback.py,live_console.py,map_session.py,performance.py,status.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html} "$scratch/input/"
-cp "$here/adapter/orb_replay/"{live.py,umi.py,umi_quality.py,camera_live.c} "$scratch/input/orb_replay/"
-cp "$here/adapter/cam_imu_motion/"{camera.c,imu.py,timing_core.py} "$scratch/input/cam_imu_motion/"
-cp "$here/params/"{camera,cam_imu,imu,target,orb_trial}.yaml "$here/params/timing.json" "$scratch/input/params/"
+cp "$here/adapter/"{viewer.cc,camera_preview.cc} "$scratch/input/"
+cp "$here/jetson/"{start.sh,check.sh,README.md,playback.py,live_console.py,map_session.py,performance.py,status.py,trajectory.sh,export_euroc.py,check_return.py,trajectory_view.html,camera_config.py} "$scratch/input/"
+cp "$here/adapter/orb_replay/"{live.py,umi.py,umi_quality.py,camera_live.c,camera_profile.py,gray.h} "$scratch/input/orb_replay/"
+cp "$here/adapter/cam_imu_motion/"{imu.py,timing_core.py} "$scratch/input/cam_imu_motion/"
+cp -R "$here/params/." "$scratch/input/params/"
 cut -c67- "$manifest" |
     COPYFILE_DISABLE=1 tar --no-xattrs -C "$here/ORB_SLAM3" -cf - -T - |
     tar -C "$scratch/input/source" -xf -
@@ -30,8 +30,8 @@ COPYFILE_DISABLE=1 tar --no-xattrs -cf - -C "$scratch/input" . |
     "$docker" exec -i -e "ORB_STOCK_JOBS=$jobs" -e "ORB_STOCK_BUILD_ROOT=$root" "$container" bash -euo pipefail -c '
         root=$ORB_STOCK_BUILD_ROOT
         mkdir -p "$root"
-        exec 9>/build/mono-imu-vio/lock
-        flock -n 9 || { echo "mono_imu_vio build is already running." >&2; exit 1; }
+        exec 9>/build/mono-vio-60/lock
+        flock -n 9 || { echo "mono_vio_60 build is already running." >&2; exit 1; }
         input=$(mktemp -d "$root/input.XXXXXX")
         trap '\''rm -r -- "$input"'\'' EXIT
         tar -xf - -C "$input"
@@ -63,14 +63,14 @@ PY
         (cd "$root/source"; sha256sum --quiet -c "$input/source.sha256")
         cp "$input/source.sha256" "$root/source.sha256"
         export ORB_STOCK_INPUT_ROOT="$input"
-        export ORB_STOCK_PACKAGE_NAME=mono_imu_vio ORB_STOCK_ARCHIVE_NAME=mono_imu_vio.tar.gz
+        export ORB_STOCK_PACKAGE_NAME=mono_vio_60 ORB_STOCK_ARCHIVE_NAME=mono_vio_60.tar.gz
         export ORB_STOCK_HUB_CAPTURE=1
         bash "$input/compile.sh"
         bash "$input/package.sh"
-        sha256sum "$root/mono_imu_vio.tar.gz"
+        sha256sum "$root/mono_vio_60.tar.gz"
     '
 mkdir -p "$here/dist"
-"$docker" cp "$container:$root/mono_imu_vio.tar.gz" "$scratch/mono_imu_vio.tar.gz"
-mv -- "$scratch/mono_imu_vio.tar.gz" "$here/dist/mono_imu_vio.tar.gz"
-(cd "$here/dist"; shasum -a 256 mono_imu_vio.tar.gz > mono_imu_vio.tar.gz.sha256)
-printf 'MONO_IMU_BUILD_OK %s\n' "$here/dist/mono_imu_vio.tar.gz"
+"$docker" cp "$container:$root/mono_vio_60.tar.gz" "$scratch/mono_vio_60.tar.gz"
+mv -- "$scratch/mono_vio_60.tar.gz" "$here/dist/mono_vio_60.tar.gz"
+(cd "$here/dist"; shasum -a 256 mono_vio_60.tar.gz > mono_vio_60.tar.gz.sha256)
+printf 'MONO_VIO_60_BUILD_OK %s\n' "$here/dist/mono_vio_60.tar.gz"

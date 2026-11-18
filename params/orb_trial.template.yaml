@@ -1,0 +1,45 @@
+%YAML:1.0
+# Replace each REQUIRED field with results for the new rig.
+# Camera.calibrationStatus must agree with timing.json.
+File.version: "1.0"
+Camera.calibrationStatus: REQUIRED
+Camera.type: "OmniRadtan"
+Camera1.fx: REQUIRED
+Camera1.fy: REQUIRED
+Camera1.cx: REQUIRED
+Camera1.cy: REQUIRED
+Camera1.xi: REQUIRED
+Camera1.k1: REQUIRED
+Camera1.k2: REQUIRED
+Camera1.p1: REQUIRED
+Camera1.p2: REQUIRED
+Camera.width: 1920
+Camera.height: 1536
+Camera.fps: 60
+Camera.RGB: 0
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [REQUIRED]
+# IMU units: gyro rad/s, acceleration m/s^2; verify the connected IMU/protocol.
+IMU.NoiseGyro: REQUIRED
+IMU.NoiseAcc: REQUIRED
+IMU.GyroWalk: REQUIRED
+IMU.AccWalk: REQUIRED
+IMU.Frequency: REQUIRED
+ORBextractor.nFeatures: 1500
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0

@@ -77,13 +77,13 @@ class MonocularInertialContract(unittest.TestCase):
         self.assertEqual(loop[3], "true")
         self.assertRegex(source, r'\bSetInertialSensor\s*\(\s*\)')
 
-    def test_both_capture_workers_use_the_same_b_camera(self):
+    def test_both_capture_workers_use_the_same_profile_adapter(self):
         capture = cpp_code(read("adapter/orb_replay/camera_live.c"))
-        devices = re.findall(r'\bconst\s+char\s*\*\s*device\s*=\s*"([^"]+)"', capture)
-        self.assertEqual(devices, ["/dev/gmsl/B"])
-        self.assertIn('"vi-output, pnd_gmsl_mc 10-003b"', capture)
-        self.assertIn('"platform:tegra-capture-vi:0"', capture)
-        self.assertNotIn('/dev/video6', capture)
+        for old in ("/dev/gmsl/B", "pnd_gmsl_mc", "/dev/video6"):
+            self.assertNotIn(old, capture)
+        self.assertIn("VIO_CAMERA_DEVICE", capture)
+        self.assertIn("VIO_CAMERA_CARD", capture)
+        self.assertIn("VIO_CAMERA_FPS", capture)
         build = read("docker/package.sh").replace('\\\n', ' ')
         for binary in ("camera_live", "camera_umi"):
             lines = [line for line in build.splitlines() if '-o "$pkg/bin/' + binary + '"' in line]
@@ -93,7 +93,7 @@ class MonocularInertialContract(unittest.TestCase):
             self.assertIn('-march=armv8-a', lines[0])
 
     def test_neon_y_extraction_and_measurements_remain_available(self):
-        camera = cpp_code(read("adapter/cam_imu_motion/camera.c"))
+        camera = cpp_code(read("adapter/orb_replay/gray.h"))
         self.assertRegex(camera, r'\bvld2q_u8\s*\(')
         self.assertRegex(camera, r'\bvst1q_u8\s*\(')
         self.assertTrue((ROOT / "jetson/performance.py").is_file())

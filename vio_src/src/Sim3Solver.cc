@@ -425,6 +425,13 @@ void Sim3Solver::CheckInliers()
         Eigen::Vector2f dist1 = mvP1im1[i] - vP2im1[i];
         Eigen::Vector2f dist2 = vP1im2[i] - mvP2im2[i];
 
+        // A native projection outside the Omni chart returns NaN and must
+        // stay at its existing correspondence index as an outlier.
+        if(!dist1.allFinite() || !dist2.allFinite())
+        {
+            mvbInliersi[i] = false;
+            continue;
+        }
         const float err1 = dist1.dot(dist1);
         const float err2 = dist2.dot(dist2);
 

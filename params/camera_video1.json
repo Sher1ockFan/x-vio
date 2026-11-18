@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "camera_id": "jl-isx031-xuanzhi-replace-with-camera-serial",
+  "rig_id": "new-nx-rig-replace-with-assembly-id",
+  "device": "/dev/video1",
+  "expected_card": "vi-output, jl_gmsl 10-003b",
+  "expected_bus": null,
+  "raw_width": 1920,
+  "raw_height": 1536,
+  "crop_top": 0,
+  "crop_bottom": 0,
+  "requested_fps": 60,
+  "pixel_format": "UYVY",
+  "timestamp_domain": "unverified",
+  "description": "Candidate from read-only device tree inspection. Actual stream geometry, metadata location, timestamps and 60 fps have NOT been verified. No automatic first-row crop."
+}

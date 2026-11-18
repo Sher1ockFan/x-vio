@@ -3,7 +3,7 @@
 set -euo pipefail
 root=${ORB_STOCK_BUILD_ROOT:-/build/orb-stock}
 src=$root/source
-cv=/build/orb-kit/opencv-4.8.0/usr/lib
+cv=/usr/lib/aarch64-linux-gnu
 pango=/build/orb-kit/prefix
 jobs=${ORB_STOCK_JOBS:-2}
 [[ $jobs =~ ^[1-9][0-9]*$ ]]
@@ -50,7 +50,7 @@ echo '[1/2] Building upstream DBoW2'
 cmake -S "$src/Thirdparty/DBoW2" -B "$root/dbow-build" "${args[@]}" -DCMAKE_CXX_FLAGS=-march=armv8-a
 cmake --build "$root/dbow-build" --target DBoW2 --parallel "$jobs"
 
-echo '[2/2] Building mono_imu_vio core and the EuRoC example'
+echo '[2/2] Building mono_vio_60 core and the EuRoC example'
 cmake -S "$src" -B "$root/orb-build" "${args[@]}" "-DPangolin_DIR=$pango/lib/cmake/Pangolin" \
     '-DCMAKE_CXX_FLAGS=-march=armv8-a -include unistd.h -include boost/serialization/library_version_type.hpp'
 if ! cmake --build "$root/orb-build" --target mono_inertial_euroc --parallel "$jobs" 2>&1 | tee "$root/compile.log"; then

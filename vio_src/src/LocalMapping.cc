@@ -462,6 +462,8 @@ void LocalMapping::CreateNewMapPoints()
         else
         {
             const float medianDepthKF2 = pKF2->ComputeSceneMedianDepth(2);
+            if(medianDepthKF2 <= 0.0f)
+                continue;
             const float ratioBaselineDepth = baseline/medianDepthKF2;
 
             if(ratioBaselineDepth<0.01)
@@ -566,6 +568,8 @@ void LocalMapping::CreateNewMapPoints()
             // Check parallax between rays
             Eigen::Vector3f xn1 = pCamera1->unprojectEig(kp1.pt);
             Eigen::Vector3f xn2 = pCamera2->unprojectEig(kp2.pt);
+            if(!xn1.allFinite() || !xn2.allFinite())
+                continue;
 
             Eigen::Vector3f ray1 = Rwc1 * xn1;
             Eigen::Vector3f ray2 = Rwc2 * xn2;
@@ -618,26 +622,26 @@ void LocalMapping::CreateNewMapPoints()
             if(!goodProj)
                 continue;
 
-            //Check triangulation in front of cameras
-            float z1 = Rcw1.row(2).dot(x3D) + tcw1(2);
-            if(z1<=0)
+            // Cheirality is along the observed rays for Omni, including rays
+            // that are visible with non-positive optical-axis depth.
+            const Eigen::Vector3f point1 = Rcw1*x3D + tcw1;
+            const Eigen::Vector3f point2 = Rcw2*x3D + tcw2;
+            if(!pCamera1->isVisible(point1.cast<double>()) ||
+               !pCamera2->isVisible(point2.cast<double>()))
                 continue;
-
-            float z2 = Rcw2.row(2).dot(x3D) + tcw2(2);
-            if(z2<=0)
+            if((pCamera1->GetType() == GeometricCamera::CAM_OMNI && point1.dot(xn1) <= 0.0f) ||
+               (pCamera2->GetType() == GeometricCamera::CAM_OMNI && point2.dot(xn2) <= 0.0f))
                 continue;
 
             //Check reprojection error in first keyframe
             const float &sigmaSquare1 = mpCurrentKeyFrame->mvLevelSigma2[kp1.octave];
-            const float x1 = Rcw1.row(0).dot(x3D)+tcw1(0);
-            const float y1 = Rcw1.row(1).dot(x3D)+tcw1(1);
-            const float invz1 = 1.0/z1;
-
             if(!bStereo1)
             {
-                cv::Point2f uv1 = pCamera1->project(cv::Point3f(x1,y1,z1));
-                float errX1 = uv1.x - kp1.pt.x;
-                float errY1 = uv1.y - kp1.pt.y;
+                const Eigen::Vector2f uv1 = pCamera1->project(point1);
+                if(!uv1.allFinite())
+                    continue;
+                float errX1 = uv1.x() - kp1.pt.x;
+                float errY1 = uv1.y() - kp1.pt.y;
 
                 if((errX1*errX1+errY1*errY1)>5.991*sigmaSquare1)
                     continue;
@@ -645,9 +649,10 @@ void LocalMapping::CreateNewMapPoints()
             }
             else
             {
-                float u1 = fx1*x1*invz1+cx1;
+                const float invz1 = 1.0f/point1.z();
+                float u1 = fx1*point1.x()*invz1+cx1;
                 float u1_r = u1 - mpCurrentKeyFrame->mbf*invz1;
-                float v1 = fy1*y1*invz1+cy1;
+                float v1 = fy1*point1.y()*invz1+cy1;
                 float errX1 = u1 - kp1.pt.x;
                 float errY1 = v1 - kp1.pt.y;
                 float errX1_r = u1_r - kp1_ur;
@@ -657,22 +662,22 @@ void LocalMapping::CreateNewMapPoints()
 
             //Check reprojection error in second keyframe
             const float sigmaSquare2 = pKF2->mvLevelSigma2[kp2.octave];
-            const float x2 = Rcw2.row(0).dot(x3D)+tcw2(0);
-            const float y2 = Rcw2.row(1).dot(x3D)+tcw2(1);
-            const float invz2 = 1.0/z2;
             if(!bStereo2)
             {
-                cv::Point2f uv2 = pCamera2->project(cv::Point3f(x2,y2,z2));
-                float errX2 = uv2.x - kp2.pt.x;
-                float errY2 = uv2.y - kp2.pt.y;
+                const Eigen::Vector2f uv2 = pCamera2->project(point2);
+                if(!uv2.allFinite())
+                    continue;
+                float errX2 = uv2.x() - kp2.pt.x;
+                float errY2 = uv2.y() - kp2.pt.y;
                 if((errX2*errX2+errY2*errY2)>5.991*sigmaSquare2)
                     continue;
             }
             else
             {
-                float u2 = fx2*x2*invz2+cx2;
+                const float invz2 = 1.0f/point2.z();
+                float u2 = fx2*point2.x()*invz2+cx2;
                 float u2_r = u2 - mpCurrentKeyFrame->mbf*invz2;
-                float v2 = fy2*y2*invz2+cy2;
+                float v2 = fy2*point2.y()*invz2+cy2;
                 float errX2 = u2 - kp2.pt.x;
                 float errY2 = v2 - kp2.pt.y;
                 float errX2_r = u2_r - kp2_ur;

@@ -457,15 +457,14 @@ namespace ORB_SLAM3
             // Transform into Camera Coords.
             Eigen::Vector3f p3Dc = Tcw * p3Dw;
 
-            // Depth must be positive
-            if(p3Dc(2)<0.0)
+            if(!pKF->mpCamera->isVisible(p3Dc.cast<double>()))
                 continue;
 
             // Project into Image
             const Eigen::Vector2f uv = pKF->mpCamera->project(p3Dc);
 
             // Point must be inside the image
-            if(!pKF->IsInImage(uv(0),uv(1)))
+            if(!uv.allFinite() || !pKF->IsInImage(uv(0),uv(1)))
                 continue;
 
             // Depth must be inside the scale invariance region of the point
@@ -565,20 +564,19 @@ namespace ORB_SLAM3
             // Transform into Camera Coords.
             Eigen::Vector3f p3Dc = Tcw * p3Dw;
 
-            // Depth must be positive
-            if(p3Dc(2)<0.0)
+            if(!pKF->mpCamera->isVisible(p3Dc.cast<double>()))
                 continue;
 
             // Project into Image
-            const float invz = 1/p3Dc(2);
-            const float x = p3Dc(0)*invz;
-            const float y = p3Dc(1)*invz;
-
-            const float u = fx*x+cx;
-            const float v = fy*y+cy;
+            const Eigen::Vector2f uv = pKF->mpCamera->GetType() == GeometricCamera::CAM_OMNI
+                ? pKF->mpCamera->project(p3Dc)
+                : Eigen::Vector2f(fx * p3Dc.x() / p3Dc.z() + cx,
+                                  fy * p3Dc.y() / p3Dc.z() + cy);
+            const float u = uv.x();
+            const float v = uv.y();
 
             // Point must be inside the image
-            if(!pKF->IsInImage(u,v))
+            if(!uv.allFinite() || !pKF->IsInImage(u,v))
                 continue;
 
             // Depth must be inside the scale invariance region of the point
@@ -917,7 +915,11 @@ namespace ORB_SLAM3
         Eigen::Vector3f Cw = pKF1->GetCameraCenter();
         Eigen::Vector3f C2 = T2w * Cw;
 
-        Eigen::Vector2f ep = pKF2->mpCamera->project(C2);
+        // Behind-horizon epipoles are well defined for Omni, but directions
+        // outside its camera chart cannot be used for the image-distance test.
+        const bool testEpipole = pKF2->mpCamera->GetType() != GeometricCamera::CAM_OMNI ||
+                                 pKF2->mpCamera->isVisible(C2.cast<double>());
+        const Eigen::Vector2f ep = testEpipole ? pKF2->mpCamera->project(C2) : Eigen::Vector2f::Zero();
         Sophus::SE3f T12;
         Sophus::SE3f Tll, Tlr, Trl, Trr;
         Eigen::Matrix3f R12; // for fastest computation
@@ -1023,7 +1025,7 @@ namespace ORB_SLAM3
                         const bool bRight2 = (pKF2 -> NLeft == -1 || idx2 < pKF2 -> NLeft) ? false
                                                                                            : true;
 
-                        if(!bStereo1 && !bStereo2 && !pKF1->mpCamera2)
+                        if(testEpipole && ep.allFinite() && !bStereo1 && !bStereo2 && !pKF1->mpCamera2)
                         {
                             const float distex = ep(0)-kp2.pt.x;
                             const float distey = ep(1)-kp2.pt.y;
@@ -1198,25 +1200,22 @@ namespace ORB_SLAM3
             Eigen::Vector3f p3Dw = pMP->GetWorldPos();
             Eigen::Vector3f p3Dc = Tcw * p3Dw;
 
-            // Depth must be positive
-            if(p3Dc(2)<0.0f)
+            if(!pCamera->isVisible(p3Dc.cast<double>()))
             {
                 count_negdepth++;
                 continue;
             }
 
-            const float invz = 1/p3Dc(2);
-
             const Eigen::Vector2f uv = pCamera->project(p3Dc);
 
             // Point must be inside the image
-            if(!pKF->IsInImage(uv(0),uv(1)))
+            if(!uv.allFinite() || !pKF->IsInImage(uv(0),uv(1)))
             {
                 count_notinim++;
                 continue;
             }
 
-            const float ur = uv(0)-bf*invz;
+            const float ur = bf == 0.0f ? uv.x() : uv.x() - bf/p3Dc.z();
 
             const float maxDistance = pMP->GetMaxDistanceInvariance();
             const float minDistance = pMP->GetMinDistanceInvariance();
@@ -1371,15 +1370,14 @@ namespace ORB_SLAM3
             // Transform into Camera Coords.
             Eigen::Vector3f p3Dc = Tcw * p3Dw;
 
-            // Depth must be positive
-            if(p3Dc(2)<0.0f)
+            if(!pKF->mpCamera->isVisible(p3Dc.cast<double>()))
                 continue;
 
             // Project into Image
             const Eigen::Vector2f uv = pKF->mpCamera->project(p3Dc);
 
             // Point must be inside the image
-            if(!pKF->IsInImage(uv(0),uv(1)))
+            if(!uv.allFinite() || !pKF->IsInImage(uv(0),uv(1)))
                 continue;
 
             // Depth must be inside the scale pyramid of the image
@@ -1507,19 +1505,18 @@ namespace ORB_SLAM3
             Eigen::Vector3f p3Dc1 = T1w * p3Dw;
             Eigen::Vector3f p3Dc2 = S21 * p3Dc1;
 
-            // Depth must be positive
-            if(p3Dc2(2)<0.0)
+            if(!pKF2->mpCamera->isVisible(p3Dc2.cast<double>()))
                 continue;
 
-            const float invz = 1.0/p3Dc2(2);
-            const float x = p3Dc2(0)*invz;
-            const float y = p3Dc2(1)*invz;
-
-            const float u = fx*x+cx;
-            const float v = fy*y+cy;
+            const Eigen::Vector2f uv = pKF2->mpCamera->GetType() == GeometricCamera::CAM_OMNI
+                ? pKF2->mpCamera->project(p3Dc2)
+                : Eigen::Vector2f(fx * p3Dc2.x() / p3Dc2.z() + cx,
+                                  fy * p3Dc2.y() / p3Dc2.z() + cy);
+            const float u = uv.x();
+            const float v = uv.y();
 
             // Point must be inside the image
-            if(!pKF2->IsInImage(u,v))
+            if(!uv.allFinite() || !pKF2->IsInImage(u,v))
                 continue;
 
             const float maxDistance = pMP->GetMaxDistanceInvariance();
@@ -1587,19 +1584,18 @@ namespace ORB_SLAM3
             Eigen::Vector3f p3Dc2 = T2w * p3Dw;
             Eigen::Vector3f p3Dc1 = S12 * p3Dc2;
 
-            // Depth must be positive
-            if(p3Dc1(2)<0.0)
+            if(!pKF1->mpCamera->isVisible(p3Dc1.cast<double>()))
                 continue;
 
-            const float invz = 1.0/p3Dc1(2);
-            const float x = p3Dc1(0)*invz;
-            const float y = p3Dc1(1)*invz;
-
-            const float u = fx*x+cx;
-            const float v = fy*y+cy;
+            const Eigen::Vector2f uv = pKF1->mpCamera->GetType() == GeometricCamera::CAM_OMNI
+                ? pKF1->mpCamera->project(p3Dc1)
+                : Eigen::Vector2f(fx * p3Dc1.x() / p3Dc1.z() + cx,
+                                  fy * p3Dc1.y() / p3Dc1.z() + cy);
+            const float u = uv.x();
+            const float v = uv.y();
 
             // Point must be inside the image
-            if(!pKF1->IsInImage(u,v))
+            if(!uv.allFinite() || !pKF1->IsInImage(u,v))
                 continue;
 
             const float maxDistance = pMP->GetMaxDistanceInvariance();
@@ -1703,16 +1699,12 @@ namespace ORB_SLAM3
                     Eigen::Vector3f x3Dw = pMP->GetWorldPos();
                     Eigen::Vector3f x3Dc = Tcw * x3Dw;
 
-                    const float xc = x3Dc(0);
-                    const float yc = x3Dc(1);
-                    const float invzc = 1.0/x3Dc(2);
-
-                    if(invzc<0)
+                    if(!CurrentFrame.mpCamera->isVisible(x3Dc.cast<double>()))
                         continue;
 
-                    Eigen::Vector2f uv = CurrentFrame.mpCamera->project(x3Dc);
+                    const Eigen::Vector2f uv = CurrentFrame.mpCamera->project(x3Dc);
 
-                    if(uv(0)<CurrentFrame.mnMinX || uv(0)>CurrentFrame.mnMaxX)
+                    if(!uv.allFinite() || uv(0)<CurrentFrame.mnMinX || uv(0)>CurrentFrame.mnMaxX)
                         continue;
                     if(uv(1)<CurrentFrame.mnMinY || uv(1)>CurrentFrame.mnMaxY)
                         continue;
@@ -1750,7 +1742,7 @@ namespace ORB_SLAM3
 
                         if(CurrentFrame.Nleft == -1 && CurrentFrame.mvuRight[i2]>0)
                         {
-                            const float ur = uv(0) - CurrentFrame.mbf*invzc;
+                            const float ur = uv(0) - CurrentFrame.mbf/x3Dc.z();
                             const float er = fabs(ur - CurrentFrame.mvuRight[i2]);
                             if(er>radius)
                                 continue;
@@ -1913,9 +1905,12 @@ namespace ORB_SLAM3
                     Eigen::Vector3f x3Dw = pMP->GetWorldPos();
                     Eigen::Vector3f x3Dc = Tcw * x3Dw;
 
+                    if(CurrentFrame.mpCamera->GetType() == GeometricCamera::CAM_OMNI &&
+                       !CurrentFrame.mpCamera->isVisible(x3Dc.cast<double>()))
+                        continue;
                     const Eigen::Vector2f uv = CurrentFrame.mpCamera->project(x3Dc);
 
-                    if(uv(0)<CurrentFrame.mnMinX || uv(0)>CurrentFrame.mnMaxX)
+                    if(!uv.allFinite() || uv(0)<CurrentFrame.mnMinX || uv(0)>CurrentFrame.mnMaxX)
                         continue;
                     if(uv(1)<CurrentFrame.mnMinY || uv(1)>CurrentFrame.mnMaxY)
                         continue;

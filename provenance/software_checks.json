@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-17",
+  "hardware_tests_performed": false,
+  "remote_changes_performed": false,
+  "source_contract_and_profile_unit_tests": {
+    "passed": 22
+  },
+  "native_mock_camera": {
+    "valid_cases_passed": 24,
+    "gray_neon_padding_crop_boundary_checks": "PASS",
+    "invalid_configuration_and_driver_cases": "PASS"
+  },
+  "native_viewer_packet_cases": {
+    "1920x1536": "PASS",
+    "640x512": "PASS",
+    "truncated_640x512_rejected": "PASS"
+  },
+  "console_policy_regression": "PASS",
+  "status_regression": {
+    "passed": 23
+  },
+  "map_lifecycle_regression": "PASS",
+  "map_startup_regression": {
+    "parser_cases": 14,
+    "prepare_cases": 4
+  },
+  "source_sync_regression": "PASS",
+  "algorithm_core_manifest_unchanged_files": 270,
+  "limitations": [
+    "No physical camera frames or IMU samples acquired on the new Jetson",
+    "60 fps is requested, not measured",
+    "All fit_05 calibration values and CNTVCT clock-domain assumption are borrowed for an explicitly unvalidated new-camera trial; no accuracy or initialization guarantee",
+    "Inherited shutdown issue was not addressed by this camera-interface change"
+  ],
+  "borrowed_trial_regression": {
+    "passed": 7,
+    "covers": [
+      "exact legacy numerical values and new interface preserved",
+      "trial accepted; invalid numeric/time/profile data rejected",
+      "mixed calibration statuses rejected",
+      "trial/validated map fingerprints and namespaces isolated",
+      "trial recovery and publication marked unvalidated",
+      "single trial notice before LIVE quiet boundary"
+    ]
+  }
+}

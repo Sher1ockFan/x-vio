@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "camera_id": "jl-isx031-m3a-video0",
+  "rig_id": "calibrate-nx-run-02-rig",
+  "device": "/dev/video0",
+  "expected_card": "vi-output, jl_gmsl 10-003a",
+  "expected_bus": null,
+  "raw_width": 1920,
+  "raw_height": 1536,
+  "crop_top": 0,
+  "crop_bottom": 0,
+  "requested_fps": 60,
+  "pixel_format": "UYVY",
+  "timestamp_domain": "cntvct",
+  "description": "The jl_gmsl 1920x1536 UYVY, 60 fps zero-crop mode recorded for calibrate_nx/cam_imu_motion/run_02.",
+  "timestamp_domain_verification": "Unique plausible CNTVCT mapping selected against independent RAW brackets in run_02. Timestamp event and physical synchronization were not independently identified.",
+  "frame_rate_control": "tegra_frame_rate_microhz"
+}

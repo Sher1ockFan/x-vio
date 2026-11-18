@@ -167,11 +167,11 @@ void ImuCamPose::SetParam(const std::vector<Eigen::Matrix3d> &_Rcw, const std::v
     bf = _bf;
 }
 
-Eigen::Vector2d ImuCamPose::Project(const Eigen::Vector3d &Xw, int cam_idx) const
+Eigen::Vector2d ImuCamPose::ReprojectionError(const Eigen::Vector3d &Xw,
+                                               const Eigen::Vector2d &observation, int cam_idx) const
 {
-    Eigen::Vector3d Xc = Rcw[cam_idx] * Xw + tcw[cam_idx];
-
-    return pCamera[cam_idx]->project(Xc);
+    const Eigen::Vector3d Xc = Rcw[cam_idx] * Xw + tcw[cam_idx];
+    return pCamera[cam_idx]->reprojectionError(observation, Xc);
 }
 
 Eigen::Vector3d ImuCamPose::ProjectStereo(const Eigen::Vector3d &Xw, int cam_idx) const
@@ -186,7 +186,10 @@ Eigen::Vector3d ImuCamPose::ProjectStereo(const Eigen::Vector3d &Xw, int cam_idx
 
 bool ImuCamPose::isDepthPositive(const Eigen::Vector3d &Xw, int cam_idx) const
 {
-    return (Rcw[cam_idx].row(2) * Xw + tcw[cam_idx](2)) > 0.0;
+    if(pCamera[cam_idx]->GetType() != GeometricCamera::CAM_OMNI)
+        return (Rcw[cam_idx].row(2) * Xw + tcw[cam_idx](2)) > 0.0;
+
+    return pCamera[cam_idx]->isVisible(Rcw[cam_idx] * Xw + tcw[cam_idx]);
 }
 
 void ImuCamPose::Update(const double *pu)
@@ -357,7 +360,14 @@ void EdgeMono::linearizeOplus()
     const Eigen::Vector3d Xb = VPose->estimate().Rbc[cam_idx]*Xc+VPose->estimate().tbc[cam_idx];
     const Eigen::Matrix3d &Rcb = VPose->estimate().Rcb[cam_idx];
 
-    const Eigen::Matrix<double,2,3> proj_jac = VPose->estimate().pCamera[cam_idx]->projectJac(Xc);
+    GeometricCamera* camera = VPose->estimate().pCamera[cam_idx];
+    const Eigen::Matrix<double,2,3> proj_jac = camera->projectJac(Xc);
+    if(camera->GetType() == GeometricCamera::CAM_OMNI && !proj_jac.allFinite())
+    {
+        _jacobianOplusXi.setZero();
+        _jacobianOplusXj.setZero();
+        return;
+    }
     _jacobianOplusXi = -proj_jac * Rcw;
 
     Eigen::Matrix<double,3,6> SE3deriv;
@@ -382,7 +392,13 @@ void EdgeMonoOnlyPose::linearizeOplus()
     const Eigen::Vector3d Xb = VPose->estimate().Rbc[cam_idx]*Xc+VPose->estimate().tbc[cam_idx];
     const Eigen::Matrix3d &Rcb = VPose->estimate().Rcb[cam_idx];
 
-    Eigen::Matrix<double,2,3> proj_jac = VPose->estimate().pCamera[cam_idx]->projectJac(Xc);
+    GeometricCamera* camera = VPose->estimate().pCamera[cam_idx];
+    const Eigen::Matrix<double,2,3> proj_jac = camera->projectJac(Xc);
+    if(camera->GetType() == GeometricCamera::CAM_OMNI && !proj_jac.allFinite())
+    {
+        _jacobianOplusXi.setZero();
+        return;
+    }
 
     Eigen::Matrix<double,3,6> SE3deriv;
     double x = Xb(0);

@@ -41,12 +41,12 @@ public:
     void computeError()  {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[0]);
         Eigen::Vector2d obs(_measurement);
-        _error = obs-pCamera->project(v1->estimate().map(Xw));
+        _error = pCamera->reprojectionError(obs, v1->estimate().map(Xw));
     }
 
     bool isDepthPositive() {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[0]);
-        return (v1->estimate().map(Xw))(2)>0.0;
+        return pCamera->isVisible(v1->estimate().map(Xw));
     }
 
 
@@ -69,12 +69,12 @@ public:
     void computeError()  {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[0]);
         Eigen::Vector2d obs(_measurement);
-        _error = obs-pCamera->project((mTrl * v1->estimate()).map(Xw));
+        _error = pCamera->reprojectionError(obs, (mTrl * v1->estimate()).map(Xw));
     }
 
     bool isDepthPositive() {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[0]);
-        return ((mTrl * v1->estimate()).map(Xw))(2)>0.0;
+        return pCamera->isVisible((mTrl * v1->estimate()).map(Xw));
     }
 
 
@@ -100,13 +100,13 @@ public:
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[1]);
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
         Eigen::Vector2d obs(_measurement);
-        _error = obs-pCamera->project(v1->estimate().map(v2->estimate()));
+        _error = pCamera->reprojectionError(obs, v1->estimate().map(v2->estimate()));
     }
 
     bool isDepthPositive() {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[1]);
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
-        return ((v1->estimate().map(v2->estimate()))(2)>0.0);
+        return pCamera->isVisible(v1->estimate().map(v2->estimate()));
     }
 
     virtual void linearizeOplus();
@@ -128,13 +128,13 @@ public:
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[1]);
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
         Eigen::Vector2d obs(_measurement);
-        _error = obs-pCamera->project((mTrl * v1->estimate()).map(v2->estimate()));
+        _error = pCamera->reprojectionError(obs, (mTrl * v1->estimate()).map(v2->estimate()));
     }
 
     bool isDepthPositive() {
         const g2o::VertexSE3Expmap* v1 = static_cast<const g2o::VertexSE3Expmap*>(_vertices[1]);
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
-        return ((mTrl * v1->estimate()).map(v2->estimate()))(2)>0.0;
+        return pCamera->isVisible((mTrl * v1->estimate()).map(v2->estimate()));
     }
 
     virtual void linearizeOplus();
@@ -186,7 +186,7 @@ public:
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
 
         Eigen::Vector2d obs(_measurement);
-        _error = obs-v1->pCamera1->project(v1->estimate().map(v2->estimate()));
+        _error = v1->pCamera1->reprojectionError(obs, v1->estimate().map(v2->estimate()));
     }
 
     // virtual void linearizeOplus();
@@ -207,7 +207,7 @@ public:
         const g2o::VertexSBAPointXYZ* v2 = static_cast<const g2o::VertexSBAPointXYZ*>(_vertices[0]);
 
         Eigen::Vector2d obs(_measurement);
-        _error = obs-v1->pCamera2->project((v1->estimate().inverse().map(v2->estimate())));
+        _error = v1->pCamera2->reprojectionError(obs, v1->estimate().inverse().map(v2->estimate()));
     }
 
     // virtual void linearizeOplus();

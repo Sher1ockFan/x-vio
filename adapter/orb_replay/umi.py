@@ -19,6 +19,7 @@ import time
 
 sys.dont_write_bytecode = True
 import live
+from camera_profile import PROFILE_NAME, camera_env, load_snapshot
 from umi_quality import (FRAME_FIELDS, checked_frames, checked_holds, dump_json, export_trajectory,
                          file_sha256, load_frames, measure)
 
@@ -34,13 +35,17 @@ def require_room(folder):
 
 def record(folder, camera):
     # The launcher has reserved a new directory and copied the exact settings used.
-    shift = live.camera_shift(folder / "timing.json")
-    feeds = live.Streams()
+    profile, layout = load_snapshot(folder)
+    shift = layout["camera_shift_ns"]
+    feeds = live.Streams(layout["pixels"])
     thread = threading.Thread(target=feeds.worker, args=(live.read_imu, feeds), daemon=True)
-    cap = {"status": "RECORDING", "image_format": "mono8", "width": 1920, "height": 1440,
+    cap = {"status": "RECORDING", "image_format": "mono8", "width": layout["width"], "height": layout["height"],
+           "camera_profile_sha256": layout["profile_sha256"],
+           "calibration_status": layout["calibration_status"],
+           "calibration_validated_for_current_rig": layout["calibration_validated_for_current_rig"],
            "camera_shift_ns": shift, "clock": "CLOCK_MONOTONIC_RAW", "frames": 0,
            "driver_missing": 0, "imu_samples": 0,
-           "sha256": {name: file_sha256(folder / name) for name in ("settings.yaml", "timing.json")}}
+           "sha256": {name: file_sha256(folder / name) for name in ("settings.yaml", "timing.json", PROFILE_NAME)}}
     digest = hashlib.sha256()
     dump_json(folder / "capture.json", cap)
     proc = None
@@ -61,15 +66,16 @@ def record(folder, camera):
             thread.start()
             with feeds.condition:
                 feeds.wait(lambda: feeds.model is not None, 18, "IMU clock startup timed out.")
-            proc = subprocess.Popen([camera], stdout=subprocess.PIPE, stderr=log, start_new_session=True)
+            proc = subprocess.Popen([camera], stdout=subprocess.PIPE, stderr=log, start_new_session=True,
+                                    env=camera_env(profile))
             previous = previous_seq = None
             while not feeds.finish_requested:
                 data = proc.stdout.read(12)
                 if len(data) != 12:
                     raise EOFError("Camera stream stopped. See camera.log.")
                 raw, seq = struct.unpack("<qI", data)
-                image = proc.stdout.read(live.PIXELS)
-                if len(image) != live.PIXELS:
+                image = proc.stdout.read(layout["pixels"])
+                if len(image) != layout["pixels"]:
                     raise EOFError("Incomplete source image.")
                 gap = 0 if previous_seq is None else (seq - previous_seq - 1) % 2**32
                 if gap >= 2**31:
@@ -126,13 +132,13 @@ def record(folder, camera):
                 signal.signal(sig, handler)
 
 
-def verified_stream(path, frames):
+def verified_stream(path, frames, image_pixels):
     digest = hashlib.sha256()
     previous_imu = previous_image = 0
     with path.open("rb") as stream:
         before = os.fstat(stream.fileno())
         for f in frames:
-            header = stream.read(f.size - live.PIXELS)
+            header = stream.read(f.size - image_pixels)
             lines = header.split(b"\n")
             if (len(lines) != f.imu_count + 2 or lines[-1] or not header.isascii() or b"_" in header or
                     lines[0] != f"{f.camera_ns} {f.imu_count}".encode() or
@@ -155,8 +161,8 @@ def verified_stream(path, frames):
                 previous_imu = stamp
             if f.camera_ns - previous_imu > 3_000_000:
                 raise ValueError(f"No near-image IMU sample at frame {f.frame_idx}.")
-            pixels = stream.read(live.PIXELS)
-            if len(pixels) != live.PIXELS:
+            pixels = stream.read(image_pixels)
+            if len(pixels) != image_pixels:
                 raise ValueError(f"Short image at frame {f.frame_idx}.")
             digest.update(header)
             digest.update(pixels)
@@ -169,6 +175,7 @@ def verified_stream(path, frames):
 
 
 def recover(folder):
+    _, layout = load_snapshot(folder)
     # Shared on the index blocks a recorder but does not look like one to umi-mark.
     # Serialize auditors on the final, immutable capture report.
     with (folder / "frames.csv").open("rb") as table, (folder / "capture.json").open("rb") as manifest:
@@ -182,7 +189,7 @@ def recover(folder):
         if cap["status"] != "INCOMPLETE" or cap.get("error") != "KeyboardInterrupt":
             raise ValueError("umi-recover requires a closed INCOMPLETE take with error KeyboardInterrupt.")
         if (cap["image_format"], cap["width"], cap["height"], cap["clock"]) != (
-                "mono8", 1920, 1440, "CLOCK_MONOTONIC_RAW"):
+                "mono8", layout["width"], layout["height"], "CLOCK_MONOTONIC_RAW"):
             raise ValueError("Unexpected recording format or clock.")
         if cap["camera_shift_ns"] != live.camera_shift(folder / "timing.json"):
             raise ValueError("Camera shift differs from timing.json.")
@@ -193,7 +200,7 @@ def recover(folder):
         frames = checked_frames(folder, {**cap, "sha256": {**captured, "frames.csv": index_digest}})
         stream_bytes = frames[-1].offset + frames[-1].size
         print(f"核验 {len(frames)} 帧、{stream_bytes:,} 字节，进度每 500 帧更新。", flush=True)
-        stream_digest = verified_stream(folder / "stream.bin", frames)
+        stream_digest = verified_stream(folder / "stream.bin", frames, layout["pixels"])
         if captured.get("stream.bin", stream_digest) != stream_digest:
             raise ValueError("stream.bin differs from the recorder checksum.")
         marks = folder / "marks.json"
@@ -220,6 +227,7 @@ def recover(folder):
 
 
 def mark(folder):
+    load_snapshot(folder)
     target = folder / "marks.json"
     if target.exists():
         raise ValueError("This take already has A/B/A return marks.")

@@ -25,6 +25,8 @@
 #include "GeometricCamera.h"
 #include "Pinhole.h"
 #include "KannalaBrandt8.h"
+#include "OmniRadtan.h"
+#include <boost/serialization/version.hpp>
 
 #include <set>
 #include <mutex>
@@ -55,6 +57,9 @@ class Atlas
     {
         ar.template register_type<Pinhole>();
         ar.template register_type<KannalaBrandt8>();
+        // Version 0 archives have the original registration order.
+        if(version >= 1)
+            ar.template register_type<OmniRadtan>();
 
         // Save/load a set structure, the set structure is broken in libboost 1.58 for ubuntu 16.04, a vector is serializated
         //ar & mspMaps;
@@ -169,5 +174,7 @@ protected:
 }; // class Atlas
 
 } // namespace ORB_SLAM3
+
+BOOST_CLASS_VERSION(ORB_SLAM3::Atlas, 1)
 
 #endif // ATLAS_H

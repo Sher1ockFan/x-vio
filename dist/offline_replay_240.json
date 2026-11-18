@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "gzip_exit": 0,
+  "runner_exit": 0,
+  "frames": 240,
+  "visual_ready": 50,
+  "inertial_ready": 0,
+  "valid_pose_frames": 0,
+  "tracking_states": {
+    "1": 179,
+    "2": 50,
+    "3": 11
+  },
+  "map_ids": {
+    "0": 240
+  },
+  "phases": {
+    "MAPPING": 240
+  },
+  "imu_samples": 2004,
+  "input_camera_hz": 60.001104155883816,
+  "map_save": {
+    "status": "SKIPPED",
+    "reason": "No mature inertial map: require initialized IMU, BA2, >=12 keyframes and >=50 points",
+    "path": "/tmp/mono-vio-replay-input.zzuWkT/replay_review/run/session/atlas.osa",
+    "calibration_sha256": "f2411a7988f9859a9bea579bc4f8769399335004c4baa1c7e02d3f509ad31046",
+    "selected_map_id": -1,
+    "keyframes": 0,
+    "map_points": 0
+  },
+  "log_markers": [
+    "-Current image size: [ 1920 , 1536 ]",
+    "-Sequence FPS: 60",
+    "-IMU frequency: 500",
+    "Creation of new map with id: 0",
+    "Creation of new map with last KF id: 0",
+    "Camera 0 is Omni-radtan",
+    "ORB_LIVE_READY",
+    "STOCK frames=1 tracking_state=1",
+    "STOCK frames=30 tracking_state=1",
+    "New Map created with 193 points",
+    "Fail to track local map!",
+    "STOCK frames=60 tracking_state=1",
+    "New Map created with 198 points",
+    "Fail to track local map!",
+    "STOCK frames=90 tracking_state=1",
+    "New Map created with 159 points",
+    "Fail to track local map!",
+    "New Map created with 317 points",
+    "Fail to track local map!",
+    "New Map created with 362 points",
+    "Fail to track local map!",
+    "STOCK frames=120 tracking_state=1",
+    "New Map created with 146 points",
+    "Fail to track local map!",
+    "New Map created with 331 points",
+    "STOCK frames=150 tracking_state=2",
+    "Fail to track local map!",
+    "New Map created with 234 points",
+    "Fail to track local map!",
+    "STOCK frames=180 tracking_state=1",
+    "New Map created with 140 points",
+    "Fail to track local map!",
+    "New Map created with 201 points",
+    "Fail to track local map!",
+    "New Map created with 268 points",
+    "STOCK frames=210 tracking_state=2",
+    "Fail to track local map!",
+    "New Map created with 98 points",
+    "STOCK frames=240 tracking_state=2",
+    "STOCK_STREAM_COMPLETE frames=240"
+  ]
+}

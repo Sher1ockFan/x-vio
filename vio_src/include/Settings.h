@@ -44,7 +44,8 @@ namespace ORB_SLAM3 {
          */
         enum CameraType {
             PinHole = 0,
-            KannalaBrandt = 2
+            KannalaBrandt = 2,
+            Omni = 3
         };
 
         /*

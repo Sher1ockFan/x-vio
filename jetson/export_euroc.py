@@ -16,9 +16,9 @@ TOOLS = Path(__file__).resolve().parent / "tools" / "orb_replay"
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(TOOLS))
 import live
+from camera_profile import PROFILE_NAME, load_snapshot
 from umi_quality import dump_json, load_frames
 
-WIDTH, HEIGHT = 1920, 1440
 FLOAT32_MAX = 3.4028234663852886e38
 FRAME_FIELDS = ("frame_idx", "sequence", "camera_raw_ns", "camera_ns")
 
@@ -28,16 +28,18 @@ def png_chunk(kind, payload):
     return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", checksum)
 
 
-def write_gray_png(path, pixels):
+def write_gray_png(path, pixels, width, height):
+    if len(pixels) != width * height:
+        raise ValueError("Image byte count does not match snapshot dimensions.")
     # PNG filter 0 prefixes each unchanged source row with one zero byte.
-    stride = WIDTH + 1
-    scanlines = bytearray(stride * HEIGHT)
+    stride = width + 1
+    scanlines = bytearray(stride * height)
     image = memoryview(pixels)
-    for row in range(HEIGHT):
-        scanlines[row * stride + 1:(row + 1) * stride] = image[row * WIDTH:(row + 1) * WIDTH]
+    for row in range(height):
+        scanlines[row * stride + 1:(row + 1) * stride] = image[row * width:(row + 1) * width]
     with path.open("xb") as f:
         f.write(b"\x89PNG\r\n\x1a\n")
-        f.write(png_chunk(b"IHDR", struct.pack(">IIBBBBB", WIDTH, HEIGHT, 8, 0, 0, 0, 0)))
+        f.write(png_chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 0, 0, 0, 0)))
         f.write(png_chunk(b"IDAT", zlib.compress(scanlines, 1)))
         f.write(png_chunk(b"IEND", b""))
 
@@ -47,8 +49,8 @@ def native_seconds(stamp_ns):
     return float(stamp_ns) / live.NS
 
 
-def read_packet(source, frame, previous_imu, previous_camera):
-    header = source.read(frame.size - live.PIXELS)
+def read_packet(source, frame, previous_imu, previous_camera, image_pixels):
+    header = source.read(frame.size - image_pixels)
     lines = header.split(b"\n")
     if (len(lines) != frame.imu_count + 2 or lines[-1] or not header.isascii()
             or lines[0] != f"{frame.camera_ns} {frame.imu_count}".encode("ascii")
@@ -71,19 +73,21 @@ def read_packet(source, frame, previous_imu, previous_camera):
         previous_imu = stamp
     if frame.camera_ns - previous_imu > 3_000_000:
         raise ValueError(f"IMU coverage ends too far before frame {frame.frame_idx}.")
-    pixels = source.read(live.PIXELS)
-    if len(pixels) != live.PIXELS:
+    pixels = source.read(image_pixels)
+    if len(pixels) != image_pixels:
         raise ValueError(f"Short image at frame {frame.frame_idx}.")
     return header, pixels, imu
 
 
 def export_take(take, dest):
+    _, layout = load_snapshot(take)
+    width, height = layout["width"], layout["height"]
     capture_path = take / "capture.json"
     capture_digest = hashlib.sha256(capture_path.read_bytes()).hexdigest()
     cap, frames = load_frames(take)
     if (cap.get("image_format"), cap.get("width"), cap.get("height"), cap.get("clock")) != (
-            "mono8", WIDTH, HEIGHT, "CLOCK_MONOTONIC_RAW"):
-        raise ValueError("Expected a 1920x1440 mono8 take on the host RAW clock.")
+            "mono8", width, height, "CLOCK_MONOTONIC_RAW"):
+        raise ValueError("Expected a profile-matching mono8 take on the host RAW clock.")
     shift = live.camera_shift(take / "timing.json")
     if cap["camera_shift_ns"] != shift:
         raise ValueError("The take and timing.json disagree on the recorded camera shift.")
@@ -96,7 +100,7 @@ def export_take(take, dest):
         imu_dir = stage / "mav0/imu0"
         image_dir.mkdir(parents=True)
         imu_dir.mkdir(parents=True)
-        for name in ("settings.yaml", "timing.json"):
+        for name in ("settings.yaml", "timing.json", PROFILE_NAME):
             data = (take / name).read_bytes()
             if hashlib.sha256(data).hexdigest() != cap["sha256"][name]:
                 raise ValueError(f"{name} changed during export.")
@@ -117,7 +121,7 @@ def export_take(take, dest):
             imu_rows.writerow(("#timestamp [ns]", "wx [rad/s]", "wy [rad/s]", "wz [rad/s]",
                                "ax [m/s^2]", "ay [m/s^2]", "az [m/s^2]"))
             for frame in frames:
-                header, pixels, imu = read_packet(source, frame, previous_imu, previous_camera)
+                header, pixels, imu = read_packet(source, frame, previous_imu, previous_camera, layout["pixels"])
                 digest.update(header)
                 digest.update(pixels)
                 if frame.frame_idx == 0:
@@ -133,7 +137,7 @@ def export_take(take, dest):
                 if native_seconds(first_imu) >= native_seconds(frame.camera_ns):
                     withheld.append({"frame_idx": frame.frame_idx, "reason": "no earlier recorded IMU sample"})
                     continue
-                write_gray_png(image_dir / f"{frame.camera_ns}.png", pixels)
+                write_gray_png(image_dir / f"{frame.camera_ns}.png", pixels, width, height)
                 times.write(f"{frame.camera_ns}\n")
                 frame_rows.writerow(frame[:4])
                 first_camera = first_camera or frame.camera_ns
@@ -157,6 +161,8 @@ def export_take(take, dest):
             "source_capture_sha256": capture_digest,
             "source_hashes": cap["sha256"],
             "source_frames": len(frames),
+            "image_size": [width, height],
+            "camera_profile_sha256": layout["profile_sha256"],
             "source_driver_missing": cap["driver_missing"],
             "exported_frames": count,
             "imu_samples": cap["imu_samples"],

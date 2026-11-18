@@ -1,0 +1,10 @@
+{
+  "calibration_status": "required",
+  "camera_profile_sha256": "REQUIRED_AFTER_PROFILE_VERIFICATION",
+  "timeshift_cam_imu_seconds": null,
+  "timeshift_cam_imu_rounded_ns": null,
+  "time_convention": "t_image_on_imu_basis = t_camera_mapped_to_RAW + timeshift_cam_imu",
+  "camera_mapping": "REQUIRED: verified timestamp domain and event for jl_gmsl",
+  "imu_mapping": "Per-session hardware timer to CLOCK_MONOTONIC_RAW mapping; confirm IMU protocol and rate.",
+  "source_fit": "REQUIRED_NEW_RIG_CALIBRATION"
+}

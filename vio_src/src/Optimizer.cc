@@ -2232,10 +2232,15 @@ int Optimizer::OptimizeSim3(KeyFrame *pKF1, KeyFrame *pKF2, vector<MapPoint *> &
             continue;
         }
 
-        if(P3D2c(2) < 0)
-        {
-            Verbose::PrintMess("Sim3: Z coordinate is negative", Verbose::VERBOSITY_DEBUG);
+        if(!pKF2->mpCamera->isVisible(P3D2c.cast<double>()))
             continue;
+        const bool useOmni = pKF2->mpCamera->GetType() == GeometricCamera::CAM_OMNI;
+        Eigen::Vector2f syntheticObservation;
+        if(useOmni && i2 < 0)
+        {
+            syntheticObservation = pKF2->mpCamera->project(P3D2c);
+            if(!syntheticObservation.allFinite())
+                continue;
         }
 
         nCorrespondences++;
@@ -2272,12 +2277,12 @@ int Optimizer::OptimizeSim3(KeyFrame *pKF1, KeyFrame *pKF2, vector<MapPoint *> &
         }
         else
         {
-            float invz = 1/P3D2c(2);
-            float x = P3D2c(0)*invz;
-            float y = P3D2c(1)*invz;
+            if(!useOmni)
+                syntheticObservation = P3D2c.head<2>() / P3D2c.z();
 
-            obs2 << x, y;
-            kpUn2 = cv::KeyPoint(cv::Point2f(x, y), pMP2->mnTrackScaleLevel);
+            obs2 = syntheticObservation.cast<double>();
+            kpUn2 = cv::KeyPoint(cv::Point2f(syntheticObservation.x(), syntheticObservation.y()),
+                                 pMP2->mnTrackScaleLevel);
 
             inKF2 = false;
             nOutKF2++;

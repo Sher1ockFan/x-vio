@@ -1,0 +1,38 @@
+{
+  "units": "seconds unless a field is explicitly labelled ns or us",
+  "time_convention": "t_image_on_imu_basis = t_camera_mapped_to_RAW + timeshift_cam_imu",
+  "timeshift_cam_imu_seconds": 0.016881056522098987,
+  "timeshift_cam_imu_rounded_ns": 16881057,
+  "camera_mapping": "Map the driver buffer timestamp to host MONOTONIC_RAW using the clock samples of the current run. CNTVCT was the plausible domain here.",
+  "imu_mapping": "host_reference_raw_ns + round(host_relative_intercept_ns + host_ns_per_device_ns * ((timer_us_unwrapped_in_epoch - device_reference_us) * 1000))",
+  "validity": "The example reference, slope and intercept belong to this capture. Estimate clock mappings again for a new session; apply the residual timeshift once on that basis.",
+  "first_last_image_ns": [
+    8571020812322,
+    8634085879323
+  ],
+  "first_last_imu_ns": [
+    8568929444739,
+    8643925806355
+  ],
+  "spatial_convention": "cam_imu.yaml: T_cam_imu maps IMU to camera; orb_trial.yaml: IMU.T_b_c1 is its inverse and maps camera to IMU. Translation metres.",
+  "run_03_imu_to_host_receipt_model_example": {
+    "device_reference_us": 4294160241,
+    "host_reference_raw_ns": 8568929428512,
+    "host_relative_intercept_ns": 16227.057418048382,
+    "host_ns_per_device_ns": 0.9999781809678985,
+    "apparent_rate_difference_ppm_over_trial": -21.81903210152214,
+    "receipt_residual_ms": {
+      "n": 37500,
+      "min": -0.6277773701057434,
+      "p05": -0.5406887130825043,
+      "median": -3.576278677494202e-13,
+      "p95": 0.3475795967628479,
+      "max": 1.9225872173995973
+    },
+    "method": "Centered relative times. Median of secant slopes between 32 or fewer block medians separated by >=1/4 span, then median intercept. Residuals include serial/USB/read scheduling latency."
+  },
+  "source_fit": "fit_05",
+  "source_recording": "run_03",
+  "source_report_sha256": "6929713d4f1f65542b99011a39a8e876d790166e48157627d1702e0e0cec0ece",
+  "source_camchain_sha256": "a3269f500197a4a1a48fd9566488fcd9571d3433cdd9e39a0c3ba3822c5287fb"
+}

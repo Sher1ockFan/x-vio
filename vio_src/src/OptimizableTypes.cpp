@@ -49,6 +49,12 @@ namespace ORB_SLAM3 {
     void EdgeSE3ProjectXYZOnlyPose::linearizeOplus() {
         g2o::VertexSE3Expmap * vi = static_cast<g2o::VertexSE3Expmap *>(_vertices[0]);
         Eigen::Vector3d xyz_trans = vi->estimate().map(Xw);
+        const Eigen::Matrix<double,2,3> projectionJacobian = pCamera->projectJac(xyz_trans);
+        if(pCamera->GetType() == GeometricCamera::CAM_OMNI && !projectionJacobian.allFinite())
+        {
+            _jacobianOplusXi.setZero();
+            return;
+        }
 
         double x = xyz_trans[0];
         double y = xyz_trans[1];
@@ -59,7 +65,7 @@ namespace ORB_SLAM3 {
                      -z , 0.f, x, 0.f, 1.f, 0.f,
                      y ,  -x , 0.f, 0.f, 0.f, 1.f;
 
-        _jacobianOplusXi = -pCamera->projectJac(xyz_trans) * SE3deriv;
+        _jacobianOplusXi = -projectionJacobian * SE3deriv;
     }
 
     bool EdgeSE3ProjectXYZOnlyPoseToBody::read(std::istream& is){
@@ -93,6 +99,12 @@ namespace ORB_SLAM3 {
         g2o::SE3Quat T_lw(vi->estimate());
         Eigen::Vector3d X_l = T_lw.map(Xw);
         Eigen::Vector3d X_r = mTrl.map(T_lw.map(Xw));
+        const Eigen::Matrix<double,2,3> projectionJacobian = pCamera->projectJac(X_r);
+        if(pCamera->GetType() == GeometricCamera::CAM_OMNI && !projectionJacobian.allFinite())
+        {
+            _jacobianOplusXi.setZero();
+            return;
+        }
 
         double x_w = X_l[0];
         double y_w = X_l[1];
@@ -103,7 +115,7 @@ namespace ORB_SLAM3 {
                 -z_w , 0.f, x_w, 0.f, 1.f, 0.f,
                 y_w ,  -x_w , 0.f, 0.f, 0.f, 1.f;
 
-        _jacobianOplusXi = -pCamera->projectJac(X_r) * mTrl.rotation().toRotationMatrix() * SE3deriv;
+        _jacobianOplusXi = -projectionJacobian * mTrl.rotation().toRotationMatrix() * SE3deriv;
     }
 
     EdgeSE3ProjectXYZ::EdgeSE3ProjectXYZ() : BaseBinaryEdge<2, Eigen::Vector2d, g2o::VertexSBAPointXYZ, g2o::VertexSE3Expmap>() {
@@ -142,12 +154,19 @@ namespace ORB_SLAM3 {
         g2o::VertexSBAPointXYZ* vi = static_cast<g2o::VertexSBAPointXYZ*>(_vertices[0]);
         Eigen::Vector3d xyz = vi->estimate();
         Eigen::Vector3d xyz_trans = T.map(xyz);
+        const Eigen::Matrix<double,2,3> projectionJacobian = pCamera->projectJac(xyz_trans);
+        if(pCamera->GetType() == GeometricCamera::CAM_OMNI && !projectionJacobian.allFinite())
+        {
+            _jacobianOplusXi.setZero();
+            _jacobianOplusXj.setZero();
+            return;
+        }
 
         double x = xyz_trans[0];
         double y = xyz_trans[1];
         double z = xyz_trans[2];
 
-        auto projectJac = -pCamera->projectJac(xyz_trans);
+        const Eigen::Matrix<double,2,3> projectJac = -projectionJacobian;
 
         _jacobianOplusXi =  projectJac * T.rotation().toRotationMatrix();
 
@@ -197,8 +216,15 @@ namespace ORB_SLAM3 {
         Eigen::Vector3d X_w = vi->estimate();
         Eigen::Vector3d X_l = T_lw.map(X_w);
         Eigen::Vector3d X_r = mTrl.map(T_lw.map(X_w));
+        const Eigen::Matrix<double,2,3> projectionJacobian = pCamera->projectJac(X_r);
+        if(pCamera->GetType() == GeometricCamera::CAM_OMNI && !projectionJacobian.allFinite())
+        {
+            _jacobianOplusXi.setZero();
+            _jacobianOplusXj.setZero();
+            return;
+        }
 
-        _jacobianOplusXi =  -pCamera->projectJac(X_r) * T_rw.rotation().toRotationMatrix();
+        _jacobianOplusXi = -projectionJacobian * T_rw.rotation().toRotationMatrix();
 
         double x = X_l[0];
         double y = X_l[1];
@@ -209,7 +235,7 @@ namespace ORB_SLAM3 {
                 -z , 0.f, x, 0.f, 1.f, 0.f,
                 y ,  -x , 0.f, 0.f, 0.f, 1.f;
 
-        _jacobianOplusXj = -pCamera->projectJac(X_r) * mTrl.rotation().toRotationMatrix() * SE3deriv;
+        _jacobianOplusXj = -projectionJacobian * mTrl.rotation().toRotationMatrix() * SE3deriv;
     }
 
 

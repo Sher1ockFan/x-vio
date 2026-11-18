@@ -93,7 +93,7 @@ Frame::Frame(const Frame &frame)
 
 Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, GeometricCamera* pCamera, cv::Mat &distCoef, const float &bf, const float &thDepth, Frame* pPrevF, const IMU::Calib &ImuCalib)
     :mpcpi(NULL),mpORBvocabulary(voc),mpORBextractorLeft(extractor),mpORBextractorRight(static_cast<ORBextractor*>(NULL)),
-     mTimeStamp(timeStamp), mK(static_cast<Pinhole*>(pCamera)->toK()), mK_(static_cast<Pinhole*>(pCamera)->toK_()), mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
+     mTimeStamp(timeStamp), mK(pCamera->toK()), mK_(pCamera->toK_()), mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mImuCalib(ImuCalib), mpImuPreintegrated(NULL),mpPrevFrame(pPrevF),mpImuPreintegratedFrame(NULL), mpReferenceKF(static_cast<KeyFrame*>(NULL)), mbIsSet(false), mbImuPreintegrated(false), mpCamera(pCamera),
      mpCamera2(nullptr), mbHasPose(false), mbHasVelocity(false)
 {
@@ -148,10 +148,10 @@ Frame::Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extra
         mfGridElementWidthInv=static_cast<float>(FRAME_GRID_COLS)/static_cast<float>(mnMaxX-mnMinX);
         mfGridElementHeightInv=static_cast<float>(FRAME_GRID_ROWS)/static_cast<float>(mnMaxY-mnMinY);
 
-        fx = static_cast<Pinhole*>(mpCamera)->toK().at<float>(0,0);
-        fy = static_cast<Pinhole*>(mpCamera)->toK().at<float>(1,1);
-        cx = static_cast<Pinhole*>(mpCamera)->toK().at<float>(0,2);
-        cy = static_cast<Pinhole*>(mpCamera)->toK().at<float>(1,2);
+        fx = mK_(0,0);
+        fy = mK_(1,1);
+        cx = mK_(0,2);
+        cy = mK_(1,2);
         invfx = 1.0f/fx;
         invfy = 1.0f/fy;
 
@@ -309,13 +309,12 @@ bool Frame::isInFrustum(MapPoint *pMP, float viewingCosLimit)
     const Eigen::Matrix<float,3,1> Pc = mRcw * P + mtcw;
     const float Pc_dist = Pc.norm();
 
-    // Check positive depth
-    const float &PcZ = Pc(2);
-    const float invz = 1.0f/PcZ;
-    if(PcZ<0.0f)
+    if(!mpCamera->isVisible(Pc.cast<double>()))
         return false;
 
     const Eigen::Vector2f uv = mpCamera->project(Pc);
+    if(!uv.allFinite())
+        return false;
 
     if(uv(0)<mnMinX || uv(0)>mnMaxX)
         return false;
@@ -348,7 +347,7 @@ bool Frame::isInFrustum(MapPoint *pMP, float viewingCosLimit)
     // Data used by the tracking
     pMP->mbTrackInView = true;
     pMP->mTrackProjX = uv(0);
-    pMP->mTrackProjXR = uv(0) - mbf*invz;
+    pMP->mTrackProjXR = mbf == 0.0f ? uv(0) : uv(0) - mbf/Pc.z();
 
     pMP->mTrackDepth = Pc_dist;
 
@@ -521,7 +520,8 @@ void Frame::ComputeBoW()
 
 void Frame::UndistortKeyPoints()
 {
-    if(mDistCoef.at<float>(0)==0.0)
+    if(mpCamera->GetType() != GeometricCamera::CAM_PINHOLE ||
+       mDistCoef.at<float>(0)==0.0)
     {
         mvKeysUn=mvKeys;
         return;
@@ -538,7 +538,7 @@ void Frame::UndistortKeyPoints()
 
     // Undistort points
     mat=mat.reshape(2);
-    cv::undistortPoints(mat,mat, static_cast<Pinhole*>(mpCamera)->toK(),mDistCoef,cv::Mat(),mK);
+    cv::undistortPoints(mat,mat, mpCamera->toK(),mDistCoef,cv::Mat(),mK);
     mat=mat.reshape(1);
 
 
@@ -556,7 +556,8 @@ void Frame::UndistortKeyPoints()
 
 void Frame::ComputeImageBounds(const cv::Mat &imLeft)
 {
-    if(mDistCoef.at<float>(0)!=0.0)
+    if(mpCamera->GetType() == GeometricCamera::CAM_PINHOLE &&
+       mDistCoef.at<float>(0)!=0.0)
     {
         cv::Mat mat(4,2,CV_32F);
         mat.at<float>(0,0)=0.0; mat.at<float>(0,1)=0.0;
@@ -565,7 +566,7 @@ void Frame::ComputeImageBounds(const cv::Mat &imLeft)
         mat.at<float>(3,0)=imLeft.cols; mat.at<float>(3,1)=imLeft.rows;
 
         mat=mat.reshape(2);
-        cv::undistortPoints(mat,mat,static_cast<Pinhole*>(mpCamera)->toK(),mDistCoef,cv::Mat(),mK);
+        cv::undistortPoints(mat,mat,mpCamera->toK(),mDistCoef,cv::Mat(),mK);
         mat=mat.reshape(1);
 
         // Undistort corners

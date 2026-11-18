@@ -1,0 +1,31 @@
+{
+  "project": "mono_vio_60",
+  "created": "2026-11-17",
+  "source_project": "mono_imu_vio",
+  "algorithm_core_modified_this_adaptation": false,
+  "source_manifest_sha256": "ef9292aabc7537e79d7f8f1cc4a52418a5a2fb78d16fd4e3ee123014f54b5590",
+  "selected_camera": {
+    "device": "/dev/video0",
+    "card": "vi-output, jl_gmsl 10-003a",
+    "configured_model": "isx031-m3a",
+    "requested_fps": 60
+  },
+  "camera_stream_verified": false,
+  "calibration_available": false,
+  "timestamp_domain_verified": false,
+  "remote_changes_performed": false,
+  "opencv_build_version": "4.5.4",
+  "scope": [
+    "Profile-based camera identity and raw/cropped dimensions",
+    "Explicit provisional CNTVCT clock-domain selection and user-authorized inherited residual camera delay; fresh clock mapping each session",
+    "Dynamic input sizes in native viewer, recording, replay and export",
+    "New calibration/profile binding for maps and sensor packets",
+    "Preserve timing, status, recovery logic and post-LIVE terminal silence"
+  ],
+  "legacy_parameters": "At the user request, Camera.type, Camera1 intrinsics/distortion, IMU.T_b_c1, IMU noise/random walks/frequency and residual time shift are copied from legacy_fit05. New camera interface, 1920x1536 input and requested 60 fps are retained. These calibration values have not been validated on this camera/rig.",
+  "camera_intrinsics_status": "borrowed_fit05_trial_unvalidated",
+  "calibration_status": "borrowed_fit05_trial_unvalidated",
+  "trial_configuration_complete": true,
+  "timestamp_domain_assumption": "cntvct, temporarily inherited from the previous camera; unverified on jl_gmsl",
+  "default_trial_map": "maps/workspace_trial.osa"
+}

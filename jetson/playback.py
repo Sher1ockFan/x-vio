@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Feed calibrated camera and IMU packets to the original ORB-SLAM3 viewer."""
+"""Replay a take in ORB-SLAM3, or supervise recording with a camera-only preview."""
 import argparse
-import csv
 import hashlib
 import os
 from pathlib import Path
@@ -17,7 +16,8 @@ TOOLS = Path(__file__).resolve().parent / "tools" / "orb_replay"
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(TOOLS))
 import live
-from umi_quality import FRAME_FIELDS, Frame, load_frames
+from camera_profile import load_snapshot
+from umi_quality import load_frames
 
 
 def check_packet(packet, frame):
@@ -28,7 +28,7 @@ def check_packet(packet, frame):
 
 def send_packet(child, packet):
     # Preserve packet boundaries, but time out if the Viewer has stopped
-    # consuming input. The capture process has its own file writer.
+    # consuming replay input.
     fd = child.stdin.fileno()
     remaining = memoryview(packet)
     deadline = time.monotonic() + 8
@@ -43,6 +43,7 @@ def send_packet(child, packet):
 
 
 def open_viewer(binary, vocabulary, settings, log):
+    load_snapshot(settings.parent)
     print("ORB-SLAM3 Viewer log:", log, flush=True)
     with log.open("xb") as output:
         child = subprocess.Popen([binary, vocabulary, settings], stdin=subprocess.PIPE, bufsize=0,
@@ -92,82 +93,55 @@ def replay(folder, binary, vocabulary):
     print(f"Replayed {len(frames)} camera packets from {folder}.")
 
 
-def follow_lines(table, recorder, child):
-    while recorder.poll() is None:
-        if child.poll() is not None:
-            raise RuntimeError(f"ORB exited with code {child.returncode}.")
-        offset = table.tell()
-        line = table.readline()
-        if line.endswith("\n"):
-            yield line
-        else:
-            table.seek(offset)
-            time.sleep(0.025)
+def record_with_preview(folder, viewer, camera):
+    _, layout = load_snapshot(folder)
+    preview_log = folder / "preview.log"
+    stop_requested = False
 
+    def request_stop(_signal, _frame):
+        nonlocal stop_requested
+        stop_requested = True
 
-def preview(folder, recorder, child):
-    index = folder / "frames.csv"
-    packets = folder / "stream.bin"
-    while not (index.is_file() and packets.is_file()):
-        if recorder.poll() is not None:
-            return
-        if child.poll() is not None:
-            raise RuntimeError(f"ORB exited with code {child.returncode}.")
-        time.sleep(0.05)
-    with index.open(newline="") as table, packets.open("rb") as source:
-        rows = csv.reader(follow_lines(table, recorder, child))
-        fields = next(rows, None)
-        if fields is None:
-            return
-        if fields != list(FRAME_FIELDS):
-            raise ValueError("Unexpected recording frame index.")
-        for row in rows:
-            if len(row) != len(FRAME_FIELDS):
-                raise ValueError("Unexpected recording frame index row.")
-            frame = Frame(*map(int, row))
-            if (frame.offset != source.tell() or not 1 <= frame.imu_count <= 1000 or
-                    not live.PIXELS < frame.size <= live.PIXELS + 256 * (frame.imu_count + 1)):
-                raise ValueError(f"Invalid recording index at frame {frame.frame_idx}.")
-            while os.fstat(source.fileno()).st_size < frame.offset + frame.size:
-                if recorder.poll() is not None:
-                    raise ValueError(f"Recorder exited before writing frame {frame.frame_idx}.")
-                if child.poll() is not None:
-                    raise RuntimeError(f"ORB exited with code {child.returncode}.")
-                time.sleep(0.025)
-            packet = source.read(frame.size)
-            check_packet(packet, frame)
-            send_packet(child, packet)
-
-
-def record_with_preview(folder, binary, vocabulary, camera):
-    child = open_viewer(binary, vocabulary, folder / "settings.yaml", folder / "preview.log")
-    recorder = None
+    handlers = {sig: signal.signal(sig, request_stop) for sig in (signal.SIGINT, signal.SIGTERM)}
+    recorder = child = None
     try:
+        if stop_requested:
+            raise SystemExit("Interrupted before capture started.")
         with (folder / "record.log").open("xb") as output:
             recorder = subprocess.Popen([sys.executable, "-u", TOOLS / "umi.py", "record", folder, camera],
                                         stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
-        try:
-            preview(folder, recorder, child)
-        except (OSError, ValueError, RuntimeError, csv.Error) as exc:
-            close_viewer(child)
-            print(f"Preview stopped ({exc}). Recording continues. See {folder}/preview.log.", flush=True)
-        recorder.wait()
-    except KeyboardInterrupt:
-        pass
+        if not stop_requested:
+            try:
+                with preview_log.open("xb") as output:
+                    child = subprocess.Popen([viewer, folder, str(layout["width"]), str(layout["height"])],
+                                             stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+            except OSError as exc:
+                print(f"Camera preview failed to start ({exc}). Recording continues.", flush=True)
+
+        while not stop_requested and recorder.poll() is None:
+            if child is not None and child.poll() is not None:
+                if child.returncode == 0:
+                    print("Camera preview closed. Recording continues until Ctrl+C.", flush=True)
+                else:
+                    print(f"Camera preview stopped (code {child.returncode}). Recording continues. "
+                          f"See {preview_log}.", flush=True)
+                child = None
+            time.sleep(0.05)
     finally:
-        # Keep additional Ctrl+C presses from interrupting the recorder's fsync.
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            signal.signal(sig, signal.SIG_IGN)
-        if recorder is not None and recorder.poll() is None:
-            recorder.send_signal(signal.SIGINT)
-        close_viewer(child)
-        if recorder is not None:
-            code = recorder.wait()
-            if code:
-                raise RuntimeError(f"Recording exited with code {code}. See {folder}/record.log.")
-    if recorder is None:
-        raise SystemExit("Interrupted before capture started.")
-    print(f"Recording complete: {folder}")
+        try:
+            if recorder is not None and recorder.poll() is None:
+                recorder.send_signal(signal.SIGINT)
+            try:
+                live.terminate(child)
+            finally:
+                if recorder is not None:
+                    code = recorder.wait()
+        finally:
+            for sig, handler in handlers.items():
+                signal.signal(sig, handler)
+    if code:
+        raise RuntimeError(f"Recording exited with code {code}. See {folder}/record.log.")
+    print(f"Recording complete: {folder}", flush=True)
 
 
 def interrupted(_signal, _frame):
@@ -176,18 +150,25 @@ def interrupted(_signal, _frame):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("mode", choices=("replay", "record-view"))
+    modes = ap.add_subparsers(dest="mode", required=True)
+
+    def absolute(path):
+        return Path(path).expanduser().resolve()
+
+    play = modes.add_parser("replay")
     for name in ("folder", "binary", "vocabulary"):
-        ap.add_argument(name, type=lambda path: Path(path).expanduser().resolve())
-    ap.add_argument("camera", nargs="?", type=lambda path: Path(path).expanduser().resolve())
+        play.add_argument(name, type=absolute)
+
+    record = modes.add_parser("record-view")
+    for name in ("folder", "viewer", "camera"):
+        record.add_argument(name, type=absolute)
+
     args = ap.parse_args()
-    signal.signal(signal.SIGTERM, interrupted)
     if args.mode == "replay":
+        signal.signal(signal.SIGTERM, interrupted)
         replay(args.folder, args.binary, args.vocabulary)
-    elif args.camera is not None:
-        record_with_preview(args.folder, args.binary, args.vocabulary, args.camera)
     else:
-        ap.error("record-view needs a camera helper.")
+        record_with_preview(args.folder, args.viewer, args.camera)
 
 
 if __name__ == "__main__":

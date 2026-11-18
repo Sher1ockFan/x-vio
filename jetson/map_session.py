@@ -19,6 +19,15 @@ import shutil
 import sys
 import tempfile
 
+sys.dont_write_bytecode = True
+_HERE = Path(__file__).resolve().parent
+# Installed package and source checkout use the same profile implementation.
+sys.path.insert(0, str(_HERE / "tools/orb_replay" if (_HERE / "tools/orb_replay").is_dir()
+                       else _HERE.parent / "adapter/orb_replay"))
+from camera_profile import (
+    OMNI_CANDIDATE_STATUS, PROFILE_NAME, TRIAL_STATUS, canonical_profile, load_profile, validate_calibration,
+)
+
 SCHEMA = 2
 PUBLICATION_POLICY = "health_v2"
 
@@ -60,6 +69,14 @@ def scalar(value):
 
 def calibration(settings, timing):
     """Parse the limited OpenCV YAML fields used by this single-camera package."""
+    settings, timing = Path(settings), Path(timing)
+    if settings.parent != timing.parent:
+        raise ValueError("MAP_E_CALIBRATION: settings and timing must share one camera snapshot")
+    try:
+        profile = load_profile(settings.parent / PROFILE_NAME)
+        layout = validate_calibration(settings, timing, profile)
+    except ValueError as exc:
+        raise ValueError("MAP_E_CALIBRATION: " + str(exc)) from exc
     blocks = {}
     key = None
     for line in Path(settings).read_text().splitlines():
@@ -101,7 +118,10 @@ def calibration(settings, timing):
     # calibration. The current session refits clocks before tracking starts.
     basis = {k: clock[k] for k in ("time_convention", "camera_mapping", "imu_mapping")}
     basis["timeshift_cam_imu_rounded_ns"] = ns
-    payload = {"camera_imu": fields, "time_basis": basis}
+    payload = {"camera_imu": fields, "time_basis": basis,
+               "camera_profile": canonical_profile(profile),
+               "calibration_status": layout["calibration_status"],
+               "calibration_validated_for_current_rig": layout["calibration_validated_for_current_rig"]}
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
     return hashlib.sha256(encoded).hexdigest(), payload
 
@@ -142,10 +162,14 @@ def prepare(root, run):
     # v2 adds recoverable dynamics priors and health checks. Do not automatically
     # reload a v1 reference that may already contain an accepted divergent map.
     # Keep that file untouched for diagnosis or use with its original binary.
-    reference = Path(os.environ.get("VIO_MAP_FILE", str(root / "maps/workspace_v2.osa"))).expanduser().absolute()
+    fingerprint, parameters = calibration(settings, timing)
+    reference_name = {
+        TRIAL_STATUS: "workspace_trial.osa",
+        OMNI_CANDIDATE_STATUS: "workspace_omni_60.osa",
+    }.get(parameters["calibration_status"], "workspace_v2.osa")
+    reference = Path(os.environ.get("VIO_MAP_FILE", str(root / "maps" / reference_name))).expanduser().absolute()
     if reference.suffix != ".osa" or "\n" in str(reference) or "\r" in str(reference):
         raise ValueError("MAP_E_PATH: VIO_MAP_FILE must name an .osa file")
-    fingerprint, parameters = calibration(settings, timing)
     load = ""
     if mode != "off":
         with reference_lock(reference):
@@ -167,6 +191,8 @@ def prepare(root, run):
     settings.write_text(text)
     plan = {"schema": SCHEMA, "publication_policy": PUBLICATION_POLICY,
             "mode": mode, "reference": str(reference), "load": load,
+            "calibration_status": parameters["calibration_status"],
+            "calibration_validated_for_current_rig": parameters["calibration_validated_for_current_rig"],
             "save": save, "calibration_sha256": fingerprint, "calibration": parameters}
     write_json(run / "map_plan.json", plan)
     print("Map load: " + (
@@ -277,6 +303,8 @@ def finalize(session, worker_exit):
     session = Path(session).resolve()
     plan = json.loads((session.parent / "map_plan.json").read_text())
     summary = {"schema": SCHEMA, "mode": plan["mode"], "worker_exit": worker_exit,
+               "calibration_status": plan.get("calibration_status"),
+               "calibration_validated_for_current_rig": plan.get("calibration_validated_for_current_rig", False),
                "reference": plan["reference"], "status": "NOT_PUBLISHED"}
     try:
         if plan["mode"] == "off":
@@ -295,6 +323,8 @@ def finalize(session, worker_exit):
             health = review_health(session)
             summary["health_review"] = health
             metadata = {"schema": SCHEMA, "publication_policy": PUBLICATION_POLICY,
+                        "calibration_status": plan.get("calibration_status"),
+                        "calibration_validated_for_current_rig": plan.get("calibration_validated_for_current_rig", False),
                         "health_review": health, "calibration_sha256": plan["calibration_sha256"],
                         "calibration": plan["calibration"], "atlas_sha256": digest(saved),
                         "source_session": str(session), "core_save": report}

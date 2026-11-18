@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-17",
+  "project": "mono_vio_60",
+  "status": "borrowed_fit05_trial_unvalidated",
+  "user_requested": true,
+  "supersedes_scope_of": "provenance/borrowed_intrinsics.json",
+  "sources": {
+    "params/legacy_fit05/orb_trial.yaml": "eadeb22e7e1bffc05cd6cad84a4da28b4be2a80c8f43dc0f3e33688fa52b3acd",
+    "params/legacy_fit05/timing.json": "0fed0d5a0ca5c878615d005dfb987ab044ae13c976755c57db545f9ce1eb6cc5"
+  },
+  "copied_parameter_groups": [
+    "camera model, intrinsics and distortion coefficients",
+    "camera-to-IMU transform IMU.T_b_c1",
+    "IMU noise densities, bias random walks and nominal 500 Hz frequency",
+    "residual camera-to-IMU time shift"
+  ],
+  "timeshift_cam_imu_seconds": 0.016881056522098987,
+  "timeshift_cam_imu_rounded_ns": 16881057,
+  "time_convention": "t_image_on_imu_basis = t_camera_mapped_to_RAW + timeshift_cam_imu",
+  "camera_timestamp_domain_assumption": "cntvct",
+  "timestamp_domain_verified_on_current_camera": false,
+  "old_session_clock_fit_reused": false,
+  "current_session_clock_fit_preserved": true,
+  "new_interface": {
+    "device": "/dev/video0",
+    "expected_card": "vi-output, jl_gmsl 10-003a",
+    "raw_size": [
+      1920,
+      1536
+    ],
+    "crop_top": 0,
+    "crop_bottom": 0,
+    "requested_fps": 60,
+    "native_processing_size": [
+      960,
+      768
+    ]
+  },
+  "intrinsic_transform": "None. Copy the prior ORB settings values exactly; do not infer a crop model or rescale for the changed sensor. ORB performs the configured half-size processing once.",
+  "default_trial_map": "maps/workspace_trial.osa",
+  "map_recovery_and_persistence_preserved": true,
+  "calibrated_on_current_camera": false,
+  "accuracy_validated_for_current_rig": false,
+  "hardware_test_performed": false,
+  "remote_changes_performed": false
+}

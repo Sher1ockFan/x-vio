@@ -16,8 +16,6 @@
 #include <vector>
 
 namespace {
-constexpr int image_width = 1920;
-constexpr int image_height = 1440;
 constexpr double ns_to_seconds = 1e-9;
 
 std::int64_t host_raw_ns() {
@@ -52,7 +50,7 @@ std::string csv_string(const std::string &value) {
     return result + "\"";
 }
 
-int track(ORB_SLAM3::System &slam) {
+int track(ORB_SLAM3::System &slam, int image_width, int image_height) {
     std::ofstream poses("poses.csv"), events("recovery_events.csv"), diagnostics("state_diagnostics.csv");
     std::ofstream recovery_timing("recovery_timing.csv");
     if (!poses || !events || !diagnostics || !recovery_timing) throw std::runtime_error("Cannot open pose/recovery diagnostics");
@@ -240,8 +238,26 @@ int main(int argc, char **argv) {
     ORB_SLAM3::System *slam = nullptr;
     int result = 1;
     try {
+        // The stream carries the calibrated, cropped input image. Native ORB
+        // may subsequently resize it; newWidth/newHeight are not pipe dimensions.
+        cv::FileStorage settings(argv[2], cv::FileStorage::READ);
+        if (!settings.isOpened()) throw std::runtime_error("Cannot read camera settings");
+        const cv::FileNode width_node = settings["Camera.width"];
+        const cv::FileNode height_node = settings["Camera.height"];
+        if ((!width_node.isInt() && !width_node.isReal()) ||
+            (!height_node.isInt() && !height_node.isReal()))
+            throw std::runtime_error("Missing camera input dimensions in settings");
+        const double width_value = static_cast<double>(width_node);
+        const double height_value = static_cast<double>(height_node);
+        if (!std::isfinite(width_value) || !std::isfinite(height_value) ||
+            width_value < 1 || height_value < 1 || width_value > 16384 || height_value > 16384 ||
+            std::floor(width_value) != width_value || std::floor(height_value) != height_value)
+            throw std::runtime_error("Invalid camera input dimensions in settings");
+        const int image_width = static_cast<int>(width_value);
+        const int image_height = static_cast<int>(height_value);
+        settings.release();
         slam = new ORB_SLAM3::System(argv[1], argv[2], ORB_SLAM3::System::IMU_MONOCULAR, !headless);
-        result = track(*slam);
+        result = track(*slam, image_width, image_height);
     } catch (const std::exception &error) {
         std::cerr << "STOCK_INPUT_ERROR " << error.what() << std::endl;
     }

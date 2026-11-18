@@ -1,0 +1,112 @@
+{
+  "scope": "Native core changes relative to the prior mono_vio_60 build.",
+  "previous_source_manifest_sha256": "ef9292aabc7537e79d7f8f1cc4a52418a5a2fb78d16fd4e3ee123014f54b5590",
+  "current_source_manifest_sha256": "a66b494d68b0ddba27d07c5b2f17b378c7e2559639c3218d029e6e4a2d30b702",
+  "changes": [
+    {
+      "path": "./CMakeLists.txt",
+      "previous_sha256": "7549069993ba8fde800825bfe9837d4ac4444f78fea6335664e43254b656af0b",
+      "current_sha256": "bade1133c9cf3feb3a2e10b8941b1b37f92c649abbfed7489d469bde49eebd37"
+    },
+    {
+      "path": "./include/Atlas.h",
+      "previous_sha256": "fd6952123b515736cd61d84ff1ccd09b19a9b712e64ed613093d9991609822e3",
+      "current_sha256": "0c89fb4eff01def2b1e2b3f69893a0f0ffac9ce7bd23f8fe82cfe61981dffdea"
+    },
+    {
+      "path": "./include/CameraModels/GeometricCamera.h",
+      "previous_sha256": "0d19c3f1299fc162959a720a24da1f97b7c110ed687e6237c2e5c070070d7d89",
+      "current_sha256": "ff5cfbb78b1270a37f5759a90fa4b9b5602d878a696485dc0a79b33dd946f0a4"
+    },
+    {
+      "path": "./include/CameraModels/OmniRadtan.h",
+      "previous_sha256": null,
+      "current_sha256": "d1f80af4cc6a9a5b61ec78f2d7a7fd08e5f30fea0283ed1c22038c984cc32c84"
+    },
+    {
+      "path": "./include/G2oTypes.h",
+      "previous_sha256": "97cdb8ef2afed30eca6d138f1946c90b05bd1b03f47ddca6c4fddf7bfc7d090c",
+      "current_sha256": "ce54284a237a74af842e9836a6d3c002b770a69ca68a5e5829eb5b4d3230394b"
+    },
+    {
+      "path": "./include/OptimizableTypes.h",
+      "previous_sha256": "e849689b824fc066fbe4ed9b9991a6734f8701098d85331a10ff99f3d622f9ca",
+      "current_sha256": "31befc70f330a2716f3c12967f445e1ce04a3b1f59f90c5666d507884fc56a6d"
+    },
+    {
+      "path": "./include/Settings.h",
+      "previous_sha256": "caf01f5a7f3e34a9a0748c8ebd1e3b4239321b24f7800c8b8f3eebc0f69da135",
+      "current_sha256": "b76c0da5f6b08f263523133183782a21722f34ef3638398de4093c2ccffebc16"
+    },
+    {
+      "path": "./src/Atlas.cc",
+      "previous_sha256": "a0a2cc9225582ca9aac3d57aa6ac97bae3cf0b8ad411c09afc26ce3d095e4c59",
+      "current_sha256": "c442cc1faa5a4603df3ccd06dd9d3c3b1b2ab0c08eae001ecb55ea2fa4af9791"
+    },
+    {
+      "path": "./src/CameraModels/OmniRadtan.cpp",
+      "previous_sha256": null,
+      "current_sha256": "cfe57e52df74a5706060358b78a0c8327c64d86542ad3332e6d650993656aafc"
+    },
+    {
+      "path": "./src/Frame.cc",
+      "previous_sha256": "bd2fb0db483062a4406b949ae2192c53e07f4547cb516bdb77658f74c8fbac41",
+      "current_sha256": "7ea9713c97660be204515804eea3b32f9e3cb1542a5349811e14c934993441d2"
+    },
+    {
+      "path": "./src/G2oTypes.cc",
+      "previous_sha256": "0a96d5600440601ce9c8dcdedfa8c63c80b2285fbca6c81db3d983180ff34252",
+      "current_sha256": "c5708fcaec4754386488108f0ffce913f543cbd8cab56f3f708703ff914e9731"
+    },
+    {
+      "path": "./src/GeometricTools.cc",
+      "previous_sha256": "7bbd9e2b379665e1e1951de05786c156dc2d4f80efa090b8d203e97e16e09d2b",
+      "current_sha256": "4c199bbebf66ef4bcd69d6594f91724135d42312317fcb701ae0b3d2777a5e7e"
+    },
+    {
+      "path": "./src/KeyFrame.cc",
+      "previous_sha256": "21ac21d78cbccf77626eaf7bcff5f4316f20f26e3217c2614cf7c46ca4989326",
+      "current_sha256": "b2d3dfa8ed862b6095cdeef32d398a1bf839c95b10dfda06fd9d3c787e810640"
+    },
+    {
+      "path": "./src/LocalMapping.cc",
+      "previous_sha256": "e9289a7b7d6f96338dba7d058c41382f6bd492ac54888b592c8c0b8051d75296",
+      "current_sha256": "9dd9459147e162abd44d05377bc2ed3d04f4860e3cd4f6ba643c9ee13cca7f27"
+    },
+    {
+      "path": "./src/MLPnPsolver.cpp",
+      "previous_sha256": "041edf25db4e76505ca5a4d0cb598704a5b782331f4e3f54ba9160962072ab14",
+      "current_sha256": "6aacbc50d987e4a948aabc12f6820ad11b11961a62f2cc2f75b776053637891d"
+    },
+    {
+      "path": "./src/ORBmatcher.cc",
+      "previous_sha256": "ca66fed46590033c7a02e0e9452cfdb5348c41d691123655695c31ff3a681ab1",
+      "current_sha256": "cd4b3662ca8da6009cbae61b70583edee512d6b66e95c91d192245deb362672c"
+    },
+    {
+      "path": "./src/OptimizableTypes.cpp",
+      "previous_sha256": "53288e031c2e7f254e834139c820ff17384f97cf53a042deeb3f5e97b9b4c733",
+      "current_sha256": "e81ae94d54c6b54cee63fdbfbf083bbb5e82e2ce2c65138b98d3173662c4bdc3"
+    },
+    {
+      "path": "./src/Optimizer.cc",
+      "previous_sha256": "d30d850c6aa928a4689c582b104296148285f4181f4e1ab090e229767d8d5de9",
+      "current_sha256": "2471d1a4afa24607d1d1c616a12e14a7b1e74f2485b5273aba747ef2afe9019c"
+    },
+    {
+      "path": "./src/Settings.cc",
+      "previous_sha256": "f4bd8b351f07f4bd44af49f33ec05e11ec30da05f5a5b02eb6f0b243fca6a01e",
+      "current_sha256": "04084ac163d277abef068e131ec534a6c84ffd6186ad2cf3439081fa9d01664f"
+    },
+    {
+      "path": "./src/Sim3Solver.cc",
+      "previous_sha256": "5ec63bc27f0e9734ad3de26e023e40751f9ecee77295b35767d665752e4a28f6",
+      "current_sha256": "26cf03842a651aa3ce490a216a2b1f568c7cad08762a437b50d08b1020e14caa"
+    },
+    {
+      "path": "./src/Tracking.cc",
+      "previous_sha256": "a61eed9f95db291299901cb4efc2a3582f7bd4cebe05c3d9a20e4a8cf0e66ce1",
+      "current_sha256": "facb8b346652188833365fadbf1a2b93c2814adfa8e86c98680128c70d3e5d89"
+    }
+  ]
+}

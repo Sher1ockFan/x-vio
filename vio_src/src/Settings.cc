@@ -21,6 +21,7 @@
 
 #include "CameraModels/Pinhole.h"
 #include "CameraModels/KannalaBrandt8.h"
+#include "CameraModels/OmniRadtan.h"
 
 #include "System.h"
 
@@ -233,6 +234,15 @@ namespace ORB_SLAM3 {
             originalCalib1_ = new KannalaBrandt8(vCalibration);
 
         }
+        else if(cameraModel == "OmniRadtan"){
+            cameraType_ = Omni;
+            // Keep the first four positions shared with other camera models.
+            for(const char* key : {"Camera1.fx", "Camera1.fy", "Camera1.cx", "Camera1.cy",
+                                   "Camera1.xi", "Camera1.k1", "Camera1.k2", "Camera1.p1", "Camera1.p2"})
+                vCalibration.push_back(readParameter<float>(fSettings, key, found));
+            calibration1_ = new OmniRadtan(vCalibration);
+            originalCalib1_ = new OmniRadtan(vCalibration);
+        }
         else{
             cerr << "Error: " << cameraModel << " not known" << endl;
             exit(-1);
@@ -345,6 +355,9 @@ namespace ORB_SLAM3 {
         output << "\t-Camera 1 parameters (";
         if(settings.cameraType_ == Settings::PinHole){
             output << "Pinhole";
+        }
+        else if(settings.cameraType_ == Settings::Omni){
+            output << "Omni-radtan";
         }
         else{
             output << "Kannala-Brandt";
