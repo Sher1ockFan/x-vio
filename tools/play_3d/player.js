@@ -8,7 +8,15 @@
     speed: byId("speed"), position: byId("position"), clock: byId("clock"),
     segment: byId("segment"), validity: byId("validity"), frame: byId("frame"),
     coordinates: byId("coordinates"), file: byId("file"), format: byId("format"),
-    importStatus: byId("import-status"),
+    importStatus: byId("import-status"), inputReference: byId("input-reference"),
+    trackPoint: byId("track-point"), coordinateLabel: byId("coordinate-label"),
+    tcpForm: byId("tcp-form"), tcpSummary: byId("tcp-summary"),
+    tcpStatus: byId("tcp-status"), tcpReference: byId("tcp-reference"),
+    tcpAxes: ["x", "y", "z"].map(axis => byId("axis-" + axis)),
+    tcpInputs: ["x", "y", "z"].map(axis => byId("tcp-" + axis)),
+    useCad: byId("use-cad"), showGripper: byId("show-gripper"),
+    gripperScene: byId("gripper-scene"), gripperTcp: byId("gripper-tcp"),
+    modelState: byId("model-state"), focusGripper: byId("focus-gripper"),
   };
   const colors = getComputedStyle(document.documentElement);
   const color = name => colors.getPropertyValue("--" + name).trim();
@@ -16,9 +24,12 @@
     grid: color("grid"), muted: color("muted"), border: color("border"),
     path: color("trajectory"), preview: color("preview"), text: color("text"),
   };
-  const viewDefaults = { yaw: -Math.PI / 5, pitch: Math.PI / 5, zoom: 1 };
+  const viewDefaults = { yaw: -Math.PI / 5, pitch: Math.PI / 5, zoom: 1, closeUp: false };
   const view = { ...viewDefaults };
   const tracks = new Map();
+  const offsets = new Map([["recorded-camera", { mm: VioTcp.nominalMm, cad: true }]]);
+  const referenceNames = { camera: "相机", body: "IMU / 机体", tcp: "TCP" };
+  let sourceTrack;
   let track;
   let time = 0;
   let speed = 1;
@@ -26,6 +37,13 @@
   let startWall = 0;
   let startTime = 0;
   let pointer = null;
+  let gripper = null;
+  let modelError = "";
+  try {
+    if (globalThis.VioGripperMesh) gripper = VioGripperRenderer.create(ui.gripperScene, VioGripperMesh);
+  } catch (error) {
+    modelError = error.message;
+  }
   const clamp = (x, min, max) => Math.min(max, Math.max(min, x));
 
   function showStatus(message, error = false) {
@@ -68,14 +86,65 @@
     };
   }
 
-  function selectTrack(id) {
+  function updateTcpControls(profile) {
+    const { reference } = sourceTrack;
+    const alreadyTcp = reference === "tcp";
+    ui.tcpForm.hidden = alreadyTcp;
+    ui.useCad.hidden = reference !== "camera";
+    ui.tcpSummary.dataset.cad = String(Boolean(profile?.cad));
+    ui.tcpStatus.dataset.error = "false";
+    if (alreadyTcp) {
+      ui.tcpSummary.textContent = "输入已是 TCP";
+      ui.tcpStatus.textContent = "直接回放输入的夹爪 TCP 位置。";
+      return;
+    }
+
+    ui.tcpReference.textContent = referenceNames[reference] + "坐标系中的 TCP 偏移（mm）";
+    const axes = reference === "camera" ? ["X · 右", "Y · 下", "Z · 前"] : ["X", "Y", "Z"];
+    axes.forEach((label, i) => { ui.tcpAxes[i].textContent = label; });
+    ui.tcpInputs.forEach((field, i) => { field.value = profile ? String(profile.mm[i]) : ""; });
+    ui.tcpSummary.textContent = profile?.cad ? "STEP 名义预览" : profile ? "自定义偏移" : "待输入";
+    ui.tcpStatus.textContent = profile?.cad
+      ? "CAD 采用镜头前顶点到双爪内侧前缘中点。实测偏移可在这里替换。"
+      : "以输入位姿的原点和坐标轴为基准，填入从原点指向 TCP 的偏移。";
+  }
+
+  function rebuildTrack(startWithModel = false) {
     pause();
-    track = tracks.get(id);
-    time = 0;
+    const { reference, offsetKey } = sourceTrack;
+    const profile = offsets.get(offsetKey);
+    const isTcp = reference === "tcp" || ui.trackPoint.value === "tcp";
+    const showCad = isTcp && reference !== "tcp" && Boolean(profile?.cad);
+    const waitingTcp = isTcp && reference !== "tcp" && !profile;
+    let frames = sourceTrack.frames;
+    if (waitingTcp) {
+      frames = frames.map(frame => frame.p ? { ...frame, p: null, q: null } : frame);
+    } else if (isTcp && reference !== "tcp") {
+      frames = VioTcp.tcpFrames(frames, profile.mm);
+    }
+
+    const gripperAligned = isTcp && reference === "camera" &&
+      (offsetKey === "recorded-camera" || showCad) && !waitingTcp;
+    track = buildTrack({ ...sourceTrack, frames, isTcp, showCad, waitingTcp, gripperAligned });
+    if (startWithModel && gripper && gripperAligned && ui.showGripper.checked) {
+      time = track.longest?.frames[0].t ?? 0;
+    }
+    ui.showGripper.disabled = !gripper || !gripperAligned;
+    ui.modelState.textContent = modelError || (!gripper ? "STEP 网格待加载" : "");
+    ui.modelState.hidden = !ui.modelState.textContent;
     ui.position.max = String(Math.max(track.duration, 0.001));
     ui.position.disabled = ui.play.disabled = ui.restart.disabled = track.duration === 0;
+    ui.coordinateLabel.textContent = (showCad ? "CAD 名义 TCP" :
+      isTcp ? "TCP" : referenceNames[reference]) + " 位置（m）";
+    updateTcpControls(profile);
     resetView();
     drawCoverage();
+  }
+
+  function selectTrack(id) {
+    sourceTrack = tracks.get(id);
+    time = 0;
+    rebuildTrack(true);
   }
 
   function containingFrame(seconds) {
@@ -237,31 +306,21 @@
     }
   }
 
-  // Rotate the sensor's local axes by its stored camera/body-to-world quaternion.
-  function worldPoint(frame, [x, y, z]) {
-    const [a, b, c, w] = frame.q;
-    const u = 2 * (b * z - c * y);
-    const v = 2 * (c * x - a * z);
-    const s = 2 * (a * y - b * x);
-    return [
-      frame.p[0] + x + w * u + b * s - c * v,
-      frame.p[1] + y + w * v + c * u - a * s,
-      frame.p[2] + z + w * s + a * v - b * u,
-    ];
-  }
-
   function drawPose(ctx, frame, size, project) {
     const origin = project(frame.p);
-    const corners = [[-0.7, -0.5, 1], [0.7, -0.5, 1], [0.7, 0.5, 1], [-0.7, 0.5, 1]]
-      .map(vertex => project(worldPoint(frame, vertex.map(n => n * size))));
-    ctx.beginPath();
-    for (let i = 0; i < corners.length; ++i) {
-      line(ctx, origin, corners[i]);
-      line(ctx, corners[i], corners[(i + 1) % corners.length]);
+    if (!track.isTcp) {
+      const corners = [[-0.7, -0.5, 1], [0.7, -0.5, 1], [0.7, 0.5, 1], [-0.7, 0.5, 1]]
+        .map(vertex => project(VioTcp.worldPoint(frame, vertex.map(n => n * size))));
+      ctx.beginPath();
+      for (let i = 0; i < corners.length; ++i) {
+        line(ctx, origin, corners[i]);
+        line(ctx, corners[i], corners[(i + 1) % corners.length]);
+      }
+      ctx.strokeStyle = palette.text;
+      ctx.lineWidth = 1.45;
+      ctx.stroke();
     }
-    ctx.strokeStyle = palette.text;
-    ctx.lineWidth = 1.45;
-    ctx.stroke();
+
     ctx.beginPath();
     ctx.arc(origin[0], origin[1], 4.5, 0, Math.PI * 2);
     ctx.fillStyle = palette.path;
@@ -270,21 +329,35 @@
 
   function drawScene(run, frame, frameOffset) {
     const { ctx, width, height } = prepareCanvas(ui.scene);
+    const modelEnabled = Boolean(track.gripperAligned && ui.showGripper.checked && gripper);
+    const showModel = Boolean(frame && run && modelEnabled);
+    ui.focusGripper.disabled = !modelEnabled;
+    ui.focusGripper.setAttribute("aria-pressed", String(modelEnabled && view.closeUp));
+    ui.gripperScene.hidden = ui.gripperTcp.hidden = !showModel;
     if (!run) {
       ctx.fillStyle = palette.muted;
       ctx.font = "15px system-ui, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("此文件没有有效位姿", width / 2, height / 2);
+      ctx.fillText(track.waitingTcp ? "输入 TCP 偏移以显示轨迹" : "此文件没有有效位姿", width / 2, height / 2);
       return;
     }
 
-    const scale = Math.min(width, height) * 0.63 / run.extent * view.zoom;
-    const project = makeProjection(view, [width / 2, height * 0.50], run.center, scale);
+    const closeUp = showModel && view.closeUp;
+    const center = closeUp ? frame.p : run.center;
+    const extent = closeUp ? 0.30 : run.extent;
+    const scale = Math.min(width, height) * 0.63 / extent * view.zoom;
+    const project = makeProjection(view, [width / 2, height * 0.50], center, scale);
     drawGrid(ctx, project, run);
     drawPath(ctx, run.frames, project, run.frames.length, palette.preview, 1.45);
     if (frame) {
       drawPath(ctx, run.frames, project, frameOffset - run.first + 1, palette.path, 2.15);
-      drawPose(ctx, frame, run.extent * 0.055, project);
+      if (showModel) {
+        gripper.draw(frame, view, center, extent, scale, width, height);
+        const [x, y] = project(frame.p);
+        ui.gripperTcp.style.transform = `translate(${x}px, ${y}px)`;
+      } else {
+        drawPose(ctx, frame, run.extent * 0.055, project);
+      }
     }
     drawAxes(ctx, height);
     drawScale(ctx, scale, width, height);
@@ -301,14 +374,15 @@
     const missingTimestamp = time > frameEnd(offset) + 1e-9;
     const valid = Boolean(frame.p) && !missingTimestamp;
     const run = valid ? track.segments.get(frame.segment) : fallbackSegment(offset);
-    const prefix = valid ? "有效区段" : "区段预览";
+    const prefix = (track.showCad ? "CAD 名义 TCP · " : "") + (valid ? "有效区段" : "区段预览");
     ui.segment.textContent = run
       ? prefix + " " + labelSeconds(run.frames[0].t) + " – " + labelSeconds(run.frames.at(-1).t)
-      : "有效区段 · 无";
+      : (track.waitingTcp ? "TCP 偏移待输入" : "有效区段 · 无");
     ui.clock.textContent = labelSeconds(time) + " / " + labelSeconds(track.duration);
     ui.position.value = String(time);
     ui.position.setAttribute("aria-valuetext", labelSeconds(time));
-    ui.validity.textContent = valid ? "有效" : (missingTimestamp ? "时间戳空段" : "无有效位姿");
+    ui.validity.textContent = track.waitingTcp ? "等待 TCP 偏移" : valid ? "有效" :
+      missingTimestamp ? "时间戳空段" : "无有效位姿";
     ui.validity.dataset.valid = String(valid);
     ui.frame.textContent = missingTimestamp ? "—" : String(frame.index);
     ui.coordinates.textContent = valid
@@ -375,6 +449,33 @@
   });
 
   ui.tracks.addEventListener("change", () => selectTrack(ui.tracks.value));
+  ui.trackPoint.addEventListener("change", () => rebuildTrack());
+  ui.showGripper.addEventListener("change", render);
+  ui.focusGripper.addEventListener("click", () => {
+    view.closeUp = !view.closeUp;
+    view.zoom = 1;
+    render();
+  });
+  ui.tcpForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (sourceTrack.reference === "tcp") return;
+    const mm = ui.tcpInputs.map(field => field.valueAsNumber);
+    if (!mm.every(Number.isFinite)) {
+      ui.tcpStatus.textContent = "请填写 X、Y、Z 三个有限的毫米数值。";
+      ui.tcpStatus.dataset.error = "true";
+      return;
+    }
+    offsets.set(sourceTrack.offsetKey, { mm, cad: false });
+    ui.trackPoint.value = "tcp";
+    rebuildTrack();
+  });
+
+  ui.useCad.addEventListener("click", () => {
+    if (sourceTrack.reference !== "camera") return;
+    offsets.set(sourceTrack.offsetKey, { mm: VioTcp.nominalMm, cad: true });
+    ui.trackPoint.value = "tcp";
+    rebuildTrack();
+  });
   ui.resetView.addEventListener("click", resetView);
 
   ui.scene.addEventListener("pointerdown", event => {
@@ -419,15 +520,16 @@
     showStatus("正在读取位姿…");
     try {
       const parsed = VioPoseIO.parse(await file.text(), format, file.name);
-      const entry = buildTrack(parsed);
+      const reference = ui.inputReference.value || (parsed.format === "csv" ? "camera" : "");
+      if (!reference) throw new Error("请为文本轨迹选择输入位姿坐标系，然后重新导入。");
       const id = "import-" + (++importCount);
       ui.tracks.add(new Option(parsed.name, id));
-      tracks.set(id, entry);
+      tracks.set(id, { ...parsed, reference, offsetKey: id });
       ui.tracks.value = id;
       selectTrack(id);
-      const count = entry.runs.reduce((sum, segment) => sum + segment.frames.length, 0);
+      const count = parsed.frames.reduce((sum, frame) => sum + Number(Boolean(frame.p)), 0);
       showStatus(parsed.name + " · " + count.toLocaleString("zh-CN") + " / " +
-        entry.frames.length.toLocaleString("zh-CN") + " 条有效位姿");
+        parsed.frames.length.toLocaleString("zh-CN") + " 条有效输入位姿");
     } catch (error) {
       showStatus(error.message, true);
     } finally {
@@ -438,7 +540,8 @@
 
   try {
     for (const [id, csv] of Object.entries(VioReplayExamples)) {
-      tracks.set(id, buildTrack(VioPoseIO.parse(csv, "csv", id)));
+      const parsed = VioPoseIO.parse(csv, "csv", id);
+      tracks.set(id, { ...parsed, reference: "camera", offsetKey: "recorded-camera" });
     }
     selectTrack(ui.tracks.value);
     new ResizeObserver(() => {

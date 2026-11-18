@@ -3,31 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>三维位姿回放</title>
+  <title>夹爪 TCP 回放</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="formats.js"></script>
   <script defer src="examples.js"></script>
+  <script defer src="tcp.js"></script>
+  <script defer src="gripper_mesh.js"></script>
+  <script defer src="gripper.js"></script>
   <script defer src="player.js"></script>
 </head>
 <body>
   <main>
     <header class="page-header">
-      <h1>三维位姿回放</h1>
-      <label class="track-field">轨迹
-        <select id="tracks">
-          <option value="half">960 × 768 · 等比缩放</option>
-          <option value="full">1920 × 1536 · 原分辨率</option>
-        </select>
-      </label>
+      <h1>夹爪 TCP 回放</h1>
+      <div class="track-controls">
+        <label class="track-field">数据
+          <select id="tracks">
+            <option value="half">960 × 768 · 等比缩放</option>
+            <option value="full">1920 × 1536 · 原分辨率</option>
+          </select>
+        </label>
+        <label class="track-field">轨迹
+          <select id="track-point">
+            <option value="tcp">夹爪 TCP</option>
+            <option value="source">原始位姿</option>
+          </select>
+        </label>
+      </div>
     </header>
 
     <section class="viewer" aria-label="三维回放与时间轴">
       <div class="stage">
         <canvas id="scene" tabindex="0" aria-label="三维轨迹，可拖动旋转、滚轮缩放，也可用方向键旋转"></canvas>
+        <canvas id="gripper-scene" aria-hidden="true" hidden></canvas>
+        <span id="gripper-tcp" aria-hidden="true" hidden></span>
         <div class="scene-labels">
           <output id="segment"></output>
-          <button type="button" id="reset-view">重置视角</button>
+          <div class="view-tools">
+            <label><input type="checkbox" id="show-gripper" checked> 夹爪模型</label>
+            <button type="button" id="focus-gripper" aria-pressed="false">模型特写</button>
+            <button type="button" id="reset-view">重置视角</button>
+          </div>
         </div>
+        <output id="model-state" role="status" hidden></output>
         <p class="view-hint">拖动旋转 · 滚轮缩放</p>
       </div>
 
@@ -61,8 +79,25 @@
     <section class="readouts" aria-label="当前帧数据">
       <dl><dt>位姿状态</dt><dd id="validity"></dd></dl>
       <dl><dt>帧索引</dt><dd id="frame"></dd></dl>
-      <dl><dt>位置（m）</dt><dd id="coordinates"></dd></dl>
+      <dl><dt id="coordinate-label">TCP 位置（m）</dt><dd id="coordinates"></dd></dl>
     </section>
+
+    <details class="tcp-settings">
+      <summary>TCP 偏移 <span id="tcp-summary"></span></summary>
+      <form id="tcp-form" novalidate>
+        <fieldset>
+          <legend id="tcp-reference">相机坐标系中的 TCP 偏移（mm）</legend>
+          <div class="offset-fields">
+            <label><span id="axis-x">X · 右</span><input id="tcp-x" type="number" step="any"></label>
+            <label><span id="axis-y">Y · 下</span><input id="tcp-y" type="number" step="any"></label>
+            <label><span id="axis-z">Z · 前</span><input id="tcp-z" type="number" step="any"></label>
+            <button type="submit">应用偏移</button>
+            <button type="button" id="use-cad">使用 STEP 名义值</button>
+          </div>
+        </fieldset>
+      </form>
+      <p id="tcp-status" role="status"></p>
+    </details>
 
     <section class="import" aria-label="导入外部轨迹">
       <label>输入格式
@@ -71,6 +106,14 @@
           <option value="csv">ORB 位姿 CSV（ns）</option>
           <option value="tum">八列 TXT（秒）</option>
           <option value="ns">八列 TXT（纳秒）</option>
+        </select>
+      </label>
+      <label>输入位姿坐标系
+        <select id="input-reference">
+          <option value="">按格式识别</option>
+          <option value="camera">相机</option>
+          <option value="body">IMU / 机体</option>
+          <option value="tcp">夹爪 TCP</option>
         </select>
       </label>
       <label>导入轨迹

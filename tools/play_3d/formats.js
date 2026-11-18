@@ -133,9 +133,9 @@
       }
       format = "csv";
     }
-    if (format === "csv") return {name, ...timeline(parseCsv(records))};
+    if (format === "csv") return {name, format, ...timeline(parseCsv(records))};
     if (format === "tum" || format === "ns") {
-      return {name, ...timeline(parseText(records, format === "ns"))};
+      return {name, format, ...timeline(parseText(records, format === "ns"))};
     }
     throw new Error("请选择受支持的位姿文件格式。");
   }
